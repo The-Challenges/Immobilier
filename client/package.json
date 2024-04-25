@@ -10,10 +10,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.5.20",
+    "@react-navigation/native-stack": "^6.9.26",
     "react": "18.2.0",
-    "react-native": "0.74.0",
-    "react-native-elements": "^3.4.3",
-    "react-native-vector-icons": "^10.0.3"
+    "react-native": "0.74.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

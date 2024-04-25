@@ -25,40 +25,27 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer} from '@react-navigation/native';
-import X from './src/components/test'
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Y from './src/components/home'
+import Button from 'react-native/Libraries/Components/Button';
 
 
-function App() {
+
+
+function Test({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-  const Stack = createNativeStackNavigator();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={X}
-         
-        />
-        <Stack.Screen
-          name="Home2"
-          component={Y}
-          options={{ headerShown: false }}         
-        />
+    <SafeAreaView style={backgroundStyle}>
 
-
-        
-       
-      </Stack.Navigator>
-
+<Text>hhhhhhh</Text>
+<Button onPress={() => navigation.navigate('Home2')} title="Click me" />
     
-  </NavigationContainer>
+
+    </SafeAreaView>
+    
   );
 }
 
@@ -81,4 +68,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default Test;
