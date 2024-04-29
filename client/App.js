@@ -25,9 +25,10 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer} from '@react-navigation/native';
-import X from './src/components/test'
+import X from './src/components/chat'
+import SearchBar from './src/components/searchBar';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Y from './src/components/home'
+import list from './src/components/list'
 
 
 function App() {
@@ -41,19 +42,30 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen 
+        name='list'
+        component={list}
+        options={{
+          headerShown: false
+        }}
+        />
         <Stack.Screen
-          name="Home"
+          name="chat"
           component={X}
+          options={{
+            headerShown: false
+          }}
          
         />
-        <Stack.Screen
-          name="Home2"
-          component={Y}
-          options={{ headerShown: false }}         
-        />
+        <Stack.Screen 
+         name='search'
+         component={SearchBar}
+         options={{
+           headerShown: false
+         }}
+       />
 
-
-        
+    
        
       </Stack.Navigator>
 
@@ -62,23 +74,6 @@ function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+
 
 export default App;
