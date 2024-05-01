@@ -16,7 +16,9 @@ import {
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
-import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
+// import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon3 from 'react-native-vector-icons/FontAwesome';
+
 
 import COLORS from '../consts/colors';
  
@@ -27,7 +29,7 @@ import houses from '../consts/houses';
 const HomeScreen = ({navigation}) => {
   const optionsList = [
     {title: 'Buy a Home', img: require('../assets/house1.jpg')},
-    {title: 'Rent a Home', img: require('../assets/house2.jpg')},
+    {title: 'Buy a Land', img: require('../assets/land.jpg')},
   ];
   const categoryList = ['Popular', 'Recommended', 'Nearest'];
 
@@ -72,6 +74,7 @@ const HomeScreen = ({navigation}) => {
   };
   const Card = ({house}) => {
     return (
+
       <Pressable
         activeOpacity={0.8}
         onPress={() => navigation.navigate('DetailsScreen', { house})}
@@ -80,6 +83,7 @@ const HomeScreen = ({navigation}) => {
           {/* House image */}
           <Image source={house.image} style={style.cardImage} />
           <View style={{marginTop: 10}}>
+
             {/* Title and price container */}
             <View
               style={{
@@ -105,15 +109,15 @@ const HomeScreen = ({navigation}) => {
             {/* Facilities container */}
             <View style={{marginTop: 10, flexDirection: 'row'}}>
               <View style={style.facility}>
-                <Icon name="hotel" size={18} />
+                <Icon3 name="hotel" size={18} />
                 <Text style={style.facilityText}>2</Text>
               </View>
               <View style={style.facility}>
-                <Icon name="bathtub" size={18} />
+                <Icon name="bath" size={18} />
                 <Text style={style.facilityText}>2</Text>
               </View>
               <View style={style.facility}>
-                <Icon2 name="aspect-ratio" size={18} />
+                <Icon1 name="aspect-ratio" size={18} />
                 <Text style={style.facilityText}>100m</Text>
               </View>
             </View>
@@ -133,7 +137,7 @@ const HomeScreen = ({navigation}) => {
       {/* Header container */}
       <View style={style.header}>
         <View>
-          <Text style={{color: COLORS.grey}}>Location</Text>
+          <Text style={{color: COLORS.grey}}>Location:</Text>
           <Text style={{color: COLORS.dark, fontSize: 20, fontWeight: 'bold'}}>
             Canada
           </Text>
