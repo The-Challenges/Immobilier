@@ -2,8 +2,12 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
-
 const app = express();
+require('dotenv').config();
+const UserRoute = require('./routes/routerUser');
+const authRoute = require('./routes/authRoutes');
+require('dotenv').config();
+
 app.use(cors({
   origin: 'http://172.20.10.11:4000',
   methods: ["GET", "POST"]
@@ -39,6 +43,12 @@ io.on('connection', (socket) => {
 });
 
 const PORT = 4000;
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '/../client/dist'));
+
+app.use('/api/user', UserRoute);
+app.use('/api/auth', authRoute);
+
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

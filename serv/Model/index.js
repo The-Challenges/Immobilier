@@ -1,7 +1,7 @@
 
 
 const { Sequelize, DataTypes } = require('sequelize');
-const { DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD } = require("../config/config")
+const { DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD } = require("../config/config");
 
 const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
   dialect: 'mysql',
