@@ -17,6 +17,8 @@ async function authenticateConnection() {
   }
 }
 
+authenticateConnection()
+
 // sequelize.sync()
 //   .then(() => {
 //     console.log('Database synchronized successfully.');

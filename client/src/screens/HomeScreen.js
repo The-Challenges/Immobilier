@@ -16,7 +16,7 @@ import {
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
-// import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/FontAwesome';
 
 
@@ -40,15 +40,23 @@ const HomeScreen = ({navigation}) => {
 
         {categoryList.map((category, index) => (
           <Pressable
-            key={index}
-            onPress={() => setSelectedCategoryIndex(index)}>
-            <Text
-              style={[
-                style.categoryListText,
-                index == selectedCategoryIndex && style.activeCategoryListText,]}>
-              {category}
-            </Text>
-          </Pressable>
+          key={index}
+          onPress={() => {
+            setSelectedCategoryIndex(index);
+            if (category === 'Recommended') {
+              navigation.navigate('RecommendedScreen');
+            }
+          }}
+        >
+          <Text
+            style={[
+              style.categoryListText,
+              index === selectedCategoryIndex && style.activeCategoryListText,
+            ]}>
+            {category}
+          </Text>
+        </Pressable>
+        
         ))}
 
       </View>
@@ -77,7 +85,7 @@ const HomeScreen = ({navigation}) => {
 
       <Pressable
         activeOpacity={0.8}
-        onPress={() => navigation.navigate('DetailsScreen', { house})}
+        onPress={() => navigation.navigate('DetailsScreen',{ house })}
         >
         <View style={style.card}>
           {/* House image */}

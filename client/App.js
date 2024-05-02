@@ -34,9 +34,14 @@ import list from './src/components/list'
 import HomeScreen from './src/screens/HomeScreen';
 import OnBoardScreen from './src/screens/OnBoardScreen';
 import DetailsScreen from './src/screens/DetailsScreen';
+import RecommendedScreen from './src/screens/RecommendedScreen';
+import Icon from 'react-native-vector-icons/MaterialIcons';  
 
 
 
+
+
+const Stack = createNativeStackNavigator();
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -44,7 +49,6 @@ function App() {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-  const Stack = createNativeStackNavigator();
 
   return (
     <NavigationContainer>
@@ -56,23 +60,24 @@ function App() {
         options={{
         headerShown: false
         }}
-        />
+        /> */}
 
-        <Stack.Screen
+        {/* <Stack.Screen
           name="chat"
           component={X}
           options={{
           headerShown: false
           }}
-         />
-
-        <Stack.Screen 
+         />  */}
+         
+        
+         {/* <Stack.Screen 
          name='search'
          component={SearchBar}
          options={{
          headerShown: false
          }}
-         /> */}
+         />  */}
 
         <Stack.Screen 
          name='HomeScreen'
@@ -88,9 +93,9 @@ function App() {
          options={{
            headerShown: false
          }}
-       />
+       /> 
 
-        <Stack.Screen 
+         <Stack.Screen 
          name='DetailsScreen'
          component={DetailsScreen}
          options={{
@@ -98,6 +103,25 @@ function App() {
          }}
        />
 
+<Stack.Screen 
+          name='RecommendedScreen'
+          component={RecommendedScreen}
+          options={({ navigation }) => ({
+            headerShown: true,
+            title: 'Recommended Houses',
+            headerLeft: () => (
+              <Icon
+                name="arrow-back"
+                size={24}
+                color="black"
+                onPress={() => navigation.goBack()}
+                style={{ marginLeft: 15 }}
+              />
+            ),
+          })}
+        /> 
+
+      
     
        
       </Stack.Navigator>
