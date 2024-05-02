@@ -16,8 +16,8 @@ const SearchBar = () => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
+    setModalVisible(!isModalVisible)
+  }
 
 //   const categories = ['Beach', 'City', 'Compagne', 'Countryside', 'Tendance','Piscine','Ferme','Desert'];
 
