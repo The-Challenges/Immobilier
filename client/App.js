@@ -6,7 +6,6 @@
  */
 
 import React from 'react';
-
 import {
   SafeAreaView,
   ScrollView,
@@ -16,7 +15,6 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-
 import {
   Colors,
   DebugInstructions,
@@ -28,27 +26,40 @@ import {NavigationContainer} from '@react-navigation/native';
 import X from './src/components/chat'
 import SearchBar from './src/components/searchBar';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import list from './src/components/list'
+import { PaperProvider } from 'react-native-paper';
+import first from './src/components/first/frPage'
+import two from './src/components/two/two'
 
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
 
+  const isDarkMode = useColorScheme() === 'dark';
+  
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  console.log(process.env.API_URL,'aab');
   const Stack = createNativeStackNavigator();
-
   return (
+<PaperProvider>
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen 
-        name='list'
-        component={list}
+        <Stack.Screen
+        name='first'
+        component={first}
         options={{
           headerShown: false
         }}
         />
+        <Stack.Screen 
+        name='two'
+        component={two}
+        options={{
+          headerShown: false
+        }}
+        />
+
+
         <Stack.Screen
           name="chat"
           component={X}
@@ -57,13 +68,14 @@ function App() {
           }}
          
         />
-        <Stack.Screen 
+    
+        {/* <Stack.Screen 
          name='search'
          component={SearchBar}
          options={{
            headerShown: false
          }}
-       />
+       /> */}
 
     
        
@@ -71,6 +83,7 @@ function App() {
 
     
   </NavigationContainer>
+  </PaperProvider>
   );
 }
 
