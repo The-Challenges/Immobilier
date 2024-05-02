@@ -32,7 +32,7 @@ const Payment = require('./payment')(sequelize, DataTypes);
 const House = require('./house')(sequelize, DataTypes);
 const Land = require('./land')(sequelize, DataTypes);
 const Notification = require('./notification')(sequelize, DataTypes);
-const Conversation = require('./chat')(sequelize, DataTypes);
+const Conversation = require('./conversation')(sequelize, DataTypes)
 
 
 User.hasMany(Payment, { foreignKey: 'userId' });
@@ -48,8 +48,11 @@ Favourite.belongsTo(Land, { foreignKey: 'landId' });
 User.hasMany(Notification, { foreignKey: 'userId' });
 Notification.belongsTo(User, { foreignKey: 'userId' });
 
-Conversation.hasMany(Chat, { foreignKey: 'conversationId' });
-Chat.belongsTo(Conversation, { foreignKey: 'conversationId' });
+User.hasMany(Chat);
+Chat.belongsTo(User);
+
+Conversation.hasMany(Chat);
+Chat.belongsTo(Conversation);
 
 
 // Export models and sequelize instance
