@@ -25,9 +25,8 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer} from '@react-navigation/native';
-import X from './src/components/test'
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Y from './src/components/home'
+import login from "./src/components/Authentification/login";
 
 
 function App() {
@@ -42,15 +41,12 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Home"
-          component={X}
-         
+          name="Login Page"
+          component={login}
+          options={{ headerShown: false }} 
+
         />
-        <Stack.Screen
-          name="Home2"
-          component={Y}
-          options={{ headerShown: false }}         
-        />
+    
 
 
         
