@@ -1,55 +1,75 @@
-import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Animated } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import axios from 'axios';
 import { Button, IconButton } from 'react-native-paper';
+import storage from './storage';
 
-const Signin = () => {
-  const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
-  React.useEffect(() => {
-    Animated.timing(
-      fadeAnim,
-      {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }
-    ).start();
-  }, [fadeAnim]);
+const Signin = ({ navigation }) => {
+  const navigateToSignup = () => {
+    navigation.navigate('signup');
+  };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post('http://192.168.103.25:4000/api/auth/login', {
+        email,
+        password,
+      });
+  
+      const { user, token } = response.data;
+      Alert.alert('Login successful', `Welcome, ${user.name}!`);
+  
+      await storage.save({
+        key: 'loginState',
+        data: {
+          token,
+          user,
+        },
+      });
+  
+      navigation.navigate('Home');
+    } catch (error) {
+      Alert.alert('Login failed', error.response.data.error);
+    }
+  };
+  
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-      <Image source={{ uri: 'https://i.pinimg.com/564x/ed/fb/eb/edfbeb8f4e12452b6d956bd6cf271573.jpg' }} style={styles.logo} />
+    <View style={styles.container}>
+      <Image source={{ uri: 'https://i.ibb.co/wWMcYf3/Screenshot-11.png' }} style={styles.logo} />
       <Text style={styles.title}>Login to Your Account</Text>
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder="Email" />
-        <TextInput style={styles.input} placeholder="Password" secureTextEntry />
+        <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} />
+        <TextInput style={styles.input} placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
       </View>
-      <Button style={styles.button} mode="contained">
+      <Button style={[styles.button, { backgroundColor: '#F5F7C4' }]} mode="contained" onPress={handleSubmit} labelStyle={{ color: '#000' }}>
         Login
       </Button>
       <TouchableOpacity>
-        <Text style={styles.forgotPassword}>Forgot Password?</Text>
+        <Text style={[styles.forgotPassword, { color: '#000' }]}>Forgot Password?</Text>
       </TouchableOpacity>
       <Text style={styles.or}>Or</Text>
-      <TouchableOpacity style={[styles.socialButton, { backgroundColor: '#DB4437' }]}>
-        <IconButton icon="google" color="#FFF" style={styles.icon} />
-        <Text style={[styles.socialButtonText, { color: '#FFF' }]}>Sign in with Google</Text>
+      <TouchableOpacity style={[styles.socialButton, { backgroundColor: '#F5F7C4' }]}>
+        <IconButton icon="google" color="#000" style={styles.icon} />
+        <Text style={[styles.socialButtonText, { color: '#000' }]}>Sign in with Google</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.socialButton, { backgroundColor: '#4267B2' }]}>
-        <IconButton icon="facebook" color="#FFF" style={styles.icon} />
-        <Text style={[styles.socialButtonText, { color: '#FFF' }]}>Sign in with Facebook</Text>
+      <TouchableOpacity style={[styles.socialButton, { backgroundColor: '#F5F7C4' }]}>
+        <IconButton icon="facebook" color="#000" style={styles.icon} />
+        <Text style={[styles.socialButtonText, { color: '#000' }]}>Sign in with Facebook</Text>
       </TouchableOpacity>
-      <TouchableOpacity>
-        <Text style={styles.createAccount}>Don't have an account? Create one</Text>
+      <TouchableOpacity onPress={navigateToSignup}>
+        <Text style={[styles.createAccount, { color: '#000' }]}>Don't have an account? Create one</Text>
       </TouchableOpacity>
-    </Animated.View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -86,7 +106,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   buttonText: {
-    color: '#FFF',
+    color: '#000', // Changed color to black
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -110,7 +130,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 25,
     paddingHorizontal: 20,
-    elevation: 3, 
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
