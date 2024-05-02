@@ -29,6 +29,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { PaperProvider } from 'react-native-paper';
 import first from './src/components/first/frPage'
 import two from './src/components/two/two'
+import login from "./src/components/Authentification/login";
+import signup from "./src/components/Authentification/signup";
 
 
 function App() {
@@ -44,39 +46,17 @@ function App() {
 <PaperProvider>
     <NavigationContainer>
       <Stack.Navigator>
+ 
+   <Stack.Screen
+          name="login"
+          component={login}
+          options={{ headerShown: false }} 
+        />
         <Stack.Screen
-        name='first'
-        component={first}
-        options={{
-          headerShown: false
-        }}
+          name="signup"
+          component={signup}
+          options={{ title: 'Sign Up' }} 
         />
-        <Stack.Screen 
-        name='two'
-        component={two}
-        options={{
-          headerShown: false
-        }}
-        />
-
-
-        <Stack.Screen
-          name="chat"
-          component={X}
-          options={{
-            headerShown: false
-          }}
-         
-        />
-    
-        {/* <Stack.Screen 
-         name='search'
-         component={SearchBar}
-         options={{
-           headerShown: false
-         }}
-       /> */}
-
     
        
       </Stack.Navigator>

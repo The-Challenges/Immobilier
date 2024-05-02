@@ -9,7 +9,7 @@ module.exports = (Sequelize, DataTypes) => {
     },
     firstName: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING,
@@ -40,5 +40,6 @@ module.exports = (Sequelize, DataTypes) => {
     //   defaultValue: 'user'
     // }
   });
+
   return User;
 };
