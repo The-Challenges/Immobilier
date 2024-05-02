@@ -5,14 +5,14 @@ import login from "./login";
 import storage from './storage';
 
 const SignupScreen = ({ navigation }) => {
-  const [name, setName] = useState('');
+  const [firstName, setfirstName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async () => {
     try {
       const response = await axios.post('http://192.168.103.25:4000/api/auth/signup', {
-        name,
+        firstName,
         email,
         password,
       });
@@ -43,8 +43,8 @@ const SignupScreen = ({ navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Enter your name"
-            value={name}
-            onChangeText={text => setName(text)}
+            value={firstName}
+            onChangeText={text => setfirstName(text)}
           />
         </View>
         <View style={styles.inputContainer}>

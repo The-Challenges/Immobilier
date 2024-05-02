@@ -20,7 +20,7 @@ const Signin = ({ navigation }) => {
       });
   
       const { user, token } = response.data;
-      Alert.alert('Login successful', `Welcome, ${user.name}!`);
+      Alert.alert('Login successful', `Welcome, ${user.firstName}!`);
   
       await storage.save({
         key: 'loginState',

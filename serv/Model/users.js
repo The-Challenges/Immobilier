@@ -1,27 +1,44 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
-    name: {
+module.exports = (Sequelize, DataTypes) => {
+  const User = Sequelize.define('User', {
+    userId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    firstName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       validate: {
-        isEmail: true,
-      },
+        isEmail: true
+      }
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
-    imageUrl: {
-      type: DataTypes.STRING, 
-      allowNull: true,
+    phoneNumber: {
+      type: DataTypes.STRING,
+      unique: true
     },
+    // isEmailVerified: {
+    //   type: DataTypes.BOOLEAN,
+    //   defaultValue: false
+    // },
+    // isMobileVerified: {
+    //   type: DataTypes.BOOLEAN,
+    //   defaultValue: false
+    // },
+    // userType: {
+    //   type: DataTypes.ENUM('user', 'admin'),
+    //   defaultValue: 'user'
+    // }
   });
 
   return User;
