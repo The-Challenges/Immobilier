@@ -32,7 +32,6 @@ import X from './src/components/chat'
 import SearchBar from './src/components/searchBar';
 import list from './src/components/list'
 import HomeScreen from './src/screens/HomeScreen';
-import OnBoardScreen from './src/screens/OnBoardScreen';
 import DetailsScreen from './src/screens/DetailsScreen';
 import RecommendedScreen from './src/screens/RecommendedScreen';
 import Icon from 'react-native-vector-icons/MaterialIcons';  
@@ -87,13 +86,7 @@ function App() {
          }}
        />
 
-        <Stack.Screen 
-         name='OnBoardScreen'
-         component={OnBoardScreen}
-         options={{
-           headerShown: false
-         }}
-       /> 
+        
 
          <Stack.Screen 
          name='DetailsScreen'
@@ -104,22 +97,36 @@ function App() {
        />
 
 <Stack.Screen 
-          name='RecommendedScreen'
-          component={RecommendedScreen}
-          options={({ navigation }) => ({
-            headerShown: true,
-            title: 'Recommended Houses',
-            headerLeft: () => (
-              <Icon
-                name="arrow-back"
-                size={24}
-                color="black"
-                onPress={() => navigation.goBack()}
-                style={{ marginLeft: 15 }}
-              />
-            ),
-          })}
-        /> 
+  name='RecommendedScreen'
+  component={RecommendedScreen}
+  options={({ navigation }) => ({
+    headerShown: true,
+    title: 'Recommended Houses',
+    headerStyle: {
+      backgroundColor: '#f8f8f8', 
+      shadowColor: '#000', 
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1, 
+      shadowRadius: 3, 
+      elevation: 5, 
+    },
+    headerTitleStyle: {
+      fontWeight: 'bold', // Bold font for the title
+      fontSize: 20, // Slightly larger font size for visibility
+      fontFamily: 'Roboto, "Helvetica Neue", sans-serif', // Elegant, professional font family
+    },
+    headerTintColor: 'black', // Ensuring all header text and icons are black for consistency
+    headerLeft: () => (
+      <Icon
+        name="arrow-back"
+        size={24}
+        color="dark"
+        onPress={() => navigation.goBack()}
+        style={{ marginLeft: 15 }}
+      />
+    ),
+  })}
+/>
 
       
     
