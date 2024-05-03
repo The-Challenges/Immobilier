@@ -4,10 +4,10 @@ const jwt = require('jsonwebtoken');
 
 exports.signup = async (req, res) => {
   try {
-    const { firstName, email, password } = req.body; // Updated field names
-    const user = await db.User.create({ firstName, email, password }); // Updated field names
+    const { firstName, email, password } = req.body; 
+    const user = await db.User.create({ firstName, email, password }); 
 
-    const token = jwt.sign({ id: user.id }, '8c4190aadbf13874d651bdc726710d37451570482a5cbe91053af0144143a80f', { expiresIn: '10000h' });
+    const token = jwt.sign({ id: user.id }, 'process.env.JWT_SECRET', { expiresIn: '10000h' });
 
     res.status(201).json({ user, token });
   } catch (error) {

@@ -30,7 +30,7 @@ const Signin = ({ navigation }) => {
         },
       });
   
-      navigation.navigate('Home');
+      navigation.navigate('login');
     } catch (error) {
       Alert.alert('Login failed', error.response.data.error);
     }

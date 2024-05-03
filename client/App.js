@@ -27,11 +27,10 @@ import X from './src/components/chat'
 import SearchBar from './src/components/searchBar';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { PaperProvider } from 'react-native-paper';
-import first from './src/components/first/frPage'
-import two from './src/components/two/two'
 import login from "./src/components/Authentification/login";
 import signup from "./src/components/Authentification/signup";
-
+import first from "./src/components/Authentification/frPage";
+import getstarted from "./src/components/Authentification/getstarted";
 
 function App() {
 
@@ -48,15 +47,30 @@ function App() {
       <Stack.Navigator>
  
    <Stack.Screen
-          name="login"
-          component={login}
+          name="first"
+          component={first}
           options={{ headerShown: false }} 
         />
         <Stack.Screen
+          name="getstarted"
+          component={getstarted}
+          options={{ headerShown: false }} 
+        />
+            <Stack.Screen
+          name="login"
+          component={login}
+          options={{ headerShown: false }} 
+
+        />
+         <Stack.Screen
           name="signup"
           component={signup}
-          options={{ title: 'Sign Up' }} 
+          options={{ headerShown: false }} 
+
         />
+
+        
+        
     
        
       </Stack.Navigator>
