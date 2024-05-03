@@ -1,31 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Image } from 'react-native';
-import { Button } from 'react-native-paper'; 
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { IconButton } from 'react-native-paper';
+import { launchImageLibrary } from 'react-native-image-picker';
+import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import editProfile from './editProfile';
+
 const UserProfile = () => {
   const navigation = useNavigation();
 
-  const handleEditProfile = () => {
-    navigation.navigate('editProfile');
-  };
-
-  const handleAddPost = () => {
-    navigation.navigate('AddPosts');
-  };
-
-  const handleMyPosts = () => {
-    console.log('Navigating to My Posts');
-    // Here you could implement the logic to navigate to the My Posts screen.
-  };
-
   const [profile, setProfile] = useState({
-    name: '',
-    email: '', 
-    password: '', 
-    dateOfBirth: '',
-    phone:'',
-    imageUrl2: "",
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    password: '123456',
+    dateOfBirth: '1990-01-01',
+    phone: '123-456-7890',
     imageUrl: '',
     location: {
       latitude: 37.78825,
@@ -33,51 +21,90 @@ const UserProfile = () => {
     },
   });
 
-  const { name, email,phone,imageUrl, imageUrl2 } = profile;
+  const CLOUD_NAME = 'your_cloud_name';
+  const UPLOAD_PRESET = 'your_preset_here';
+
+  const uploadImage = async (uri, imageKey) => {
+    const formData = new FormData();
+    formData.append('file', {
+      uri: uri,
+      type: 'image/jpeg',
+      name: 'upload.jpg',
+    });
+    formData.append('upload_preset', UPLOAD_PRESET);
+
+    try {
+      const response = await axios.post(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, formData);
+      if (response.data.secure_url) {
+        setProfile(prevState => ({ ...prevState, [imageKey]: response.data.secure_url }));
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      Alert.alert('Upload Failed', 'Failed to upload image. Please try again later.');
+    }
+  };
+
+  const handleImageUpload = (imageKey) => {
+    launchImageLibrary({ mediaType: 'photo', selectionLimit: 1 }, async (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorCode) {
+        console.log('ImagePicker Error: ', response.errorMessage);
+        Alert.alert('Image Picker Error', response.errorMessage);
+      } else if (response.assets && response.assets.length > 0) {
+        const path = response.assets[0].uri;
+        await uploadImage(path, imageKey);
+      }
+    });
+  };
+
+  const handleEditProfile = () => {
+    navigation.navigate('EditProfile');
+  };
+
+ 
+  const handleAddLand = () => {
+    navigation.navigate('AddLand');
+  };
+
+  const handleAddHouse = () => {
+    navigation.navigate('AddHouse'); // Ensure you have a screen named 'AddPost' in your navigator setup
+  };
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.heading}></Text>
+        <Text style={styles.heading}>User Profile</Text>
         <View style={styles.profileInfo}>
-          <Image source={{ uri: imageUrl }} style={styles.image} />
-          <Text style={styles.label}>Name: {name}</Text>
-          <Text style={styles.label}>Email: {email}</Text>
-          <Text style={styles.label}>Phone: {phone}</Text>
-          {/* Additional profile information could go here */}
+          <Image source={{ uri: profile.imageUrl || 'https://via.placeholder.com/150' }} style={styles.image} />
+          <TouchableOpacity onPress={() => handleImageUpload('imageUrl')} style={styles.uploadButton}>
+            <IconButton icon="image" size={20} color="#333" />
+          </TouchableOpacity>
+          <Text style={styles.label}>Name: {profile.name}</Text>
+          <Text style={styles.label}>Email: {profile.email}</Text>
+          <Text style={styles.label}>Phone: {profile.phone}</Text>
+          <Text style={styles.label}>Date of Birth: {profile.dateOfBirth}</Text>
         </View>
         <View style={styles.buttonsContainer}>
-          <Button
+          <IconButton
             icon="account-edit"
-            mode="contained"
+            size={30}
             onPress={handleEditProfile}
-            color='#FFD700' // Gold color
-            style={styles.button}
-            labelStyle={{ color: 'white' }}
-          >
-            Edit Profile
-          </Button>
-          <Button
-            title="Add Post"
-            onPress={handleAddPost}
+            style={styles.iconButtonContainer}
+          />
+          <IconButton
             icon="plus"
-            mode="contained"
-            color='#FFD700' // Gold color
-            style={styles.button}
-            labelStyle={{ color: 'white' }}
-          >
-            Add Post
-          </Button>
-          <Button
-            icon="file-document"
-            mode="contained"
-            onPress={handleMyPosts}
-            color='#FFD700' // Gold color
-            style={styles.button}
-            labelStyle={{ color: 'white' }}
-          >
-            My Posts
-          </Button>
+            size={30}
+            onPress={handleAddHouse}
+            style={styles.iconButtonContainer}
+          />
+        
+          <IconButton
+            icon="terrain"
+            size={30}
+            onPress={handleAddLand}
+            style={styles.iconButtonContainer}
+          />
         </View>
       </View>
     </ScrollView>
@@ -88,57 +115,46 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#ffffff',  // White background for a clean look
+    backgroundColor: '#ffffff',
   },
   heading: {
     fontSize: 24,
-    fontWeight: '700', // Bold text for headings
+    fontWeight: '700',
     textAlign: 'center',
-    marginVertical: 20, // Consistent vertical margin
-    color: '#333', // Dark grey for text to reduce harshness
+    marginVertical: 20,
+    color: '#333',
   },
   profileInfo: {
     alignItems: 'center',
     marginBottom: 20,
-    paddingVertical: 20, // Padding to add space around content
-    backgroundColor: '#f0f0f0',  // Light grey background for section
-    borderRadius: 10, // Rounded corners for the container
-    shadowColor: '#000', // Shadow for 3D effect
+    paddingVertical: 20,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
-    elevation: 3, // Android shadow
+    elevation: 3,
   },
   image: {
     width: 120,
     height: 120,
-    borderRadius: 60, // Fully rounded corners for circular image
+    borderRadius: 60,
     borderWidth: 3,
-    borderColor: '#ddd', // Light grey border
-    marginBottom: 10, // Space below the image
+    borderColor: '#ddd',
+    marginBottom: 10,
   },
   label: {
     fontSize: 16,
-    fontWeight: '500', // Medium boldness for readability
-    color: '#666', // Soft black for text
-    marginBottom: 5, // Space between text items
+    fontWeight: '500',
+    color: '#666',
+    marginBottom: 5,
   },
   buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginTop: 20,
   },
-  button: {
-    width: '100%', // Button takes full width of the container
-    marginBottom: 10, // Margin bottom to separate each button
-    borderRadius: 20, // Rounded corners for buttons
-    paddingVertical: 10, // Vertical padding for taller buttons
-    backgroundColor: '#007BFF', // A vibrant blue for buttons
-    elevation: 2, // Shadow effect for buttons
-  },
 });
-
-
-
-
-
 
 export default UserProfile;

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { IconButton } from 'react-native-paper';
 
-const editProfile = () => {
+const EditProfile = () => {
   const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [bio, setBio] = useState('');
@@ -17,7 +18,7 @@ const editProfile = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>editProfile</Text>
+      <Text style={styles.heading}>Edit Profile</Text>
 
       <TextInput
         style={styles.input}
@@ -66,7 +67,15 @@ const editProfile = () => {
         multiline
       />
 
-      <Button title="Save" onPress={handleSave} />
+      <View style={styles.saveButtonContainer}>
+        <IconButton
+          icon="content-save"
+          color="#ffffff"
+          size={24}
+          onPress={handleSave}
+          style={styles.saveButton}
+        />
+      </View>
     </View>
   );
 };
@@ -89,6 +98,14 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 15,
   },
+  saveButtonContainer: {
+    alignItems: 'flex-end', // Align button to the right
+  },
+  saveButton: {
+    backgroundColor: '#F5F7C4', // A vibrant blue for the button
+    borderRadius: 30, // Rounded corners for the button
+    padding: 10, // Padding to give some space around the button
+  },
 });
 
-export default editProfile;
+export default EditProfile;
