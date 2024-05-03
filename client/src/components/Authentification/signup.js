@@ -11,7 +11,7 @@ const SignupScreen = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.103.25:4000/api/auth/signup', {
+      const response = await axios.post('http://192.168.11.110:4000/api/auth/signup', {
         firstName,
         email,
         password,
