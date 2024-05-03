@@ -21,7 +21,7 @@ import first from './src/components/first/frPage'
 import two from './src/components/two/two'
 import Signin from "./src/components/Authentification/login";
 import signup from "./src/components/Authentification/signup";
-import chat from "./src/components/chat"
+import chat from "./src/components/chat/chat"
 
 
 function App() {
