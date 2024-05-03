@@ -7,43 +7,59 @@
 
 import React from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
   useColorScheme,
-  View,
+
 } from 'react-native';
 import {
-  Colors,
+  Colors
 } from 'react-native/Libraries/NewAppScreen';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import editProfile from './src/components/UserProfile/editProfile';
-import UserProfile from './src/components/UserProfile/UserProfile';
-import FullCreateHouse from './src/components/UserProfile/cratePosts/AddHouse';
-// import CreateHouse from './src/components/UserProfile/cratePosts/CreateHouse';
-import AddLand from './src/components/UserProfile/cratePosts/AddLand';
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+import {NavigationContainer} from '@react-navigation/native';
 
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { PaperProvider } from 'react-native-paper';
+import first from './src/components/first/frPage'
+import two from './src/components/two/two'
+import Signin from "./src/components/Authentification/login";
+import signup from "./src/components/Authentification/signup";
+import chat from "./src/components/chat"
+
+
+function App() {
+
+  const isDarkMode = useColorScheme() === 'dark';
+  console.log(process.env.API_URL,'aab');
+  
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
   const Stack = createNativeStackNavigator();
-
   return (
+<PaperProvider>
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="UserProfile" component={UserProfile} />
-        <Stack.Screen name="EditProfile" component={editProfile} />
-        <Stack.Screen name="AddHouse" component={FullCreateHouse} />
-        {/* <Stack.Screen name="CreateHouse" component={CreateHouse} /> */}
-        <Stack.Screen name="AddLand" component={AddLand} />
+        <Stack.Screen name="first" component={first}  options={{ headerShown: false }}  />
+ <Stack.Screen name="two" component={two}   options={{ headerShown: false }} />
+   <Stack.Screen
+          name="login"
+          component={Signin}
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+          name="signup"
+          component={signup}
+          options={{ title: 'Sign Up' }} 
+        />
+         <Stack.Screen name="chat" component={chat}   options={{ headerShown: false }} />
+    
+       
       </Stack.Navigator>
-    </NavigationContainer>
+
+    
+  </NavigationContainer>
+  </PaperProvider>
   );
 }
+
+
 
 export default App;

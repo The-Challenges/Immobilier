@@ -1,27 +1,23 @@
+const { DataTypes } = require('sequelize');
 
-const { Sequelize, DataTypes } = require('sequelize');
-
-module.exports = (Sequelize, DataTypes) => {
-    const Conversation = Sequelize.define('Conversation', {})
-   
+module.exports = (sequelize) => {
+  const Chat = sequelize.define('Chat', {
+    message: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    senderId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    recipientRead: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     
-    const Chat = Sequelize.define('Chat', {
-      chatId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      message: {
-        type: DataTypes.TEXT,
-        allowNull: false
-      },
-      time: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.NOW
-      }
-    })
+  }, {
+    timestamps: true
+  });
      
-    return Chat
-    
-}
+  return Chat;
+};
