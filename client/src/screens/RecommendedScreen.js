@@ -8,7 +8,7 @@ import { ScrollView, GestureHandlerRootView } from 'react-native-gesture-handler
 const houses = [
   {
     id: '1',
-    images: [require('../assets/house1.jpg'), require('../assets/house2.jpg')],
+    images: [require('../assets/house1.jpg'), require('../assets/house4.jpg')],
     rating: 4.5,
     location: 'Toronto, Canada',
     price: '1,200',
@@ -22,7 +22,15 @@ const houses = [
     price: '1,500',
     description: 'Luxurious living in Vancouver with top-notch amenities and breathtaking scenery.'
   },
-  // More houses...
+
+  {
+    id: '3',
+    images: [require('../assets/house3.jpg'), require('../assets/house1.jpg')],
+    rating: 4,
+    location: 'Vancouver, Canada',
+    price: '800',
+    description: 'Luxurious living in Vancouver with top-notch amenities and breathtaking scenery.'
+  },
 ];
 
 const windowWidth = Dimensions.get('window').width;
@@ -74,10 +82,10 @@ const RecommendedScreen = () => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.white,
-    marginHorizontal: 10,
-    borderRadius: 10,
+    marginHorizontal: 15,
+    borderRadius: 20,
     overflow: 'hidden',
-    elevation: 3,
+    elevation: 130,
     width: windowWidth * 0.8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -89,32 +97,34 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: windowWidth * 0.8,
-    height: 200,
+    height: 400,
     resizeMode: 'cover',
   },
   infoContainer: {
-    padding: 15,
+    padding: 10,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   price: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.dark,
+    color: COLORS.blue,
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    
+
   },
   rating: {
-    fontSize: 16,
+    fontSize: 19,
     fontWeight: 'bold',
     color: COLORS.yellow,
-    marginRight: 5,
+    marginRight: 4,
   },
   location: {
     fontSize: 14,
@@ -122,9 +132,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   description: {
-    fontSize: 14,
+    fontSize: 16,
     color: COLORS.dark,
     marginBottom: 10,
+    fontWeight: 'italic',
+
   },
   detailsButton: {
     paddingVertical: 10,
@@ -134,7 +146,7 @@ const styles = StyleSheet.create({
   },
   detailsButtonText: {
     color: COLORS.white,
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'bold',
   },
 });
