@@ -9,7 +9,7 @@ const authRoute = require('./routes/authRoutes');
 require('dotenv').config();
 
 app.use(cors({
-  origin: 'http://172.20.10.11:4000', // Adjust as necessary for your client app's address
+  origin: 'http://172.20.10.11:4000',
   methods: ["GET", "POST"]
 }))
 app.use(express.json());
@@ -27,7 +27,7 @@ io.on('connection', (socket) => {
 
     socket.on('join_conversation', (conversationId) => {
         socket.join(conversationId);
-        console.log(`User joined conversation: ${conversationId}`);
+        console.log(`User joined conversation: ${conversationId}`)
     });
 
     socket.on('chat_message', (data) => {

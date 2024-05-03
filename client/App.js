@@ -7,49 +7,41 @@
 
 import React from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
   useColorScheme,
-  View,
+
 } from 'react-native';
 import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
+  Colors
 } from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer} from '@react-navigation/native';
-import X from './src/components/chat'
-import SearchBar from './src/components/searchBar';
+
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { PaperProvider } from 'react-native-paper';
 import first from './src/components/first/frPage'
 import two from './src/components/two/two'
-import login from "./src/components/Authentification/login";
+import Signin from "./src/components/Authentification/login";
 import signup from "./src/components/Authentification/signup";
+import chat from "./src/components/chat"
 
 
 function App() {
 
   const isDarkMode = useColorScheme() === 'dark';
+  console.log(process.env.API_URL,'aab');
   
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-  console.log(process.env.API_URL,'aab');
   const Stack = createNativeStackNavigator();
   return (
 <PaperProvider>
     <NavigationContainer>
       <Stack.Navigator>
- 
+        <Stack.Screen name="first" component={first}  options={{ headerShown: false }}  />
+ <Stack.Screen name="two" component={two}   options={{ headerShown: false }} />
    <Stack.Screen
           name="login"
-          component={login}
+          component={Signin}
           options={{ headerShown: false }} 
         />
         <Stack.Screen
@@ -57,6 +49,7 @@ function App() {
           component={signup}
           options={{ title: 'Sign Up' }} 
         />
+         <Stack.Screen name="chat" component={chat}   options={{ headerShown: false }} />
     
        
       </Stack.Navigator>
