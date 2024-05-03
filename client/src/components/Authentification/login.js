@@ -14,13 +14,12 @@ const Signin = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.103.25:4000/api/auth/login', {
+      const response = await axios.post('http://192.168.11.110:4000/api/auth/login', {
         email,
         password,
       });
   
       const { user, token } = response.data;
-      Alert.alert('Login successful', `Welcome, ${user.firstName}!`);
   
       await storage.save({
         key: 'loginState',
@@ -30,7 +29,7 @@ const Signin = ({ navigation }) => {
         },
       });
   
-      navigation.navigate('Home');
+      navigation.navigate('two');
     } catch (error) {
       Alert.alert('Login failed', error.response.data.error);
     }

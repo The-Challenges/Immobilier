@@ -1,37 +1,41 @@
 const db = require('../Model/index');
 const { sign } = require('../utils/jwt');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+ // Updated field names
 
 exports.signup = async (req, res) => {
-  try {
-    const { firstName, email, password } = req.body; // Updated field names
-    const user = await db.User.create({ firstName, email, password }); // Updated field names
+  const { firstName, email, password } = req.body;
 
-    const token = jwt.sign({ id: user.id }, '8c4190aadbf13874d651bdc726710d37451570482a5cbe91053af0144143a80f', { expiresIn: '10000h' });
+try {
+const hashedPassword = await bcrypt.hash(password, 10);
+const existingUser = await db.User.findOne({ where: { email } });
+if (existingUser) {
+  return res.status(409).json({ message: "Email is already registered" });
+}
+const user = await db.User.create({ firstName, email, password: hashedPassword});
+res.status(201).json(user);
+} catch (error) {
+throw error
+}
+}
 
-    res.status(201).json({ user, token });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to create user' });
-  }
-};
-
-exports.login = async (req, res) => {
+exports.login =async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await db.User.findOne({ where: { email, password } });
-
-    if (user) {
-      const token = sign({ id: user.id });
-      res.status(200).json({ user, token });
-    } else {
-      res.status(404).json({ error: 'User not found' });
+    if(!email || !password){
+      return res.status(400).json({message:"Obligatorey of the email and the password"})
     }
+    const user = await db.User.findOne({ where: { email } });
+    if(!user){
+      return res.status(404).json({message:"user not found"})
+    }
+    const token = jwt.sign({ id: user.id , role:user.role }, "mlop09", { expiresIn: "1h" });
+    res.status(200).json({ token });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to log in' });
+   throw error
   }
-};
+},
 
 exports.getUser = async (req, res) => {
   try {
