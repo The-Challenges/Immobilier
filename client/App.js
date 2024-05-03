@@ -37,14 +37,14 @@ const Stack = createNativeStackNavigator();
 function App() {
 
   const isDarkMode = useColorScheme() === 'dark';
-  console.log(process.env.API_URL,'aab');
+  // console.log(process.env.API_URL,'aab');
   
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
   return (
 <PaperProvider>
-    <NavigationContainer>
+    <NavigationContainer style>
       <Stack.Navigator>
 
         {/* <Stack.Screen name="first" component={first}  options={{ headerShown: false }}  />
@@ -75,7 +75,7 @@ function App() {
     headerShown: true,
     title: 'Recommended Houses',
     headerStyle: {
-      backgroundColor: '#f8f8f8', 
+      backgroundColor: '#faebd7', 
       shadowColor: '#000', 
       shadowOffset: { width: 0, height: 2 }, 
       shadowOpacity: 0.1, 
@@ -83,9 +83,9 @@ function App() {
       elevation: 5, 
     },
     headerTitleStyle: {
-      fontWeight: 'bold', // Bold font for the title
-      fontSize: 20, // Slightly larger font size for visibility
-      fontFamily: 'Roboto, "Helvetica Neue", sans-serif', // Elegant, professional font family
+      fontWeight: 'bold', 
+      fontSize: 22, 
+      fontFamily: 'Roboto, "Helvetica Neue", sans-serif', 
     },
     headerTintColor: 'black', 
     headerLeft: () => (
@@ -99,6 +99,7 @@ function App() {
     ),
   })}
 />
+
 
 
 
