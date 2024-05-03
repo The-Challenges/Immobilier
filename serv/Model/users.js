@@ -9,7 +9,7 @@ module.exports = (Sequelize, DataTypes) => {
     },
     firstName: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING,
@@ -27,18 +27,19 @@ module.exports = (Sequelize, DataTypes) => {
       type: DataTypes.STRING,
       unique: true
     },
-    isEmailVerified: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
-    },
-    isMobileVerified: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
-    },
-    userType: {
-      type: DataTypes.ENUM('user', 'admin'),
-      defaultValue: 'user'
-    }
+    // isEmailVerified: {
+    //   type: DataTypes.BOOLEAN,
+    //   defaultValue: false
+    // },
+    // isMobileVerified: {
+    //   type: DataTypes.BOOLEAN,
+    //   defaultValue: false
+    // },
+    // userType: {
+    //   type: DataTypes.ENUM('user', 'admin'),
+    //   defaultValue: 'user'
+    // }
   });
+
   return User;
 };
