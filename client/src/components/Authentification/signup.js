@@ -11,7 +11,7 @@ const SignupScreen = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.11.110:4000/api/auth/signup', {
+      const response = await axios.post('http://172.20.10.11:4000/api/auth/signup', {
         firstName,
         email,
         password,
@@ -27,7 +27,7 @@ const SignupScreen = ({ navigation }) => {
         },
       });
   
-      navigation.navigate('login');
+      navigation.navigate('Login');
     } catch (error) {
       Alert.alert('Signup failed', error.response.data.error);
     }

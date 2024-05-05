@@ -1,27 +1,41 @@
-
 const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (Sequelize, DataTypes) => {
     const Land = Sequelize.define('Land', {
-        landId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true,
-          autoIncrement: true
-        },
+ 
         title: DataTypes.STRING,
-        description: DataTypes.TEXT,
-        price: DataTypes.FLOAT,
-        location: DataTypes.STRING,
-        mapLocation: DataTypes.STRING,
-        isVerified: {
-          type: DataTypes.BOOLEAN,
-          defaultValue: false
+        price: {
+            type: DataTypes.INTEGER,
+            defaultValue:0
         },
-        Option: {
-            type: DataTypes.STRING ,
-           
-          }
-      });
-      
-      return Land      
-    }
+        size:{
+          type: DataTypes.FLOAT,
+        },
+        alt:{
+            type: DataTypes.FLOAT    },
+            
+            long:{
+              type: DataTypes.FLOAT    },
+              purchaseoption:{
+                type: DataTypes.ENUM('Finance','cash','Unknown'),
+                defaultValue: "Unknown"
+              },
+              TerrainType:{
+                type: DataTypes.ENUM('Flat', 'Sloping', 'hilly', 'forested','Unknown'),
+                defaultValue: 'Unknown'
+              },
+              Zoning:{
+                type: DataTypes.ENUM('residential', 'commercial', 'agricultural', 'industrial', 'mixed-use','Unknown'),
+                defaultValue: 'Unknown'
+              },
+             
+             
+              isVerifie:{
+                type: DataTypes.BOOLEAN,
+                defaultValue: false
+              }
+
+    });
+
+    return Land;
+};

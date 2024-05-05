@@ -1,8 +1,13 @@
-const db = require('../Model/index');
-const { sign } = require('../utils/jwt');
+const db = require('../../Model/index');
+const { sign } = require('../../utils/jwt');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
- // Updated field names
+const dummyUsers = require('./Users.json')
+
+
+
+
+
 
 exports.signup = async (req, res) => {
   const { firstName, email, password } = req.body;
@@ -62,3 +67,17 @@ exports.getAllUsers = async (req, res) => {
     res.status(500).json({ error: 'Failed to get users' });
   }
 };
+
+
+exports.insertAllUsers = async(req,res)=>{
+   try{
+    const user = await db.User.bulkCreate(dummyUsers)
+    res.status(200).json(user).send(user,"sucess")
+   }
+   catch (error){
+      console.log(error);
+      console.error(error)
+
+   }
+
+}

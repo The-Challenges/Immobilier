@@ -51,7 +51,7 @@ const ImageSwiper = ({navigation}) => {
     if (index === images.length - 1) {
       // Navigate to the next page after a delay
       setTimeout(() => {
-        navigation.navigate('login');
+        navigation.navigate('Login');
       }, 2000); // 2 seconds delay
     }
   };
@@ -78,7 +78,7 @@ const ImageSwiper = ({navigation}) => {
           style={styles.logo}
         />
       </View>
-      <Button onPress={() => navigation.navigate('login')} title="Skip to Home" />
+      <Button onPress={() => navigation.navigate('Login')} title="Skip to login" />
     </View>
   );
 };

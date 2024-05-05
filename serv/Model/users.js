@@ -2,11 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (Sequelize, DataTypes) => {
   const User = Sequelize.define('User', {
-    userId: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
+   
     firstName: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -27,6 +23,16 @@ module.exports = (Sequelize, DataTypes) => {
       type: DataTypes.STRING,
       unique: true
     },
+    age :{
+      type: DataTypes.STRING,
+    },
+    alt:{
+      type: DataTypes.FLOAT    },
+      
+      long:{
+        type: DataTypes.FLOAT    },
+        
+
     // isEmailVerified: {
     //   type: DataTypes.BOOLEAN,
     //   defaultValue: false
