@@ -1,5 +1,5 @@
 const db = require('../../Model/index');
-const { sign } = require('../../utils/jwt');
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const dummyUsers = require('./Users.json')
