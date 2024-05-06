@@ -7,20 +7,19 @@ import storage from './storage';
 
 const Signin = ({ navigation }) => {
   const navigateToSignup = () => {
-    navigation.navigate('signup');
+    navigation.navigate('Signup');
   };
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.103.25:4000/api/auth/login', {
+      const response = await axios.post('http://172.20.10.11:4000/api/auth/login', {
         email,
         password,
       });
   
       const { user, token } = response.data;
-      Alert.alert('Login successful', `Welcome, ${user.firstName}!`);
   
       await storage.save({
         key: 'loginState',
@@ -30,9 +29,10 @@ const Signin = ({ navigation }) => {
         },
       });
   
-      navigation.navigate('Home');
+      navigation.navigate('HomeTabs');
     } catch (error) {
-      Alert.alert('Login failed', error.response.data.error);
+      // Alert.alert('Login failed', error.response.data.error);
+      console.log(error.message);
     }
   };
   

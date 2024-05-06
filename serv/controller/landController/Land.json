@@ -1,0 +1,15 @@
+[
+    {
+      "title": "Scenic Land",
+      "price": 200000,
+      "size": 5.0,
+      "alt": 34.0522,
+      "long": -118.2437,
+      "purchaseoption": "cash",
+      "TerrainType": "Flat",
+      "Zoning": "residential",
+      "isVerifie": true,
+      "UserId": 3
+    }
+   
+  ]
