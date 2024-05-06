@@ -1,0 +1,29 @@
+[
+    {
+      "firstName": "Alice",
+      "email": "alice@gmail.com",
+      "password": "password123",
+      "phoneNumber": "1234567890",
+      "age": "25",
+      "alt": 40.7128,
+      "long": -74.006
+    },
+    {
+      "firstName": "Bob",
+      "email": "bob@gmail.com",
+      "password": "securepass",
+      "phoneNumber": "9876543210",
+      "age": "30",
+      "alt": 34.0522,
+      "long": -118.2437
+    },
+    {
+      "firstName": "Charlie",
+      "email": "charlie@gmail.com",
+      "password": "strongPassword",
+      "phoneNumber": "5551234567",
+      "age": "28",
+      "alt": 51.5074,
+      "long": -0.1278
+    }
+  ]

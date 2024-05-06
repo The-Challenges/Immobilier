@@ -7,45 +7,44 @@ const fakeUsers = [
   { name: "Maria Garcia", userID: "102", email: "maria.garcia@example.com", role: "Member" }
 ];
 
-const ChatDetail = () => {
+const ChatDetail = ({ route }) => {
+  const { roomId } = route.params;
   const [currentUser, setCurrentUser] = useState(fakeUsers[0]);
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
-  const conversationId = "123";
 
-  const socket = io('http://192.168.11.110:4000');
+  const socket = io('http://172.20.10.11:4000');
 
   useEffect(() => {
-    socket.on('connect_error', (err) => {
-      console.log('Error connecting to socket:', err);
-      
-    });
-  
-    socket.connect();
-  
-    socket.on('show_notification', (data) => {
-      setChatMessages(prevMessages => [...prevMessages, data]);
-    });
-  
-    socket.emit('join_conversation', conversationId);
-  
-    return () => {
-      socket.emit('leave_conversation', conversationId);
-      socket.off('show_notification');
-      socket.disconnect();
-    };
-  }, [])
+    socket.emit('join_room', roomId);
 
-  const sendMessage = () => {
-    if (message.trim() !== '') {
-      const msgData = { conversationId, message, senderId: currentUser.userID };
-      socket.emit('chat_message', msgData);
-      setMessage('');
-    }
-  };
+    socket.on('message', (message) => {
+        setChatMessages(prevMessages => [...prevMessages, message]);
+    });
+
+    // Receive message history when joining the room
+    socket.on('message_history', (history) => {
+        setChatMessages(history);
+    });
+
+    return () => {
+        socket.emit('leave_room', roomId);
+        socket.off('message');
+    };
+}, [roomId]);
+
+const sendMessage = () => {
+  if (message.trim() !== '') {
+    const msgData = { roomId, message, senderId: currentUser.userID };
+    socket.emit('chat_message', msgData);
+    setMessage('');
+   
+  }
+}
 
   const switchUser = () => {
-    setCurrentUser(prevUser => fakeUsers.find(user => user.userID !== prevUser.userID));
+    // Toggle between Alex and Maria
+    setCurrentUser(prevUser => (prevUser.userID === "101" ? fakeUsers[1] : fakeUsers[0]));
   };
 
   return (

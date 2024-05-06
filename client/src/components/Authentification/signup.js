@@ -27,7 +27,7 @@ const SignupScreen = ({ navigation }) => {
         },
       });
   
-      navigation.navigate('login');
+      navigation.navigate('Login');
     } catch (error) {
       Alert.alert('Signup failed', error.response.data.error);
     }

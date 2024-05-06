@@ -2,28 +2,51 @@ const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (Sequelize, DataTypes) => {
     const House = Sequelize.define('House', {
-        houseId: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },
+ 
         title: DataTypes.STRING,
-        description: DataTypes.STRING,
-        price: DataTypes.DECIMAL,
-        location: DataTypes.STRING,
-        mapLocation: DataTypes.STRING,
-        picture: DataTypes.STRING,
-        numberOfRooms: {
+        price: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            defaultValue:0
         },
-        isVerified: {
+        numberbathrooms: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        
+        numberbedrooms: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        garage: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        parking: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         },
-        Option: {
-            type: DataTypes.STRING
-        }
+        alt:{
+            type: DataTypes.FLOAT    },
+            
+            long:{
+              type: DataTypes.FLOAT    },
+              purchaseoption:{
+                type: DataTypes.ENUM('Finance','cash','Unknown'),
+                defaultValue: "Unknown"
+              },
+              propretyType:{
+                type: DataTypes.ENUM('Villa', 'Rural', 'Retirement Living','All types'),
+                defaultValue: 'All types'
+              },
+              houseAge:{
+                type: DataTypes.ENUM('Established', 'New', 'All types'),
+                defaultValue: 'All types'
+              },
+              isVerifie:{
+                type: DataTypes.BOOLEAN,
+                defaultValue: false
+              }
+
     });
 
     return House;
