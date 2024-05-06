@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  Button
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -24,6 +25,9 @@ const DetailsScreen = ({ navigation, route }) => {
   const InteriorCard = ({interior}) => {
     return <Image source={interior} style={style.interiorImage} />;
   };
+  const navig=()=>{
+    navigation.navigate('DetailsScreen', { house: houseData })
+  }
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
@@ -113,7 +117,7 @@ const DetailsScreen = ({ navigation, route }) => {
               </Text>
             </View>
             <View style={style.bookNowBtn}>
-              <Text style={{color: COLORS.white}}>Book Now</Text>
+              <Button style={{color: COLORS.white}}  onPress={navig}  >Book Now</Button>
             </View>
           </View>
         </View>
