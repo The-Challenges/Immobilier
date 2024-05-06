@@ -1,9 +1,10 @@
-// RecommendedScreen.js
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Dimensions, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Dimensions, SafeAreaView, Animated } from 'react-native';
 import COLORS from '../consts/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { ScrollView, GestureHandlerRootView } from 'react-native-gesture-handler'; // Ensure import is correct
+import { ScrollView, GestureHandlerRootView } from 'react-native-gesture-handler';
+// import Header from '../components/RecommendedHeader.js/Header';
+
 
 const houses = [
   {
@@ -22,27 +23,33 @@ const houses = [
     price: '1,500',
     description: 'Luxurious living in Vancouver with top-notch amenities and breathtaking scenery.'
   },
-
   {
     id: '3',
     images: [require('../assets/house3.jpg'), require('../assets/house1.jpg')],
     rating: 4,
     location: 'Vancouver, Canada',
     price: '800',
-    description: 'Luxurious living in Vancouver with top-notch amenities and breathtaking scenery.'
+    description: 'Comfortable and affordable living with essential amenities.'
   },
 ];
 
 const windowWidth = Dimensions.get('window').width;
 
 const RecommendedScreen = () => {
+  const scrollX = new Animated.Value(0); // Animated value for smooth scrolling of images
+
   const renderHouseItem = ({ item }) => (
     <TouchableOpacity style={styles.card} onPress={() => console.log('House pressed:', item)}>
       <ScrollView
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        style={styles.imageScrollView}>
+        style={styles.imageScrollView}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          { useNativeDriver: false }
+        )}
+      >
         {item.images.map((image, index) => (
           <Image key={index} source={image} style={styles.cardImage} />
         ))}
@@ -51,8 +58,8 @@ const RecommendedScreen = () => {
         <View style={styles.header}>
           <Text style={styles.price}>{`$${item.price} / month`}</Text>
           <View style={styles.ratingContainer}>
+            <Icon name="star" size={20} color={COLORS.gold} />
             <Text style={styles.rating}>{`${item.rating}`}</Text>
-            <Icon name="star" size={16} color={COLORS.yellow} />
           </View>
         </View>
         <Text style={styles.location}>{item.location}</Text>
@@ -67,6 +74,7 @@ const RecommendedScreen = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <SafeAreaView style={{ flex: 1 }}>
+      {/* <Header /> */}
         <FlatList
           horizontal
           data={houses}
@@ -82,52 +90,50 @@ const RecommendedScreen = () => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.white,
-    marginHorizontal: 15,
-    borderRadius: 20,
+    marginHorizontal: 20,
+    borderRadius: 15,
     overflow: 'hidden',
-    elevation: 130,
-    width: windowWidth * 0.8,
+    elevation: 5,
+    width: windowWidth * 0.85,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
   },
   imageScrollView: {
-    height: 200,
+    height: 250,
   },
   cardImage: {
-    width: windowWidth * 0.8,
-    height: 400,
+    width: windowWidth * 0.85,
+    height: '100%',
     resizeMode: 'cover',
   },
   infoContainer: {
-    padding: 10,
+    padding: 20,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 10,
   },
   price: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: COLORS.blue,
+    color: COLORS.dark,
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    
-
   },
   rating: {
-    fontSize: 19,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.yellow,
-    marginRight: 4,
+    color: COLORS.gold,
+    marginLeft: 5,
   },
   location: {
-    fontSize: 14,
+    fontSize: 16,
     color: COLORS.grey,
     marginBottom: 5,
   },
@@ -135,18 +141,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.dark,
     marginBottom: 10,
-    fontWeight: 'italic',
-
+    fontStyle: 'italic',
   },
   detailsButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
     backgroundColor: COLORS.primary,
-    borderRadius: 5,
+    borderRadius: 10,
   },
   detailsButtonText: {
     color: COLORS.white,
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });

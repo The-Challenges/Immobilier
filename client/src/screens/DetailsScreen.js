@@ -15,8 +15,12 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 const {width} = Dimensions.get('screen');
-const DetailsScreen = ({navigation, route}) => {
-  const house = route.params.house  || {} ;
+const DetailsScreen = ({ navigation, route }) => {
+  const { house } = route.params;  // Ensure 'house' is destructured correctly
+
+  // Continue with the rest of your component setup...
+
+
   
   const InteriorCard = ({interior}) => {
     return <Image source={interior} style={style.interiorImage} />;
