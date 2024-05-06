@@ -14,7 +14,7 @@ const Signin = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://172.20.10.11:4000/api/auth/login', {
+      const response = await axios.post('http://192.168.11.15:4000/api/auth/login', {
         email,
         password,
       });

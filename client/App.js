@@ -27,7 +27,7 @@ function HomeTabs() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          let Component = Icon;  // Default to MaterialCommunityIcons
+          let Component = Icon; 
           switch (route.name) {
             case 'HomeScreen':
               iconName = focused ? 'home' : 'home-outline';
@@ -38,7 +38,7 @@ function HomeTabs() {
             case 'Recommended':
               iconName = 'star-outline';
               break;
-            case 'Chatroom':  // Assuming you want to use the regular Icon for 'Chatroom'
+            case 'Chatroom':  
             iconName = 'chatbox-ellipses-outline';
             Component = Icon2;
               break;
