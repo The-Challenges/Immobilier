@@ -39,6 +39,7 @@ function HomeTabs() {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           let Component = Icon; 
+          let Component = Icon;  
           switch (route.name) {
             case 'HomeScreen':
               iconName = focused ? 'home' : 'home-outline';
@@ -52,6 +53,9 @@ function HomeTabs() {
               case 'Chatroom':  
               iconName = 'chatbox-ellipses-outline';
               Component = Icon2;
+            case 'Chatroom':  
+            iconName = 'chatbox-ellipses-outline';
+            Component = Icon2;
               break;
               
               default:
@@ -96,6 +100,37 @@ function App() {
         <Stack.Screen name='chat' component={Chat} options={{ headerShown: false }}     />
         <Stack.Screen name='Details' component={DetailsScreen} options={{headerShown : false}} />
 
+        <Stack.Screen 
+          name='RecommendedScreen'
+          component={RecommendedScreen}
+          options={({ navigation }) => ({
+            headerShown: true,
+            title: 'Recommended Houses',
+            headerStyle: {
+              backgroundColor: '#faebd7', 
+              shadowColor: '#000', 
+              shadowOffset: { width: 0, height: 2 }, 
+              shadowOpacity: 0.1, 
+              shadowRadius: 3, 
+              elevation: 5, 
+            },
+            headerTitleStyle: {
+              fontWeight: 'bold', 
+              fontSize: 22, 
+              fontFamily: 'Roboto, "Helvetica Neue", sans-serif', 
+            },
+            headerTintColor: 'black', 
+            headerLeft: () => (
+              <Icon
+                name="arrow-back-sharp"
+                size={24}
+                color="black"
+                onPress={() => navigation.goBack()}
+                style={{ marginLeft: 15 }}
+              />
+            ),
+          })}
+      />
       </Stack.Navigator>
     </NavigationContainer>
   );
