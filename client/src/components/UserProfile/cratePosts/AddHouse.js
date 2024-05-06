@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Switch, Button, StyleSheet, ScrollView, Alert, KeyboardAvoidingView } from 'react-native';
-import axios from 'axios';
-
+import Screen1 from '../../../screens/housescreen/housescren1';
+import Screen2 from '../../../screens/housescreen/housescren2';
+import Screen3 from '../../../screens/housescreen/housescren3';
+import Screen4 from '../../../screens/housescreen/housescren4';
+import Screen5 from '../../../screens/housescreen/housescren5';
+import Screen6 from '../../../screens/housescreen/housescren6';
 function FullCreateHouse() {
     const [formData, setFormData] = useState({
         // option: '',
@@ -40,7 +43,7 @@ function FullCreateHouse() {
         solarPanels: false,
         highEnergyEfficiency: false
     });
-    const [showDetails, setShowDetails] = useState(false);
+    const [screenIndex, setScreenIndex] = useState(1);
 
     const handleChange = (name, value) => {
         setFormData(prevFormData => ({
@@ -49,128 +52,60 @@ function FullCreateHouse() {
         }));
     };
 
-    const handleFocus = () => {
-        setShowDetails(true);
+    const navigateToNext = () => {
+        setScreenIndex(screenIndex + 1);
     };
 
     const handleSubmit = async () => {
-        try {
-            const response = await axios.post('http://192.168.104.8:4000/house/create', formData);
-            Alert.alert('Success', 'House created successfully!');
-            console.log(response.data);
-        } catch (error) {
-            console.error('Failed to create house:', error.response ? error.response.data : error.message);
-            Alert.alert('Error', 'Failed to create house');
-        }
+        // Handle form submission
     };
 
     return (
-        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-            <ScrollView style={styles.container}>
-                <Text style={styles.title}>Create a New House</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text) => handleChange('option', text)}
-                    value={formData.option}
-                    placeholder="Option"
-                    onFocus={handleFocus}
+        <>
+            {screenIndex === 1 && (
+                <Screen1
+                    formData={formData}
+                    handleChange={handleChange}
+                    navigateToNext={navigateToNext}
                 />
-                {/* Always visible fields */}
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text) => handleChange('priceRange', text)}
-                    value={formData.priceRange}
-                    placeholder="Price Range"
+            )}
+            {screenIndex === 2 && (
+                <Screen2
+                    formData={formData}
+                    handleChange={handleChange}
+                    navigateToNext={navigateToNext}
                 />
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text) => handleChange('bedrooms', text)}
-                    keyboardType="numeric"
-                    value={formData.bedrooms}
-                    placeholder="Bedrooms"
+            )}
+            {screenIndex === 3 && (
+                <Screen3
+                    formData={formData}
+                    handleChange={handleChange}
+                    navigateToNext={navigateToNext}
                 />
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text) => handleChange('bathrooms', text)}
-                    keyboardType="numeric"
-                    value={formData.bathrooms}
-                    placeholder="Bathrooms"
+            )}
+            {screenIndex === 4 && (
+                <Screen4
+                    formData={formData}
+                    handleChange={handleChange}
+                    navigateToNext={navigateToNext}
                 />
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text) => handleChange('carSpaces', text)}
-                    keyboardType="numeric"
-                    value={formData.carSpaces}
-                    placeholder="Car Spaces"
+            )}
+            {screenIndex === 5 && (
+                <Screen5
+                    formData={formData}
+                    handleChange={handleChange}
+                    navigateToNext={navigateToNext}
                 />
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text) => handleChange('purchaseTimeframe', text)}
-                    value={formData.purchaseTimeframe}
-                    placeholder="Purchase Timeframe"
+            )}
+             {screenIndex === 6 && (
+                <Screen6
+                    formData={formData}
+                    handleChange={handleChange}
+                    handleSubmit={handleSubmit}
                 />
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text) => handleChange('landSize', text)}
-                    keyboardType="numeric"
-                    value={formData.landSize}
-                    placeholder="Land Size"
-                />
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text) => handleChange('location', text)}
-                    value={formData.location}
-                    placeholder="Location"
-                />
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text) => handleChange('address', text)}
-                    value={formData.address}
-                    placeholder="Address"
-                />
-                {/* Dynamically displayed boolean fields */}
-                {showDetails && Object.keys(formData).filter(key => typeof formData[key] === 'boolean').map((key) => (
-                    <View style={styles.switchContainer} key={key}>
-                        <Text style={styles.switchLabel}>{key.replace(/([A-Z])/g, ' $1').trim()}:</Text>
-                        <Switch
-                            onValueChange={(value) => handleChange(key, value)}
-                            value={formData[key]}
-                        />
-                    </View>
-                ))}
-                <Button title="Submit" onPress={handleSubmit} color="#007BFF" />
-            </ScrollView>
-        </KeyboardAvoidingView>
+            )}
+        </>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20
-    },
-    input: {
-        width: '100%',
-        marginBottom: 10,
-        padding: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5
-    },
-    switchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 10
-    },
-    switchLabel: {
-        fontSize: 16
-    }
-});
 
 export default FullCreateHouse;
