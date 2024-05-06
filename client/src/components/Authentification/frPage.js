@@ -8,7 +8,7 @@ const WelcomeScreen = ({ navigation }) => {
         const timer = setTimeout(() => {
             setShowReload(true);
             setTimeout(() => {
-                navigation.navigate('getstarted');
+                navigation.navigate('OnboardingScreen');
             }, 2000); 
         }, 5500);
 
