@@ -19,8 +19,9 @@ router.delete('/delete/:houseId', houseController.deleteHouse);
 // Route to get a specific house by ID
 router.get('/:houseId', houseController.getHouseById);
 // const HouseController = require('../controller/house');
+const HouseController = require('../controller/houseController/house');
 
 router.get('/allhouses', HouseController.getAllHouses);
-router.post('/posthouses', HouseController.createHouse);
+router.post('/postMany', HouseController.insertAllHouses);
 
 module.exports = router;

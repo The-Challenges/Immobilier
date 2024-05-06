@@ -5,7 +5,7 @@ const WelcomeScreen = ({ navigation }) => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-          navigation.navigate('two'); 
+          navigation.navigate('Two'); 
         }, 5500); 
     
         return () => clearTimeout(timer)

@@ -1,48 +1,33 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import {
-  useColorScheme,
-
-} from 'react-native';
-import {
-  Colors
-} from 'react-native/Libraries/NewAppScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon2 from 'react-native-vector-icons/Ionicons';
 
 
-import {NavigationContainer} from '@react-navigation/native';
 
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import { PaperProvider } from 'react-native-paper';
-import first from './src/components/first/frPage'
-import two from './src/components/two/two'
-import Signin from "./src/components/Authentification/login";
-import signup from "./src/components/Authentification/signup";
-import chat from "./src/components/chat"
-import HomeScreen from "./src/screens/HomeScreen";
+import FrPage from "./src/components/first/frPage";
+import Two from "./src/components/two/two";
+import Login from "./src/components/Authentification/login";
+import Signup from "./src/components/Authentification/signup";
+// import HomeScreen from "./src/screens/HomeScreen";
 import DetailsScreen from "./src/screens/DetailsScreen";
-import RecommendedScreen from "./src/screens/RecommendedScreen"
+// import RecommendedScreen from "./src/screens/RecommendedScreen"
 import Icon from 'react-native-vector-icons/Ionicons';
 import UserProfile from './src/components/UserProfile/UserProfile';
 import AddHouse from './src/components/UserProfile/cratePosts/AddHouse'
 // import AddLand from './src/components/UserProfile/cratePosts/AddLand'
 import EditProfile from './src/components/UserProfile/editProfile'
+// import RecommendedScreen from "./src/screens/RecommendedScreen";
+import Chat from "./src/components/chat/chat";
+// import Chatroom from "./src/components/chat/allrooms";
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
-function App() {
-
-  const isDarkMode = useColorScheme() === 'dark';
-  // console.log(process.env.API_URL,'aab');
-  
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+// Tab Navigator for logged-in users
+function HomeTabs() {
   return (
 <PaperProvider>
     <NavigationContainer style>
@@ -114,6 +99,21 @@ function App() {
   );
 }
 
-
+// Main stack navigator
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="FrPage">
+        <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} />
+        <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
+        <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
+        <Stack.Screen name='chat' component={Chat} options={{ headerShown: false }}     />
+        <Stack.Screen name='Details' component={DetailsScreen} options={{headerShown : false}} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
 export default App;

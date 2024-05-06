@@ -1,41 +1,41 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-module.exports = (sequelize, DataTypes) => {
-    const Land = sequelize.define('Land', {
-        landId: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },
-        photos: {
-            type: DataTypes.JSON, // Store an array of photo URLs
-            defaultValue: []
-        },
+module.exports = (Sequelize, DataTypes) => {
+    const Land = Sequelize.define('Land', {
+ 
+        title: DataTypes.STRING,
         price: {
-            type: DataTypes.DECIMAL(10, 2), // Assuming prices can have cents and are not too high
-            allowNull: false,
-            validate: {
-                isDecimal: true,
-                min: 0
-            }
+            type: DataTypes.INTEGER,
+            defaultValue:0
         },
-        location: {
-            type: DataTypes.STRING,
-            allowNull: false
+        size:{
+          type: DataTypes.FLOAT,
         },
-        idCard: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        certificate: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        description: {
-            type: DataTypes.TEXT,
-            allowNull: true
-        }
+        alt:{
+            type: DataTypes.FLOAT    },
+            
+            long:{
+              type: DataTypes.FLOAT    },
+              purchaseoption:{
+                type: DataTypes.ENUM('Finance','cash','Unknown'),
+                defaultValue: "Unknown"
+              },
+              TerrainType:{
+                type: DataTypes.ENUM('Flat', 'Sloping', 'hilly', 'forested','Unknown'),
+                defaultValue: 'Unknown'
+              },
+              Zoning:{
+                type: DataTypes.ENUM('residential', 'commercial', 'agricultural', 'industrial', 'mixed-use','Unknown'),
+                defaultValue: 'Unknown'
+              },
+             
+             
+              isVerifie:{
+                type: DataTypes.BOOLEAN,
+                defaultValue: false
+              }
+
     });
 
     return Land;
-}
+};

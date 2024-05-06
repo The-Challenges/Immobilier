@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from  'react';
 
 import {
   SafeAreaView,
@@ -27,6 +27,11 @@ const {width} = Dimensions.get('screen');
 import houses from '../consts/houses';
 
 const HomeScreen = ({navigation}) => {
+
+
+
+
+
   const optionsList = [
     {title: 'Buy a Home', img: require('../assets/house1.jpg')},
     {title: 'Buy a Land', img: require('../assets/land.jpg')},
@@ -44,7 +49,7 @@ const HomeScreen = ({navigation}) => {
           onPress={() => {
             setSelectedCategoryIndex(index);
             if (category === 'Recommended') {
-              navigation.navigate('RecommendedScreen');
+              navigation.navigate('Recommended');
             }
           }}
         >
@@ -85,7 +90,7 @@ const HomeScreen = ({navigation}) => {
 
       <Pressable
         activeOpacity={0.8}
-        onPress={() => navigation.navigate('DetailsScreen',{ house })}
+        onPress={() => navigation.navigate('Details',{ house })}
         >
         <View style={style.card}>
           {/* House image */}

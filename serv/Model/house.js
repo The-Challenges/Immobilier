@@ -1,143 +1,52 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-module.exports = (sequelize, DataTypes) => {
-    const House = sequelize.define('House', {
-        houseId: {
+module.exports = (Sequelize, DataTypes) => {
+    const House = Sequelize.define('House', {
+ 
+        title: DataTypes.STRING,
+        price: {
             type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
+            defaultValue:0
         },
-        isVerified: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
+        numberbathrooms: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         },
-        // option: {
-        //     type: DataTypes.STRING,
-        // },
-        finance: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        cash: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        ensuite: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        study: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        alarmSystem: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        floorboards: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        rumpusRoom: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        dishwasher: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        builtInRobes: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        broadband: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        gym: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        workshop: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        swimmingPool: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        balcony: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        undercoverParking: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        fullyFenced: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        tennisCourt: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
+        
+        numberbedrooms: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         },
         garage: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        outdoorArea: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        shed: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        outdoorSpa: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        airConditioning: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        heating: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        solarPanels: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        highEnergyEfficiency: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        priceRange: {
-            type: DataTypes.STRING,
-        },
-        bedrooms: {
             type: DataTypes.INTEGER,
+            defaultValue: 0
         },
-        bathrooms: {
-            type: DataTypes.INTEGER,
+        parking: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         },
-        carSpaces: {
-            type: DataTypes.INTEGER,
-        },
-        purchaseTimeframe: {
-            type: DataTypes.STRING,
-        },
-        landSize: {
-            type: DataTypes.INTEGER,
-        },
-        location: {
-            type: DataTypes.STRING,
-        },
-        address: {
-            type: DataTypes.STRING,
-        }
+        alt:{
+            type: DataTypes.FLOAT    },
+            
+            long:{
+              type: DataTypes.FLOAT    },
+              purchaseoption:{
+                type: DataTypes.ENUM('Finance','cash','Unknown'),
+                defaultValue: "Unknown"
+              },
+              propretyType:{
+                type: DataTypes.ENUM('Villa', 'Rural', 'Retirement Living','All types'),
+                defaultValue: 'All types'
+              },
+              houseAge:{
+                type: DataTypes.ENUM('Established', 'New', 'All types'),
+                defaultValue: 'All types'
+              },
+              isVerifie:{
+                type: DataTypes.BOOLEAN,
+                defaultValue: false
+              }
+
     });
 
     return House;
