@@ -3,7 +3,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 require('dotenv').config();
-// require('./faker')()
+// require('./faker')() 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -14,11 +14,12 @@ const io = socketIo(server, {
 });
 
 const messageHistory = {};
-const usersRooms = {}; // To store rooms associated with each user
+const usersRooms = {}; 
+const requestusers={}
 
 // Middleware
 app.use(cors({
-    origin: 'http://172.20.10.11:4000',
+    origin: 'http://192.168.11.15:4000',
     methods: ["GET", "POST"]
 }));
 app.use(express.json());
@@ -34,6 +35,7 @@ app.use('/api/land', require('./routes/routerLand'))
 
 io.on('connection', (socket) => {
     // console.log('A user connected');
+
 
     socket.on('join_room', (roomId, userId) => {
         socket.join(roomId);
@@ -51,6 +53,7 @@ io.on('connection', (socket) => {
         }
     });
 
+
     socket.on('chat_message', (data) => {
         const { roomId, message, senderId } = data;
         // Store the message in the message history for the room
@@ -61,6 +64,7 @@ io.on('connection', (socket) => {
         // Emit the message to all users in the same room
         io.in(roomId).emit('message', { message, senderId });
         console.log(`Message sent in room ${roomId}: ${message}`);
+
     });
 
     socket.on('disconnect', () => {

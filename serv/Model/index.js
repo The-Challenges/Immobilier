@@ -47,9 +47,6 @@ const Access =require('./accesOption')(sequelize,DataTypes)
 const RequestHouse =require('./requestHouse')(sequelize,DataTypes)
 const RequestLand =require('./requestLand')(sequelize,DataTypes)
 
-
-
-
 /* **********************************************************user relationships******************************************** */
 User.hasMany(House);
 House.belongsTo(User);
@@ -70,7 +67,6 @@ User.hasMany(Comment);
 Comment.belongsTo(User);
 
 /* **********************************************************land relationships******************************************** */
-
 Land.hasMany(Access);
 Access.belongsTo(Land);
 Land.hasMany(View);
@@ -97,11 +93,8 @@ House.hasMany(View);
 View.belongsTo(House);
 House.hasMany(Media);
 Media.belongsTo(House);
-
 House.belongsToMany(User, { through: RequestHouse,foreignKey: 'landId' });
 User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'landId' });
-
-
 
 /* **********************************************************jointable relationships******************************************** */
 
@@ -125,7 +118,6 @@ User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'landId' });
 // console.log('The table for the User model was just (re)created!');
 // }
 // test()
-
 // Export models and sequelize instance
 module.exports = {
   sequelize,

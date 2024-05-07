@@ -44,10 +44,10 @@ function HomeTabs() {
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
       })}>
-      <Tab.Screen name="HomeScreen" component={HomeScreen} />
-      <Tab.Screen name="ProfilDetail" component={ProfileDetails} />
-      <Tab.Screen name="Recommended" component={RecommendedScreen} />
-      <Tab.Screen name="Chatroom" component={Chatroom} />
+      <Tab.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="ProfilDetail" component={ProfileDetails} options={{ headerShown: false }} />
+      <Tab.Screen name="Recommended" component={RecommendedScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false }} />
       {/* <Tab.Screen name="Chat" component={Chat} /> */}
     </Tab.Navigator>
   );
