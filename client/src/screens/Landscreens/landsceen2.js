@@ -1,24 +1,34 @@
-import React from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // You can choose any icon set
 
-function Screen1({ formData, handleChange, navigateToNext }) {
+function Screen2({ formData, handleChange, handleLocationSelection, navigateToNext }) {
+    const [selectedLocation, setSelectedLocation] = useState(null);
+
+    const handleMapPress = (event) => {
+        const { coordinate } = event.nativeEvent;
+        setSelectedLocation(coordinate);
+        handleLocationSelection(coordinate); // This function should update the form data with the selected location
+    };
+
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Price:</Text>
-            <TextInput
-                style={styles.input}
-                value={formData.price}
-                onChangeText={(text) => handleChange('price', text)}
-                placeholder="Enter price"
-            />
-            <Text style={styles.label}>Location:</Text>
-            <TextInput
-                style={styles.input}
-                value={formData.location}
-                onChangeText={(text) => handleChange('location', text)}
-                placeholder="Enter location"
-            />
-            <Button title="Next" onPress={navigateToNext} />
+            <MapView
+                style={styles.map}
+                initialRegion={{
+                    latitude: 37.78825,
+                    longitude: -122.4324,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                }}
+                onPress={handleMapPress}
+            >
+                {selectedLocation && <Marker coordinate={selectedLocation} />}
+            </MapView>
+            <TouchableOpacity onPress={navigateToNext} style={styles.iconContainer}>
+                <Icon name="navigate-next" size={40} color="#5A67D8" />
+            </TouchableOpacity>
         </View>
     );
 }
@@ -26,22 +36,16 @@ function Screen1({ formData, handleChange, navigateToNext }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
+        backgroundColor: '#f8f9fa',
     },
-    label: {
-        fontSize: 18,
-        marginBottom: 5,
-        color: '#333',
+    map: {
+        flex: 1,
     },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        fontSize: 16,
-        borderRadius: 5,
-        marginBottom: 15,
-    }
+    iconContainer: {
+        position: 'absolute',
+        top: 30,
+        right: 20,
+    },
 });
 
-export default Screen1;
+export default Screen2;
