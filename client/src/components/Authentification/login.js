@@ -13,31 +13,21 @@ const Signin = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.103.25:4000/api/auth/login', {
-        email,
-        password,
-      });
-  
-      console.log(response.data); 
-  
+
+      const response = await axios.post('http://192.168.11.15:4000/api/auth/login', { email, password });
       if (response.data && response.data.user) {
         const { user, token } = response.data;
-        Alert.alert('Login successful', `Welcome, ${user.firstName}!`);
-  
-        await storage.save({
-          key: 'loginState',
-          data: {
-            token,
-            user,
-          },
-        });
-  
-        navigation.navigate('Home');
+        await storage.save({ key: 'loginState', data: { token, user } });
+        navigation.navigate('HomeTabs');
+
       } else {
         Alert.alert('Login failed', 'No user data found in response');
       }
     } catch (error) {
       console.error(error);
+
+      Alert.alert('Login failed', 'An unexpected error occurred');
+
       if (error.response) {
         Alert.alert('Login failed', error.response.data.message);
       } else {

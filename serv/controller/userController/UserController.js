@@ -1,5 +1,5 @@
 const db = require('../../Model/index');
-const { sign } = require('../../utils/jwt');
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -18,6 +18,7 @@ res.status(201).json(user);
 throw error
 }
 }
+
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -27,11 +28,13 @@ exports.login = async (req, res) => {
     const user = await db.User.findOne({ where: { email } });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+
     }
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
+
     const jwtSecret = process.env.JWT_SECRET; 
     const token = jwt.sign({ id: user.userId, role: user.role }, jwtSecret, { expiresIn: "1000h" });
 
