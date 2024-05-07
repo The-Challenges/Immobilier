@@ -52,7 +52,7 @@ const ImageSwiper = ({navigation}) => {
       // Navigate to the next page after a delay
       setTimeout(() => {
         navigation.navigate('Login');
-      }, 2000); // 2 seconds delay
+      }, 1000); 
     }
   };
 

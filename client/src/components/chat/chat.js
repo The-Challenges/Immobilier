@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import io from 'socket.io-client';
+import { API_AD } from '../../../config';
 
 const fakeUsers = [
   { name: "Alex Johnson", userID: "101", email: "alex.johnson@example.com", role: "Admin" },
@@ -13,7 +14,7 @@ const ChatDetail = ({ route }) => {
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
 
-  const socket = io('http://172.20.10.11:4000');
+  const socket = io(API_AD);
 
   useEffect(() => {
     socket.emit('join_room', roomId);

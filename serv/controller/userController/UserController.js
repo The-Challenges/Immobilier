@@ -1,5 +1,5 @@
 const db = require('../../Model/index');
-const { sign } = require('../../utils/jwt');
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const dummyUsers = require('./Users.json')
@@ -25,22 +25,29 @@ throw error
 }
 }
 
-exports.login =async (req, res) => {
+exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if(!email || !password){
-      return res.status(400).json({message:"Obligatorey of the email and the password"})
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
     }
     const user = await db.User.findOne({ where: { email } });
-    if(!user){
-      return res.status(404).json({message:"user not found"})
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-    const token = jwt.sign({ id: user.id , role:user.role }, "mlop09", { expiresIn: "1h" });
-    res.status(200).json({ token });
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+    const jwtSecret = process.env.JWT_SECRET; 
+    const token = jwt.sign({ id: user.userId, role: user.role }, jwtSecret, { expiresIn: "1000h" });
+
+    res.status(200).json({ token, user: { userId: user.userId, firstName: user.firstName, email: user.email } });
   } catch (error) {
-   throw error
+    console.error(error);
+    res.status(500).json({ message: 'Login failed due to server error' });
   }
-},
+};
 
 exports.getUser = async (req, res) => {
   try {

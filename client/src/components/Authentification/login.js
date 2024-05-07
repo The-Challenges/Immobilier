@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Button, IconButton } from 'react-native-paper';
 import storage from './storage';
 
-
 const Signin = ({ navigation }) => {
   const navigateToSignup = () => {
     navigation.navigate('Signup');
@@ -14,28 +13,21 @@ const Signin = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://172.20.10.11:4000/api/auth/login', {
-        email,
-        password,
-      });
-  
-      const { user, token } = response.data;
-  
-      await storage.save({
-        key: 'loginState',
-        data: {
-          token,
-          user,
-        },
-      });
-  
-      navigation.navigate('HomeTabs');
+      const response = await axios.post('http://192.168.11.15:4000/api/auth/login', { email, password });
+      if (response.data && response.data.user) {
+        const { user, token } = response.data;
+        await storage.save({ key: 'loginState', data: { token, user } });
+        navigation.navigate('HomeTabs');
+      } else {
+        Alert.alert('Login failed', 'No user data found in response');
+      }
     } catch (error) {
-      // Alert.alert('Login failed', error.response.data.error);
-      console.log(error.message);
+      console.error(error);
+      Alert.alert('Login failed', 'An unexpected error occurred');
     }
   };
   
+
   return (
     <View style={styles.container}>
       <Image source={{ uri: 'https://i.ibb.co/wWMcYf3/Screenshot-11.png' }} style={styles.logo} />
@@ -106,7 +98,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   buttonText: {
-    color: '#000', // Changed color to black
+    color: '#000', 
     fontSize: 16,
     fontWeight: 'bold',
   },
