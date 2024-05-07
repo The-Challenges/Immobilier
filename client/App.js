@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {NavigationContainer} from '@react-navigation/native';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -15,7 +16,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 
 
-// Import screens
 import FrPage from "./src/components/first/frPage";
 import Two from "./src/components/two/two";
 import Login from "./src/components/Authentification/login";
@@ -29,11 +29,14 @@ import HomeTabs from './hpmetaps';
 
 const Stack = createNativeStackNavigator();
 
-// Main stack navigator
+
 function App() {
+  const Stack = createNativeStackNavigator();
+
   return (
     <PaperProvider>
       <NavigationContainer>
+
         <Stack.Navigator initialRouteName="FrPage">
           <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} />
           <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} />
@@ -47,11 +50,24 @@ function App() {
             name='RecommendedScreen'
             component={RecommendedScreen}
           options={{ headerShown: false }}
+
+        <Stack.Navigator initialRouteName="RequestsList">
+          <Stack.Screen 
+            name="RequestsList" 
+            component={RequestsList} 
+            options={{ title: "Manage Requests" }} 
+          />
+          <Stack.Screen 
+            name="AllRequests" 
+            component={AllRequests} 
+            options={{ title: "All Requests" }} 
           />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
+
   )
+
 }
 
 export default App;

@@ -19,12 +19,20 @@ const Signin = ({ navigation }) => {
         const { user, token } = response.data;
         await storage.save({ key: 'loginState', data: { token, user } });
         navigation.navigate('HomeTabs');
+
       } else {
         Alert.alert('Login failed', 'No user data found in response');
       }
     } catch (error) {
       console.error(error);
+
       Alert.alert('Login failed', 'An unexpected error occurred');
+
+      if (error.response) {
+        Alert.alert('Login failed', error.response.data.message);
+      } else {
+        Alert.alert('Login failed', 'An unexpected error occurred');
+      }
     }
   };
   
