@@ -5,7 +5,7 @@ const HomeScreen = ({ navigation }) => {
   const rooms = [
     { id: 1, name: 'Room 1' },
     { id: 2, name: 'Room 2' },
-    // Add more rooms here
+   
   ];
 
   const enterRoom = (roomId) => {
