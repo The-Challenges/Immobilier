@@ -35,6 +35,7 @@ import AddHouse from './src/components/profile/cratePosts/AddHouse'
 
 
 
+
 function App() {
   const Stack = createNativeStackNavigator();
 
@@ -53,6 +54,8 @@ function App() {
           <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }}  />
           <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }}  />
           <Stack.Screen name='splash' component={splach} options={{ headerShown: false }}  />
+          <Stack.Screen name='apartement' component={Apartment} options={{ headerShown: false }}  />
+          <Stack.Screen name='Land' component={Lands} options={{ headerShown: false }}  />
 
 
           <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
