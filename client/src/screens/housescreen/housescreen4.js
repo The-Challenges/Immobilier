@@ -3,20 +3,21 @@ import { ScrollView, View, Text, Switch, TouchableOpacity, StyleSheet } from 're
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
-function Screen2({ formData, handleChange, navigateToNext }) {
+function Screen3({ formData, handleChange, navigateToNext }) {
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.title}>Outdoor Options</Text>
+            <Text style={styles.title}>Indoor Options</Text>
             {[
-                { field: 'swimmingPool', label: 'Swimming Pool', icon: 'pool', iconColor: '#1E90FF' },
-                { field: 'balcony', label: 'Balcony', icon: 'balcony', iconColor: '#3CB371' },
-                { field: 'undercoverParking', label: 'Undercover Parking', icon: 'garage', iconColor: '#6a5acd' },
-                { field: 'fullyFenced', label: 'Fully Fenced', icon: 'fence', iconColor: '#228b22' },
-                { field: 'tennisCourt', label: 'Tennis Court', icon: 'tennis', iconColor: '#ff6347' },
-                { field: 'garage', label: 'Garage', icon: 'garage-alert', iconColor: '#ff4500' },
-                { field: 'outdoorArea', label: 'Outdoor Area', icon: 'tree', iconColor: '#2e8b57' },
-                { field: 'shed', label: 'Shed', icon: 'warehouse', iconColor: '#4682b4' },
-                { field: 'outdoorSpa', label: 'Outdoor Spa', icon: 'hot-tub', iconColor: '#b0c4de' }
+                { field: 'ensuite', label: 'Ensuite', icon: 'shower', iconColor: '#ff6347' },
+                { field: 'study', label: 'Study', icon: 'bookshelf', iconColor: '#daa520' },
+                { field: 'alarmSystem', label: 'Alarm System', icon: 'alarm', iconColor: '#6495ed' },
+                { field: 'floorboards', label: 'Floorboards', icon: 'texture', iconColor: '#deb887' },
+                { field: 'rumpusRoom', label: 'Rumpus Room', icon: 'sofa', iconColor: '#ff4500' },
+                { field: 'dishwasher', label: 'Dishwasher', icon: 'dishwasher', iconColor: '#b0c4de' },
+                { field: 'builtInRobes', label: 'Built-in Robes', icon: 'wardrobe-outline', iconColor: '#2e8b57' },
+                { field: 'broadband', label: 'Broadband', icon: 'wifi', iconColor: '#4682b4' },
+                { field: 'gym', label: 'Gym', icon: 'dumbbell', iconColor: '#a52a2a' },
+                { field: 'workshop', label: 'Workshop', icon: 'toolbox', iconColor: '#483d8b' }
             ].map(({ field, label, icon, iconColor }) => (
                 <View style={styles.switchContainer} key={field}>
                     <Icon name={icon} size={24} color={iconColor} />
@@ -84,4 +85,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Screen2;
+export default Screen3;

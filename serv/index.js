@@ -18,7 +18,7 @@ const usersRooms = {}; // To store rooms associated with each user
 
 // Middleware
 app.use(cors({
-    origin: 'http://172.20.10.11:4000',
+    origin: 'http://192.168.104.10:4000',
     methods: ["GET", "POST"]
 }));
 app.use(express.json());

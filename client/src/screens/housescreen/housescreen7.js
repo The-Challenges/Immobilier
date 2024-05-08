@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Button, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
+import axios from 'axios';  // Import axios
 
 function Screen6({ formData, navigateToNext }) {
     const [isModalVisible, setModalVisible] = useState(false);
@@ -10,9 +11,20 @@ function Screen6({ formData, navigateToNext }) {
         setModalVisible(!isModalVisible);
     };
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         toggleModal();
-        navigateToNext(); // Placeholder for navigation function
+        // API call to submit formData
+        try {
+            const response = await axios.post('https://your-api-url.com/submit-data', formData);
+            if (response.status === 200) {
+                console.log('Data submitted successfully');
+                navigateToNext(); // Proceed to the next step in your app flow
+            } else {
+                console.error('Failed to submit data:', response);
+            }
+        } catch (error) {
+            console.error('Error submitting data:', error);
+        }
     };
 
     return (
@@ -40,46 +52,80 @@ function Screen6({ formData, navigateToNext }) {
     );
 }
 
+// Example icon mapping and colors (you should customize this part as needed)
 const iconMapping = {
-    priceRange: "cash-plus",
+    priceRange: "cash-multiple",
     bathrooms: "shower",
-    bedrooms: "bed-king",
-    carSpaces: "car-multiple",
-    purchaseTimeframe: "calendar-range",
-    undercoverParking: "garage-open",
+    bedrooms: "bed-king-outline",
+    carSpaces: "car-estate",
+    purchaseTimeframe: "calendar-clock",
+    undercoverParking: "garage",
     fullyFenced: "gate",
-    tennisCourt: "tennis-ball",
-    garage: "garage-alert-outline",
-    outdoorArea: "tree-outline",
-    shed: "warehouse",
-    outdoorSpa: "spa-outline",
-    airConditioning: "air-filter",
-    heating: "fireplace",
-    solarPanels: "solar-power",
-    highEnergyEfficiency: "leaf",
-    landsize: "image-area",
-    garden: "flower-tulip-outline",
-    pool: "swimming",
+    tennisCourt: "tennis",
+    garage: "garage-alert",
+    outdoorArea: "pine-tree",
+    shed: "barn",
+    outdoorSpa: "hot-tub",
+    airConditioning: "air-conditioner",
+    heating: "radiator-disabled",
+    solarPanels: "solar-panel-large",
+    highEnergyEfficiency: "leaf-maple",
+    landsize: "image-size-select-large",
+    garden: "flower-tulip",
+    pool: "pool",
     backyard: "fence",
-    patio: "window-shutter-open",
-    balcony: "window-open",
-    kitchen: "fridge-outline",
-    livingRoom: "sofa",
-    diningRoom: "table-furniture",
-    securitySystem: "security",
-    petFriendly: "dog-side",
-    waterfront: "waves",
-    view: "binoculars",
-    roofType: "roofing",
-    flooring: "floor-plan",
-    ageOfHome: "home-city-outline",
+    patio: "awning",
+    balcony: "balcony",
+    kitchen: "fridge-industrial",
+    livingRoom: "sofa-outline",
+    diningRoom: "table-chair",
+    securitySystem: "security-network",
+    petFriendly: "dog-service",
+    waterfront: "waves-arrow-up",
+    view: "telescope",
+    roofType: "home-roof",
+    flooring: "floor-lamp",
+    ageOfHome: "home-city",
     recentRenovations: "toolbox-outline",
-    schoolCatchment: "school",
-    publicTransport: "bus-stop",
-    shops: "storefront-outline",
-    quietArea: "pine-tree-box"
+    schoolCatchment: "school-outline",
+    publicTransport: "bus-stop-covered",
+    shops: "shopping-outline",
+    quietArea: "silence",
+    // Additional icon mappings for completeness
+    energyRating: "flash-circle",
+    lotSize: "image-size-select-actual",
+    roofMaterial: "roofing",
+    windows: "window-closed-variant",
+    doors: "door-closed-lock",
+    driveway: "road-variant",
+    fireplace: "fireplace",
+    furniture: "sofa-single",
+    gym: "dumbbell",
+    laundryRoom: "washing-machine",
+    sauna: "sauna",
+    workshop: "toolbox",
+    basement: "stairs-down",
+    attic: "stairs-up",
+    guestHouse: "home-modern",
+    wineCellar: "glass-wine",
+    library: "bookshelf",
+    office: "desk",
+    elevator: "elevator",
+    internet: "wifi",
+    satelliteDish: "satellite-uplink",
+    intercom: "phone-in-talk",
+    cameras: "cctv",
+    smokeDetectors: "smoke-detector",
+    waterSupply: "water-pump",
+    septicTank: "tank",
+    gasSupply: "gas-cylinder",
+    wasteDisposal: "trash-can",
+    stormShelter: "weather-hurricane",
+    smartHome: "home-automation"
 };
 
+
+// Icon colors from previous messages or custom color schemes
 const iconColors = {
     priceRange: "#4CAF50",
     bathrooms: "#03A9F4",
@@ -117,10 +163,38 @@ const iconColors = {
     schoolCatchment: "#CDDC39",
     publicTransport: "#795548",
     shops: "#FF5722",
-    quietArea: "#4CAF50"
+    quietArea: "#4CAF50",
+    energyRating: "#fbc02d",
+    lotSize: "#9ccc65",
+    roofMaterial: "#b0bec5",
+    windows: "#42a5f5",
+    doors: "#5d4037",
+    driveway: "#616161",
+    fireplace: "#b71c1c",
+    furniture: "#8d6e63",
+    gym: "#d32f2f",
+    laundryRoom: "#0288d1",
+    sauna: "#7b1fa2",
+    workshop: "#6d4c41",
+    basement: "#546e7a",
+    attic: "#455a64",
+    guestHouse: "#f48fb1",
+    wineCellar: "#6a1b9a",
+    library: "#8e24aa",
+    office: "#3949ab",
+    elevator: "#1e88e5",
+    internet: "#0d47a1",
+    satelliteDish: "#2e7d32",
+    intercom: "#c0ca33",
+    cameras: "#ef6c00",
+    smokeDetectors: "#757575",
+    waterSupply: "#0277bd",
+    septicTank: "#00695c",
+    gasSupply: "#ff6f00",
+    wasteDisposal: "#4e342e",
+    stormShelter: "#424242",
+    smartHome: "#7c4dff"
 };
-
-
 const styles = StyleSheet.create({
     fullScreen: {
         flex: 1,

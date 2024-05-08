@@ -57,7 +57,7 @@ function Screen5({ formData, handleChange, navigateToNext }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Screen 5 - Image Upload</Text>
+            <Text style={styles.title}>Image Upload</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {selectedImages.length === 0 ? (
                     <View style={styles.placeholderContainer}>

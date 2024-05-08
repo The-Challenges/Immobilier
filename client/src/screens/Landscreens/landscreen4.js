@@ -1,145 +1,132 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Or any other preferred icon set
-import { launchImageLibrary } from 'react-native-image-picker';
-import { Cloudinary } from 'cloudinary-react-native'; // Assuming you have Cloudinary properly set up
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook to navigate
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
+import axios from 'axios';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // You can choose any icon set
 
-function Screen4({ formData, setFormData, navigateToNext }) {
-  const [description, setDescription] = useState('');
-  const [certificate, setCertificate] = useState(null);
-  const [idCard, setIdCard] = useState(null);
-  const navigation = useNavigation(); // Initialize useNavigation hook
-
-  const handleChooseImage = (type) => {
-    launchImageLibrary({}, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        const uri = response.uri;
-        if (type === 'certificate') {
-          setCertificate(uri);
-          uploadImage(uri, 'certificate');
-        } else if (type === 'idCard') {
-          setIdCard(uri);
-          uploadImage(uri, 'idCard');
-        }
-      }
+// Function to handle the upload of images to Cloudinary
+const uploadImage = async (uri) => {
+    const formData = new FormData();
+    formData.append('file', {
+        uri,
+        type: 'image/jpeg', // Adjust the MIME type as necessary
+        name: 'upload.jpg',
     });
-  };
+    formData.append('upload_preset', 'your_upload_preset'); // Replace with your Cloudinary upload preset
 
-  const uploadImage = async (uri, type) => {
     try {
-      // Your Cloudinary upload logic here
-      // Example:
-      // const cloudinaryResponse = await Cloudinary.upload(uri, "YOUR_CLOUD_NAME", "YOUR_UPLOAD_PRESET");
-      // console.log('Uploaded image URL:', cloudinaryResponse.secure_url);
-      // if (type === 'certificate') {
-      //   setFormData({ ...formData, certificate: cloudinaryResponse.secure_url });
-      // } else if (type === 'idCard') {
-      //   setFormData({ ...formData, idCard: cloudinaryResponse.secure_url });
-      // }
+        const response = await axios.post('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', formData);
+        return response.data;
     } catch (error) {
-      console.error('Error uploading image:', error);
+        console.error('Error uploading image: ', error);
+        throw error;
     }
-  };
+};
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Upload Documents</Text>
+function Screen4({ formData, handleChange, navigateToNext }) {
+    const [selectedImages, setSelectedImages] = useState([]);
 
-      <TextInput
-        style={styles.input}
-        onChangeText={setDescription}
-        value={description}
-        placeholder="Add a description"
-        multiline
-      />
+    const handleImageUpload = () => {
+        const options = {
+            title: 'Select Image',
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
+        };
 
-      <TouchableOpacity style={styles.iconContainer} onPress={() => handleChooseImage('certificate')}>
-        <Icon name="file-document-outline" size={50} color="#007AFF" />
-        <Text style={styles.iconLabel}>Upload Certificate</Text>
-      </TouchableOpacity>
-      {certificate && <Image source={{ uri: certificate }} style={styles.uploadedImage} resizeMode="cover" />}
+        ImagePicker.showImagePicker(options, (response) => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else {
+                const source = { uri: response.uri };
+                setSelectedImages([...selectedImages, source]);
 
-      <TouchableOpacity style={styles.iconContainer} onPress={() => handleChooseImage('idCard')}>
-        <Icon name="identification" size={50} color="#007AFF" />
-        <Text style={styles.iconLabel}>Upload ID Card</Text>
-      </TouchableOpacity>
-      {idCard && <Image source={{ uri: idCard }} style={styles.uploadedImage} resizeMode="cover" />}
+                uploadImage(response.uri).then((cloudinaryResponse) => {
+                    console.log('Cloudinary response:', cloudinaryResponse);
+                    // Handle Cloudinary response as needed
+                }).catch(error => {
+                    console.error('Upload failed:', error);
+                    Alert.alert('Upload failed', 'Failed to upload image.');
+                });
+            }
+        });
+    };
 
-      <TouchableOpacity style={styles.nextButton} onPress={navigateToNext}>
-        <Text style={styles.buttonText}>Next</Text>
-      </TouchableOpacity>
-
-      {/* Back Button with Icon */}
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Icon name="arrow-left" size={30} color="#000" />
-      </TouchableOpacity>
-    </View>
-  );
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>Image Upload</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {selectedImages.length === 0 ? (
+                    <View style={styles.placeholderContainer}>
+                        <Icon name="photo-library" size={100} color="#ccc" />
+                        <Text style={styles.placeholderText}>No images selected</Text>
+                    </View>
+                ) : (
+                    selectedImages.map((image, index) => (
+                        <View key={index} style={styles.imageContainer}>
+                            <Image source={image} style={styles.image} />
+                        </View>
+                    ))
+                )}
+            </ScrollView>
+            <TouchableOpacity style={styles.selectButton} onPress={handleImageUpload}>
+                <Icon name="add-a-photo" size={24} color="#fff" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.nextButton} onPress={navigateToNext}>
+                <Icon name="navigate-next" size={24} color="#fff" />
+            </TouchableOpacity>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    minHeight: 100,
-    padding: 15,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    marginBottom: 15,
-    fontSize: 16,
-    color: '#333',
-    backgroundColor: '#fafafa',
-  },
-  iconContainer: {
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  iconLabel: {
-    fontSize: 18,
-    marginTop: 5,
-    color: '#007AFF',
-  },
-  uploadedImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-    marginTop: 10,
-  },
-  nextButton: {
-    backgroundColor: '#5A67D8',
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 10,
-    marginTop: 20,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '500',
-  },
-  backButton: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    padding: 10,
-  },
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    placeholderContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 10,
+    },
+    placeholderText: {
+        fontSize: 16,
+        color: '#ccc',
+    },
+    imageContainer: {
+        marginRight: 10,
+    },
+    image: {
+        width: 200,
+        height: 200,
+        borderRadius: 10,
+    },
+    selectButton: {
+        backgroundColor: '#5A67D8',
+        padding: 12,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 20,
+    },
+    nextButton: {
+        backgroundColor: '#5A67D8',
+        padding: 12,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 20,
+    },
 });
 
 export default Screen4;

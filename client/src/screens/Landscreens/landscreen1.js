@@ -1,54 +1,87 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function Screen1({ formData, handleChange, navigateToNext }) {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Land Details</Text>
       
-      <Text style={styles.label}>Price Range:</Text>
-      <View style={styles.pickerContainer}>
-        <Picker
-          style={styles.picker}
-          selectedValue={formData.priceRange}
-          onValueChange={(itemValue) => handleChange('priceRange', itemValue)}
-          mode="dropdown"  // Android only: specifies dropdown mode
-        >
-          <Picker.Item label="Select Price Range" value="" />
-          <Picker.Item label="$50k - $100k" value="50k-100k" />
-          <Picker.Item label="$100k - $500k" value="100k-500k" />
-          <Picker.Item label="$500k and above" value="500k-above" />
-        </Picker>
+      {/* Price Input with Icon */}
+      <View style={styles.inputContainer}>
+        <Icon name="cash-multiple" size={24} color="#4CAF50" />
+        <Text style={styles.label}>Price (USD):</Text>
       </View>
-
-      <Text style={styles.label}>Location:</Text>
       <TextInput
         style={styles.input}
-        onChangeText={(text) => handleChange('location', text)}
+        keyboardType="numeric"
+        onChangeText={text => handleChange('price', text)}
+        value={formData.price}
+        placeholder="Enter price in USD"
+      />
+
+      {/* Location Input with Icon */}
+      <View style={styles.inputContainer}>
+        <Icon name="map-marker-radius" size={24} color="#3F51B5" />
+        <Text style={styles.label}>Location:</Text>
+      </View>
+      <TextInput
+        style={styles.input}
+        onChangeText={text => handleChange('location', text)}
         value={formData.location}
         placeholder="Enter location"
-        placeholderTextColor="#8e8e8e"
       />
 
-      <Text style={styles.label}>Land Size (acres):</Text>
+      {/* Land Size Input with Icon */}
+      <View style={styles.inputContainer}>
+        <Icon name="image-area" size={24} color="#FF9800" />
+        <Text style={styles.label}>Land Size (m²):</Text>
+      </View>
       <TextInput
         style={styles.input}
-        onChangeText={(text) => handleChange('landSize', text)}
-        value={formData.landSize}
-        placeholder="Land Size in acres"
-        placeholderTextColor="#8e8e8e"
+        keyboardType="numeric"
+        onChangeText={text => handleChange('size', text)}
+        value={formData.size}
+        placeholder="Land Size in square meters"
       />
 
-      <Text style={styles.label}>Accessibility:</Text>
+      {/* Purchase Option Picker with Icon */}
+      <View style={styles.inputContainer}>
+        <Icon name="finance" size={24} color="#333" />
+        <Text style={styles.label}>Purchase Option:</Text>
+      </View>
       <TextInput
         style={styles.input}
-        onChangeText={(text) => handleChange('accessibility', text)}
-        value={formData.accessibility}
-        placeholder="Describe access to the property"
-        placeholderTextColor="#8e8e8e"
+        onChangeText={text => handleChange('purchaseOption', text)}
+        value={formData.purchaseOption}
+        placeholder="Enter purchase option (e.g., Finance, Cash)"
       />
 
+      {/* Terrain Type Input with Icon */}
+      <View style={styles.inputContainer}>
+        <Icon name="terrain" size={24} color="#009688" />
+        <Text style={styles.label}>Terrain Type:</Text>
+      </View>
+      <TextInput
+        style={styles.input}
+        onChangeText={text => handleChange('terrainType', text)}
+        value={formData.terrainType}
+        placeholder="Enter terrain type (e.g., Flat, Sloping)"
+      />
+
+      {/* Zoning Input with Icon */}
+      <View style={styles.inputContainer}>
+        <Icon name="city" size={24} color="#9C27B0" />
+        <Text style={styles.label}>Zoning:</Text>
+      </View>
+      <TextInput
+        style={styles.input}
+        onChangeText={text => handleChange('zoning', text)}
+        value={formData.zoning}
+        placeholder="Enter zoning type (e.g., Residential, Commercial)"
+      />
+
+      {/* Navigation Button */}
       <TouchableOpacity onPress={navigateToNext} style={styles.button}>
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
@@ -69,26 +102,18 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
   },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
   label: {
     fontSize: 18,
     color: '#333',
-    marginBottom: 5,
-  },
-  pickerContainer: {
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    backgroundColor: '#fafafa',
-  },
-  picker: {
-    height: 50,
-    width: '100%',
-    fontSize: 16,
-    color: '#333',
+    marginLeft: 10,
   },
   input: {
-    width: '100%',
+    flex: 1,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderWidth: 1,
@@ -97,7 +122,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fafafa',
     fontSize: 16,
     color: '#333',
-    marginBottom: 15,
+    marginLeft: 10,
   },
   button: {
     backgroundColor: '#5A67D8',

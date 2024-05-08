@@ -1,132 +1,103 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
-import axios from 'axios';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // You can choose any icon set
-
-// Function to handle the upload of images to Cloudinary
-const uploadImage = async (uri) => {
-    const formData = new FormData();
-    formData.append('file', {
-        uri,
-        type: 'image/jpeg', // Adjust the MIME type as necessary
-        name: 'upload.jpg',
-    });
-    formData.append('upload_preset', 'your_upload_preset'); // Replace with your Cloudinary upload preset
-
-    try {
-        const response = await axios.post('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', formData);
-        return response.data;
-    } catch (error) {
-        console.error('Error uploading image: ', error);
-        throw error;
-    }
-};
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function Screen3({ formData, handleChange, navigateToNext }) {
-    const [selectedImages, setSelectedImages] = useState([]);
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Property Extras</Text>
+      
+      {/* View Options */}
+      <Text style={styles.subtitle}>View Options</Text>
+      <View style={styles.pickerContainer}>
+        <Icon name="image-filter-hdr" size={24} color="#333" />
+        <Picker
+          style={styles.picker}
+          selectedValue={formData.viewOption}
+          onValueChange={(itemValue) => handleChange('viewOption', itemValue)}
+          mode="dropdown"
+        >
+          <Picker.Item label="Select View" value="" />
+          <Picker.Item label="Mountain" value="mountain" />
+          <Picker.Item label="Water Views" value="waterViews" />
+          <Picker.Item label="City Skyline" value="citySkyline" />
+        </Picker>
+      </View>
 
-    const handleImageUpload = () => {
-        const options = {
-            title: 'Select Image',
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-        };
+      {/* Access Options */}
+      <Text style={styles.subtitle}>Access Options</Text>
+      <View style={styles.pickerContainer}>
+        <Icon name="road-variant" size={24} color="#333" />
+        <Picker
+          style={styles.picker}
+          selectedValue={formData.accessOption}
+          onValueChange={(itemValue) => handleChange('accessOption', itemValue)}
+          mode="dropdown"
+        >
+          <Picker.Item label="Select Access" value="" />
+          <Picker.Item label="Airport" value="airport" />
+          <Picker.Item label="Public Transportation" value="publicTransportation" />
+          <Picker.Item label="Highway" value="highway" />
+          <Picker.Item label="Road Access" value="roadAccess" />
+        </Picker>
+      </View>
 
-        ImagePicker.showImagePicker(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else {
-                const source = { uri: response.uri };
-                setSelectedImages([...selectedImages, source]);
-
-                uploadImage(response.uri).then((cloudinaryResponse) => {
-                    console.log('Cloudinary response:', cloudinaryResponse);
-                    // Handle Cloudinary response as needed
-                }).catch(error => {
-                    console.error('Upload failed:', error);
-                    Alert.alert('Upload failed', 'Failed to upload image.');
-                });
-            }
-        });
-    };
-
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Screen 5 - Image Upload</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {selectedImages.length === 0 ? (
-                    <View style={styles.placeholderContainer}>
-                        <Icon name="photo-library" size={100} color="#ccc" />
-                        <Text style={styles.placeholderText}>No images selected</Text>
-                    </View>
-                ) : (
-                    selectedImages.map((image, index) => (
-                        <View key={index} style={styles.imageContainer}>
-                            <Image source={image} style={styles.image} />
-                        </View>
-                    ))
-                )}
-            </ScrollView>
-            <TouchableOpacity style={styles.selectButton} onPress={handleImageUpload}>
-                <Icon name="add-a-photo" size={24} color="#fff" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.nextButton} onPress={navigateToNext}>
-                <Icon name="navigate-next" size={24} color="#fff" />
-            </TouchableOpacity>
-        </View>
-    );
+      {/* Navigation Button */}
+      <TouchableOpacity onPress={navigateToNext} style={styles.button}>
+        <Text style={styles.buttonText}>Next</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    placeholderContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginRight: 10,
-    },
-    placeholderText: {
-        fontSize: 16,
-        color: '#ccc',
-    },
-    imageContainer: {
-        marginRight: 10,
-    },
-    image: {
-        width: 200,
-        height: 200,
-        borderRadius: 10,
-    },
-    selectButton: {
-        backgroundColor: '#5A67D8',
-        padding: 12,
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 20,
-    },
-    nextButton: {
-        backgroundColor: '#5A67D8',
-        padding: 12,
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 20,
-    },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#333',
+  },
+  subtitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  pickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 10,
+    backgroundColor: '#fafafa',
+  },
+  picker: {
+    flex: 1,
+    height: 50,
+    fontSize: 16,  // Ensure fontSize is a number
+    color: '#333',
+  },
+  button: {
+    backgroundColor: '#5A67D8',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '500',
+  },
 });
 
 export default Screen3;

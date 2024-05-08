@@ -3,7 +3,7 @@ import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-function Screen2({ formData, handleChange, navigateToNext }) {
+function Screen4({ formData, handleChange, navigateToNext }) {
     const [selectedLocation, setSelectedLocation] = useState(null);
 
     const handleMapPress = (event) => {
@@ -67,4 +67,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Screen2;
+export default Screen4;

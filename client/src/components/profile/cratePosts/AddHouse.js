@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { View, SafeAreaView, StatusBar, StyleSheet, Button, Alert } from 'react-native';
+import axios from 'axios';
 import Screen1 from '../../../screens/housescreen/housescren1';
 import Screen2 from '../../../screens/housescreen/housescren2';
-import Screen3 from '../../../screens/housescreen/housescren3';
-import Screen4 from '../../../screens/housescreen/housescren4';
-import Screen5 from '../../../screens/housescreen/housescren5';
-import Screen6 from '../../../screens/housescreen/housescren6';
+import Screen3 from '../../../screens/housescreen/housescreen4';
+import Screen4 from '../../../screens/housescreen/housescreen';
+import Screen5 from '../../../screens/housescreen/housescreen6';
+import Screen6 from '../../../screens/housescreen/housescreen7';
+import Screen7 from '../../../screens/housescreen/housescreen3';
 function FullCreateHouse() {
     const [formData, setFormData] = useState({
         // option: '',
@@ -57,9 +60,17 @@ function FullCreateHouse() {
     };
 
     const handleSubmit = async () => {
-        // Handle form submission
+        try {
+            const response = await axios.post('https://your-api-url.com/houses', formData);
+            if (response.status === 200) {
+                Alert.alert("Success", "House has been listed successfully.");
+            } else {
+                throw new Error('Failed to list the house');
+            }
+        } catch (error) {
+            Alert.alert("Error", error.message);
+        }
     };
-
     return (
         <>
             {screenIndex === 1 && (
@@ -84,20 +95,28 @@ function FullCreateHouse() {
                 />
             )}
             {screenIndex === 4 && (
+                    <Screen7
+                        formData={formData}
+                        handleChange={handleChange}
+                        navigateToNext={navigateToNext}
+                    />
+                )}
+            {screenIndex === 5 && (
                 <Screen4
                     formData={formData}
                     handleChange={handleChange}
                     navigateToNext={navigateToNext}
                 />
             )}
-            {screenIndex === 5 && (
+            {screenIndex === 6 && (
                 <Screen5
                     formData={formData}
                     handleChange={handleChange}
                     navigateToNext={navigateToNext}
                 />
             )}
-             {screenIndex === 6 && (
+
+             {screenIndex === 7 && (
                 <Screen6
                     formData={formData}
                     handleChange={handleChange}

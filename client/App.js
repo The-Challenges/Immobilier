@@ -4,12 +4,12 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { PaperProvider } from 'react-native-paper';
 import ProfileDetails from './src/components/profile/profileDetails';
-import Listings from './src/components/profile/Listings';
-import Contact from './src/components/profile/Contact';
-import Search from './src/components/profile/SearchBar';
-import NotificationPage from './src/components/profile/Notification';
-import Apartment from './src/components/profile/Apartment';
-import Lands from './src/components/profile/Land';
+import Listings from './src/screens/Profile/Listings';
+import Contact from './src/screens/Profile/Contact';
+import Search from './src/screens/Profile/SearchBar';
+import NotificationPage from './src/screens/Profile/Notification';
+import Apartment from './src/screens/Profile/Apartment';
+import Lands from './src/screens/Profile/Land';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 // import Icon2 from 'react-native-vector-icons/Ionicons';
@@ -26,7 +26,9 @@ import RecommendedScreen from "./src/screens/RecommendedScreen";
 import Chat from "./src/components/chat/chat";
 import Chatroom from "./src/components/chat/allrooms";
 import HomeTabs from './hpmetaps';
-
+import EditProfile from './src/screens/Profile/editProfile';
+import AddLand from './src/components/profile/cratePosts/AddLand'
+import AddHouse from './src/components/profile/cratePosts/AddHouse'
 const Stack = createNativeStackNavigator();
 
 // Main stack navigator
@@ -43,6 +45,10 @@ function App() {
           <Stack.Screen name='chat' component={Chat} options={{ headerShown: false }} />
           <Stack.Screen name='Details' component={DetailsScreen} options={{ headerShown: false }} />
           <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }}  />
+          <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
+          <Stack.Screen name='EditProfile' component={EditProfile} />
+          <Stack.Screen name='AddHouse' component={AddHouse} />
+          <Stack.Screen name='AddLand' component={AddLand} />
           <Stack.Screen 
             name='RecommendedScreen'
             component={RecommendedScreen}
