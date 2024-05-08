@@ -54,4 +54,4 @@ module.exports = (Sequelize, DataTypes) => {
     });
 
     return House;
-};
+}
