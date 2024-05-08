@@ -7,6 +7,7 @@ import RecommendedScreen from './src/screens/RecommendedScreen'
 import Chatroom from './src/components/chat/allrooms'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons';
+import Icon3 from 'react-native-vector-icons/AntDesign';
 import ProfileDetails from './src/components/profile/profileDetails';
 
 
@@ -25,7 +26,8 @@ function HomeTabs() {
               iconName = focused ? 'home' : 'home-outline';
               break;
             case 'ProfilDetail':
-              iconName = 'information-outline';
+              iconName = 'user';
+              Component= Icon3 ;
               break;
             case 'Recommended':
               iconName = 'star-outline';
@@ -36,7 +38,7 @@ function HomeTabs() {
               break;
           
             default:
-              iconName = 'alert-circle-outline';
+              iconName = 'alert-circle-outline';   
               break;
           }
           return <Component name={iconName} size={size} color={color} />;

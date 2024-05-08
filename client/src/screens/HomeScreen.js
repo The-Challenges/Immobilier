@@ -129,7 +129,7 @@
                     <View style={{ flexDirection: 'row' }}>
                         <View>
                             <Text style={{ marginTop: 7, fontSize: 12, marginRight: 5, textAlign: 'right' }}>Welcome Back</Text>
-                            <Text style={{ fontSize: 16, fontweight: 'bold', marginRight: 5, textAlign: 'right', color: COLORS.dark }} onPress={navigation.navigate('ProfilDetail')}  >{PersonName}</Text>
+                            <Text style={{ fontSize: 16, fontweight: 'bold', marginRight: 5, textAlign: 'right', color: COLORS.dark }}   >{PersonName}</Text>
                         </View>
                         <Pressable onPress={() => navigation.navigate("UserProfile")}>
                             <View>

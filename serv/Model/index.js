@@ -60,6 +60,8 @@ Media.belongsTo(User);
 
 User.hasMany(RequestHouse);
 RequestHouse.belongsTo(User);
+User.hasMany(RequestLand);
+RequestLand.belongsTo(User);
 
 User.hasMany(Favourite);
 Land.hasMany(Favourite);
