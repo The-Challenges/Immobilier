@@ -12,12 +12,17 @@ import {
   
 } from 'react-native';
 
+import Slider from '@react-native-community/slider';
+
+
 import axios from 'axios';
 import CheckBox from '@react-native-community/checkbox';
 import FilterHeader from '../components/FilterHeader/FilterHeader';
 import TransactionTypeSelector from '../components/TransactionTypeSelector/TransactionTypeSelector';
 import PropertySelector from '../components/PropertySelector/PropertySelector';
 import { Picker } from '@react-native-picker/picker';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
+
 
 import COLORS from '../consts/colors';
 
@@ -54,16 +59,20 @@ const FilterScreen = ({ navigation }) => {
         params: {
           priceMin,    
           priceMax,   
-          areaMin,     
-          areaMax,     
           bedrooms,    
           bathrooms,   
-          hasGarage,   
+          areaMin,     
+          areaMax,     
+          hasGarage,
+             
           hasParking,  
-          isVerified,  
+          isVerified,
+
+            
+
           purchaseOption, 
           propertyType,   
-          houseAge,    
+           houseAge,  
         }
       });
       setHouses(response.data);  
@@ -124,26 +133,49 @@ const FilterScreen = ({ navigation }) => {
         ))}
       </Picker>
 
-      <Text style={styles.sectionTitle}>Price Range</Text>
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={priceMin}
-          onValueChange={setPriceMin}
-          style={styles.picker}>
-          {priceOptions.map(option => (
-            <Picker.Item label={`$${option}`} value={option} key={option} />
-          ))}
-        </Picker>
+      <View style={styles.container}>
+  <Text style={styles.sectionTitle}>Price Range</Text>
+  <View style={styles.sliderContainer}>
+    <MultiSlider
+      values={[priceMin, priceMax]}
+      sliderLength={Dimensions.get('window').width - 40} // Responsive slider width
+      onValuesChange={values => {
+        setPriceMin(values[0]);
+        setPriceMax(values[1]);
+      }}
+      min={100}
+      max={1000}
+      step={50}
+      allowOverlap={false}
+      minMarkerOverlapDistance={10}
+      snapped={true}  // Ensures slider snaps to steps
+      selectedStyle={{
+        backgroundColor: '#1e90ff',  // Highlight color for the selected range
+      }}
+      unselectedStyle={{
+        backgroundColor: '#d3d3d3',  // Color for the unselected range
+      }}
+      containerStyle={{
+        height: 40,  // Adjusts the touch area height for easier manipulation
+      }}
+      markerStyle={{
+        height: 30,
+        width: 30,
+        borderRadius: 15,
+        backgroundColor: '#ff6347',  // Marker color
+      }}
+      trackStyle={{
+        height: 10,  // Reduces track height for a subtler look
+        borderRadius: 5,
+      }}
+    />
+    <View style={styles.priceLabelsContainer}>
+      <Text style={styles.priceLabel}>Min: ${priceMin}</Text>
+      <Text style={styles.priceLabel}>Max: ${priceMax}</Text>
+    </View>
+  </View>
+</View>
 
-        <Picker
-          selectedValue={priceMax}
-          onValueChange={setPriceMax}
-          style={styles.picker}>
-          {priceOptions.map(option => (
-            <Picker.Item label={`$${option}`} value={option} key={option} />
-          ))}
-        </Picker>
-      </View>
 
       <Text style={styles.sectionTitle}>Area (sqft)</Text>
       <View style={styles.pickerContainer}>
@@ -169,7 +201,7 @@ const FilterScreen = ({ navigation }) => {
         selectedValue={purchaseOption}
         onValueChange={setPurchaseOption}
         style={styles.picker}>
-        {['Finance', 'Cash', 'Unknown'].map(option => (
+        {['Choose Option','Finance', 'Cash'].map(option => (
           <Picker.Item label={option} value={option} key={option} />
         ))}
       </Picker>
@@ -178,7 +210,7 @@ const FilterScreen = ({ navigation }) => {
         selectedValue={propertyType}
         onValueChange={setPropertyType}
         style={styles.picker}>
-        {['Villa', 'Rural', 'Retirement Living'].map(type => (
+        {['Choose Option','Villa', 'Rural', 'Retirement Living'].map(type => (
           <Picker.Item label={type} value={type} key={type} />
         ))}
       </Picker>
@@ -187,12 +219,16 @@ const FilterScreen = ({ navigation }) => {
         selectedValue={houseAge}
         onValueChange={setHouseAge}
         style={styles.picker}>
-        {['Established', 'New', 'All types'].map(age => (
+        {['Choose Option', 'Established', 'New'].map(age => (
           <Picker.Item label={age} value={age} key={age} />
         ))}
       </Picker>
+
+
       <View style={styles.section}>
+
         <Text style={styles.sectionTitle}>Facilities</Text>
+
         <View style={styles.checkboxContainer}>
           <Text style={styles.checkboxLabel}>Garage</Text>
           <CheckBox
@@ -201,14 +237,23 @@ const FilterScreen = ({ navigation }) => {
             tintColors={{ true: COLORS.primary, false: COLORS.grey }}
           />
         </View>
+        
         <View style={styles.checkboxContainer}>
           <Text style={styles.checkboxLabel}>Parking</Text>
           <CheckBox
-            value={hasParking}
-            onValueChange={setHasParking}
-            tintColors={{ true: COLORS.primary, false: COLORS.grey }}
-          />
-        </View>
+          value={hasParking}
+          onValueChange={(newValue) => setHasParking(newValue)}
+          tintColors={{ true: COLORS.primary, false: COLORS.grey }}
+      />
+         </View>
+
+      {/* <CheckBox
+          value={isVerified}
+          onValueChange={(newValue) => setIsVerified(newValue)}
+          tintColors={{ true: COLORS.primary, false: COLORS.grey }}
+      /> */}
+
+        
         <View style={styles.checkboxContainer}>
           <Text style={styles.checkboxLabel}>Verified</Text>
           <CheckBox
@@ -217,6 +262,7 @@ const FilterScreen = ({ navigation }) => {
             tintColors={{ true: COLORS.primary, false: COLORS.grey }}
           />
         </View>
+
       </View>
     </>
   );
@@ -243,13 +289,13 @@ const FilterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
+    padding: 20,
     backgroundColor: COLORS.white,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 15,
+    marginBottom: 10,
     color: '#8b4513',
     textAlign: 'center'
   },
@@ -337,6 +383,32 @@ const styles = StyleSheet.create({
   listText: {
     fontSize: 18,
   },
+
+  sliderContainer: {
+    width: '100%',  // Ensures the slider uses full available width
+    alignItems: 'stretch',
+    paddingHorizontal: 20,  // Adds padding to the sides
+    paddingTop: 10,  // Adds padding on top for visual spacing
+    paddingBottom: 30,  // Adds padding below for label space
+  },
+
+  
+  priceLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#666666',  // Light grey for a softer look
+    marginTop: 10,  // Space between the slider and the text
+    textAlign: 'center',
+  },
+
+  priceLabelsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',  // Aligns labels to the sides
+    width: '100%',  // Ensures labels stretch to the container width
+    paddingHorizontal: 20,  // Aligns label edges with the slider
+  }
+  
+  
 });
 
 export default FilterScreen;

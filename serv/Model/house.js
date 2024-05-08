@@ -20,38 +20,44 @@ module.exports = (Sequelize, DataTypes) => {
         garage: {
             type: DataTypes.INTEGER,
             defaultValue: 0
-        },
-        parking: {
+          },
+          
+          parking: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
-        },
-        alt:{
+          },
+
+          isVerified:{
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+          },
+
+          alt:{
             type: DataTypes.FLOAT 
-             },
-            
-            long:{
-              type: DataTypes.FLOAT 
-               },
+          },
+          
+          long:{
+            type: DataTypes.FLOAT 
+          },
+          
+          purchaseoption:{
+            type: DataTypes.ENUM('Finance','cash','Unknown'),
+            defaultValue: "Unknown"
+          },
+          
+          propertyType: {
+            type: DataTypes.ENUM('Villa', 'Rural', 'Retirement Living', 'All types'),
+            defaultValue: 'All types'
+          },
+          
 
-              purchaseoption:{
-                type: DataTypes.ENUM('Finance','cash','Unknown'),
-                defaultValue: "Unknown"
-              },
-              
-              propretyType:{
-                type: DataTypes.ENUM('Villa', 'Rural', 'Retirement Living','All types'),
-                defaultValue: 'All types'
-              },
-              houseAge:{
-                type: DataTypes.ENUM('Established', 'New', 'All types'),
-                defaultValue: 'All types'
-              },
-              isVerifie:{
-                type: DataTypes.BOOLEAN,
-                defaultValue: false
-              }
-
-    });
-
+          houseAge:{
+            type: DataTypes.ENUM('Established', 'New', 'All types'),
+            defaultValue: 'All types'
+          },
+          
+          
+        });
+        
     return House;
 };

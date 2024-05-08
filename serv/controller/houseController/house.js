@@ -71,14 +71,24 @@ module.exports = {
         if (bedrooms) queryConditions.where.numberbedrooms = bedrooms;
         if (bathrooms) queryConditions.where.numberbathrooms = bathrooms
         if (purchaseOption) queryConditions.where.purchaseoption = purchaseOption
-        if (propertyType) queryConditions.where.propretyType = propertyType;
+        if (propertyType) queryConditions.where.propertyType = propertyType;
         if (houseAge) queryConditions.where.houseAge = houseAge;
-if (hasGarage !== undefined) {
-    const garageFlag = hasGarage === 'true';
-    queryConditions.where.garage = garageFlag ? { [Op.gt]: 0 } : 0;
+
+        if (hasGarage !== undefined) {
+            const garageFlag = hasGarage === 'true';
+            queryConditions.where.garage = garageFlag ? { [Op.gt]: 0 } : 0;
+        }
+
+       if (hasParking !== undefined) {
+  // Convert string to boolean if necessary
+  queryConditions.where.parking = (hasParking === 'true');
 }
-        if (hasParking !== undefined) queryConditions.where.parking = hasParking;
-        if (isVerified !== undefined) queryConditions.where.isVerifie = isVerified
+
+if (isVerified !== undefined) {
+  // Correct the field name and convert string to boolean if necessary
+  queryConditions.where.isVerified = (isVerified === 'true');
+}
+
 
         try {
             const filteredHouses = await db.House.findAll(queryConditions);

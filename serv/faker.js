@@ -32,26 +32,25 @@ module.exports = async (sequelize) => {
       })
     );
     const houses = await Promise.all(
-        Array.from({ length: houseCount }).map(async () => {
+      Array.from({ length: houseCount }).map(async () => {
           const user = users[Math.floor(Math.random() * userCount)];
           return await db.House.create({
-            title: faker.location.streetAddress(),
-            price: faker.commerce.price(),
-            numberbathrooms: faker.number.int({ min: 1, max: 5 }),
-            numberbedrooms: faker.number.int({ min: 1, max: 50 }),
-            garage: faker.datatype.boolean(),
-            parking: faker.datatype.boolean(),
-            alt:faker.location.latitude({ max: 10, min: -10, precision: 5 }), 
-            long:faker.location.longitude({ max: 10, min: -10 }),
-            purchaseoption:getRandomElementFromArray(['Finance','cash','Unknown']),
-            propretyType:getRandomElementFromArray(['Villa', 'Rural', 'Retirement Living','All types']),
-            houseAge:getRandomElementFromArray(['Established', 'New', 'All types']),
-            UserId: user.id, 
-           
+              title: faker.location.streetAddress(),
+              price: faker.commerce.price(),
+              numberbathrooms: faker.datatype.number({ min: 1, max: 5 }),
+              numberbedrooms: faker.datatype.number({ min: 1, max: 50 }),
+              garage: faker.datatype.boolean(),
+              parking: faker.datatype.boolean(),
+              alt: faker.location.latitude({ max: 10, min: -10, precision: 1 }),  // No decimals for latitude
+              long: faker.location.longitude({ max: 10, min: -10, precision: 1 }), // No decimals for longitude
+              purchaseoption: getRandomElementFromArray(['Finance', 'cash', 'Unknown']),
+              propretyType: getRandomElementFromArray(['Villa', 'Rural', 'Retirement Living', 'All types']),
+              houseAge: getRandomElementFromArray(['Established', 'New', 'All types']),
+              UserId: user.id,
           });
-        })
-      );
-      
+      })
+  );
+  
 
       const lands =await Promise.all(
         Array.from({ length: houseCount }).map(async () => {
