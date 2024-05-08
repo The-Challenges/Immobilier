@@ -1,5 +1,5 @@
 const db = require('../../Model/index');
-const { sign } = require('../../utils/jwt');
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -41,7 +41,6 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Login failed due to server error' });
   }
 };
-
 
 exports.getUser = async (req, res) => {
   try {

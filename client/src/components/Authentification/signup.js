@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Alert } fro
 import axios from 'axios';
 import login from "./login";
 import storage from './storage';
-
+import { API_AD } from '../../../config';
 const SignupScreen = ({ navigation }) => {
   const [firstName, setfirstName] = useState('');
   const [email, setEmail] = useState('');
@@ -11,7 +11,7 @@ const SignupScreen = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.103.25:4000/api/auth/signup', {
+      const response = await axios.post('http://192.168.103.17:4000/api/auth/signup', {
         firstName,
         email,
         password,
@@ -19,15 +19,8 @@ const SignupScreen = ({ navigation }) => {
   
       const { user, token } = response.data;
   
-      await storage.save({
-        key: 'loginState',
-        data: {
-          token,
-          user,
-        },
-      });
   
-      navigation.navigate('Login');
+      navigation.navigate('login');
     } catch (error) {
       Alert.alert('Signup failed', error.response.data.error);
     }

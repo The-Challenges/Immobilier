@@ -1,29 +1,45 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Animated } from 'react-native';
 import axios from 'axios';
 import { Button, IconButton } from 'react-native-paper';
 import storage from './storage';
 
 const Signin = ({ navigation }) => {
   const navigateToSignup = () => {
-    navigation.navigate('Signup');
+    navigation.navigate('signup');
   };
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const spinValue = useRef(new Animated.Value(0)).current; 
+
+  const startSpin = () => {
+    spinValue.setValue(0);
+    Animated.loop(
+      Animated.timing(spinValue, {
+        toValue: 1,
+        duration: 8000,
+        useNativeDriver: true,  
+      })
+    ).start();
+  };
+
+  useEffect(() => {
+    startSpin();
+  }, []);
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.103.25:4000/api/auth/login', {
+      const response = await axios.post('http://192.168.103.17:4000/api/auth/login', {
         email,
         password,
       });
-  
-      console.log(response.data); 
-  
+
+      console.log(response.data);
+
       if (response.data && response.data.user) {
         const { user, token } = response.data;
         Alert.alert('Login successful', `Welcome, ${user.firstName}!`);
-  
+
         await storage.save({
           key: 'loginState',
           data: {
@@ -31,7 +47,7 @@ const Signin = ({ navigation }) => {
             user,
           },
         });
-  
+
         navigation.navigate('Home');
       } else {
         Alert.alert('Login failed', 'No user data found in response');
@@ -45,11 +61,18 @@ const Signin = ({ navigation }) => {
       }
     }
   };
-  
+
+  const spin = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg']  
+  });
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: 'https://i.ibb.co/wWMcYf3/Screenshot-11.png' }} style={styles.logo} />
+      <Animated.Image
+        source={{ uri: 'https://i.ibb.co/wWMcYf3/Screenshot-11.png' }}
+        style={[styles.logo, { transform: [{ rotate: spin }] }]}
+      />
       <Text style={styles.title}>Login to Your Account</Text>
       <View style={styles.inputContainer}>
         <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} />

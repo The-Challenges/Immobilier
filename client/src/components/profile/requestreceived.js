@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, View, Text, Animated } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Animated, TouchableOpacity } from 'react-native';
 import { Card, Button, Avatar } from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useNavigation } from '@react-navigation/native'; 
 
 const FadeInView = ({ children, style }) => {
   const fadeAnim = new Animated.Value(0);  
@@ -26,199 +27,268 @@ const FadeInView = ({ children, style }) => {
 };
 
 const RequestItem = ({ request, onConfirm, onDecline, confirmationVisible, declineVisible }) => {
-  return (
-    <Card style={styles.requestItem}>
-      <Card.Cover source={{ uri: request.image }} style={styles.image} />
-      <LinearGradient colors={['#ffffff', '#e6e6e6']} style={styles.gradient}>
-        <Card.Content>
-          <Text style={styles.title}>House ID: {request.houseId}</Text>
-          <View style={styles.iconContainer}>
-            <Avatar.Icon size={24} icon="account" style={styles.icon} />
-            <Text style={styles.description}>Buyer: {request.buyerName}</Text>
-          </View>
-          <View style={styles.iconContainer}>
-            <Avatar.Icon size={24} icon="cash" style={styles.icon} />
-            <Text style={styles.description}>Offer: ${request.offerPrice}</Text>
-          </View>
-        </Card.Content>
-        <Card.Actions style={styles.buttonContainer}>
+    const navigation = useNavigation();
+  
+    const handleChatPress = () => {
+      navigation.navigate('ChatScreen');
+    };
+  
+    const handleMapPress = () => {
+      navigation.navigate('MapScreen');
+    };
+  
+    return (
+      <Card style={styles.requestItem}>
+        <Card.Cover source={{ uri: request.image }} style={styles.image} />
+        <LinearGradient colors={['#ffffff', '#e6e6e6']} style={styles.gradient}>
+          <Card.Content>
+            <Text style={styles.title}>House ID: {request.houseId}</Text>
+            <View style={styles.iconContainer}>
+              <Avatar.Icon size={24} icon="account" style={[styles.icon, { backgroundColor: '#87CEEB' }]} />
+              <Text style={styles.description}>Buyer: {request.buyerName}</Text>
+            </View>
+            <View style={styles.iconContainer}>
+              <Avatar.Icon size={24} icon="cash" style={[styles.icon, { backgroundColor: '#87CEEB' }]} />
+              <Text style={styles.description}>Offer: ${request.offerPrice}</Text>
+            </View>
+          </Card.Content>
+          {!confirmationVisible && !declineVisible && (
+            <Card.Actions style={styles.buttonContainer}>
+              <Button
+                mode="contained"
+                onPress={() => onConfirm(request.id)}
+                style={[styles.confirmButton, { backgroundColor: '#F5F7C4' }]}
+                labelStyle={{ color: 'black' }}
+              >
+                Confirm
+              </Button>
+              <Button
+                mode="contained"
+                onPress={() => onDecline(request.id)}
+                style={[styles.declineButton, { backgroundColor: '#F5F7C4' }]}
+                labelStyle={{ color: 'black' }}
+              >
+                Decline
+              </Button>
+            </Card.Actions>
+          )}
+          {confirmationVisible && (
+            <FadeInView style={styles.messageContainer}>
+              <MaterialCommunityIcons name="check-circle" size={24} color="green" />
+              <Text style={styles.confirmationMessage}>Request confirmed!</Text>
+              <TouchableOpacity onPress={handleChatPress}>
+                <MaterialCommunityIcons name="message-text" size={24} color="#4CAF50" style={styles.iconStyle} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleMapPress}>
+                <MaterialCommunityIcons name="map-marker-radius" size={24} color="#3F51B5" style={styles.iconStyle} />
+              </TouchableOpacity>
+            </FadeInView>
+          )}
+          {declineVisible && (
+            <FadeInView style={styles.messageContainer}>
+              <MaterialCommunityIcons name="close-circle" size={24} color="red" />
+              <Text style={styles.declineMessage}>Request declined!</Text>
+            </FadeInView>
+          )}
+        </LinearGradient>
+      </Card>
+    );
+  };
+  
+  
+  
+  // RequestsList component
+  const RequestsList = () => {
+    const [requestList, setRequestList] = useState([
+      {
+        id: '1',
+        houseId: '1234',
+        buyerName: 'John Doe',
+        offerPrice: '200000',
+        image: 'https://img.staticmb.com/mbcontent/images/crop/uploads/2022/12/Most-Beautiful-House-in-the-World_0_1200.jpg',
+        confirmationVisible: false,
+        declineVisible: false,
+      },
+      {
+        id: '2',
+        houseId: '5678',
+        buyerName: 'Jane Smith',
+        offerPrice: '250000',
+        image: 'https://assets-news.housing.com/news/wp-content/uploads/2022/01/10145854/most-beautiful-houses2.png',
+        confirmationVisible: false,
+        declineVisible: false,
+      },
+      {
+        id: '3',
+        houseId: '9012',
+        buyerName: 'Bob Johnson',
+        offerPrice: '300000',
+        image: 'https://img.staticmb.com/mbcontent/images/crop/uploads/2022/12/Most-Beautiful-House-in-the-World_0_1200.jpg',
+        confirmationVisible: false,
+        declineVisible: false,
+      }
+    ]);
+    const [filter, setFilter] = useState('all');
+  
+    const handleConfirm = id => {
+      setRequestList(requestList.map(request =>
+        request.id === id ? { ...request, confirmationVisible: true } : request
+      ));
+    };
+  
+    const handleDecline = id => {
+      setRequestList(requestList.map(request =>
+        request.id === id ? { ...request, declineVisible: true } : request
+      ));
+    };
+  
+    return (
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 10 }}>
           <Button
             mode="contained"
-            onPress={() => onConfirm(request.id)}
-            style={styles.confirmButton}
+            onPress={() => setFilter('all')}
+            style={[filter === 'all' ? styles.activeFilterButton : styles.filterButton, { backgroundColor: '#F5F7C4' }]} // Change background color
+            labelStyle={{ color: 'black' }} // Change text color
+          >
+            All
+          </Button>
+          <Button
+            mode="contained"
+            onPress={() => setFilter('confirmed')}
+            style={[filter === 'confirmed' ? styles.activeFilterButton : styles.filterButton, { backgroundColor: '#F5F7C4' }]} // Change background color
+            labelStyle={{ color: 'black' }} // Change text color
             color="#4CAF50"
           >
-            Confirm
+            Confirmed
           </Button>
           <Button
             mode="contained"
-            onPress={() => onDecline(request.id)}
-            style={styles.declineButton}
+            onPress={() => setFilter('declined')}
+            style={[filter === 'declined' ? styles.activeFilterButton : styles.filterButton, { backgroundColor: '#F5F7C4' }]} // Change background color
+            labelStyle={{ color: 'black' }} // Change text color
             color="#F44336"
           >
-            Decline
+            Declined
           </Button>
-        </Card.Actions>
-        {confirmationVisible && (
-          <FadeInView style={styles.messageContainer}>
-            <MaterialCommunityIcons name="check-circle" size={24} color="green" />
-            <Text style={styles.confirmationMessage}>Request confirmed!</Text>
-          </FadeInView>
-        )}
-        {declineVisible && (
-          <FadeInView style={styles.messageContainer}>
-            <MaterialCommunityIcons name="close-circle" size={24} color="red" />
-            <Text style={styles.declineMessage}>Request declined!</Text>
-          </FadeInView>
-        )}
-      </LinearGradient>
-    </Card>
-  );
-};
-
-const RequestsList = () => {
-  const [requestList, setRequestList] = useState([
-    {
-      id: '1',
-      houseId: '1234',
-      buyerName: 'John Doe',
-      offerPrice: '200000',
-      image: 'https://img.staticmb.com/mbcontent/images/crop/uploads/2022/12/Most-Beautiful-House-in-the-World_0_1200.jpg',
-      confirmationVisible: false,
-      declineVisible: false,
-    },
-    {
-      id: '2',
-      houseId: '5678',
-      buyerName: 'Jane Smith',
-      offerPrice: '250000',
-      image: 'https://assets-news.housing.com/news/wp-content/uploads/2022/01/10145854/most-beautiful-houses2.png',
-      confirmationVisible: false,
-      declineVisible: false,
-    },
-    {
-      id: '3',
-      houseId: '9012',
-      buyerName: 'Bob Johnson',
-      offerPrice: '300000',
-      image: 'https://img.staticmb.com/mbcontent/images/crop/uploads/2022/12/Most-Beautiful-House-in-the-World_0_1200.jpg',
-      confirmationVisible: false,
-      declineVisible: false,
-    }
-  ]);
-
-  const handleConfirm = id => {
-    setRequestList(requestList.map(request =>
-      request.id === id ? { ...request, confirmationVisible: true } : request
-    ));
-    setTimeout(() => {
-      setRequestList(requestList.filter(request => request.id !== id));
-    }, 2000);
+        </View>
+        {requestList.filter(request => {
+          if (filter === 'confirmed') return request.confirmationVisible;
+          if (filter === 'declined') return request.declineVisible;
+          return true;
+        }).map(request => (
+          <RequestItem
+            key={request.id}
+            request={request}
+            onConfirm={handleConfirm}
+            onDecline={handleDecline}
+            confirmationVisible={request.confirmationVisible}
+            declineVisible={request.declineVisible}
+          />
+        ))}
+      </ScrollView>
+    );
   };
-
-  const handleDecline = id => {
-    setRequestList(requestList.map(request =>
-      request.id === id ? { ...request, declineVisible: true } : request
-    ));
-    setTimeout(() => {
-      setRequestList(requestList.filter(request => request.id !== id));
-    }, 2000);
-  };
-
-  return (
-    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      {requestList.map(request => (
-        <RequestItem
-          key={request.id}
-          request={request}
-          onConfirm={handleConfirm}
-          onDecline={handleDecline}
-          confirmationVisible={request.confirmationVisible}
-          declineVisible={request.declineVisible}
-        />
-      ))}
-    </ScrollView>
-  );
-};
+  
 
 const styles = StyleSheet.create({
     scrollViewContainer: {
       flexGrow: 1,
-      paddingTop: 50,
-      paddingHorizontal: 20,
+      paddingTop: 20,
+      paddingHorizontal: 10,
+      backgroundColor: '#f9f9f9', 
     },
     requestItem: {
       marginBottom: 20,
-      elevation: 4,
-      borderRadius: 8,
-      overflow: 'hidden',
-      shadowOpacity: 0.2,
-      shadowRadius: 4,
+      elevation: 3,
+      borderRadius: 12, 
+      backgroundColor: '#ffffff', 
+      shadowOpacity: 0.15,
+      shadowRadius: 6,
       shadowColor: '#000',
-      shadowOffset: { height: 2, width: 0 },
+      shadowOffset: { height: 3, width: 0 },
     },
     gradient: {
       flex: 1,
       justifyContent: 'space-between',
-      paddingVertical: 20,
-      paddingHorizontal: 12,
+      paddingVertical: 20, 
+      paddingHorizontal: 15,
+      borderRadius: 12,
     },
     image: {
       height: 200,
-      borderTopLeftRadius: 8,
-      borderTopRightRadius: 8,
+      borderTopLeftRadius: 12,
+      borderTopRightRadius: 12,
+      resizeMode: 'cover',
     },
     title: {
-      fontSize: 20,
+      fontSize: 20, 
       fontWeight: 'bold',
-      marginBottom: 10,
+      marginBottom: 8,
       fontFamily: 'Lato-Bold',
     },
     description: {
-      fontSize: 16,
+      fontSize: 16, 
       fontFamily: 'Lato-Regular',
-      marginLeft: 8,
+      marginLeft: 10,
     },
     iconContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 5,
+      marginBottom: 12,
     },
     icon: {
-      backgroundColor: 'black',
+      backgroundColor: '#4CAF50',
+    },
+    iconStyle: {
+      marginLeft: 12,
     },
     buttonContainer: {
       flexDirection: 'row',
-      marginTop: 10,
-      paddingHorizontal: 10,
+      justifyContent: 'space-between',
+      marginTop: 15,
+    },
+    filterButton: {
+      marginHorizontal: 8,
+      backgroundColor: '#e0e0e0',
+      borderRadius: 15,
+    },
+    activeFilterButton: {
+      marginHorizontal: 8,
+      backgroundColor: '#2196F3',
+      borderRadius: 15,
     },
     confirmButton: {
-      flex: 1,
-      marginRight: 8,
+      flexGrow: 1,
+      marginRight: 15,
       borderRadius: 20,
-      elevation: 3,
+      elevation: 4,
     },
     declineButton: {
-      flex: 1,
+      flexGrow: 1,
       borderRadius: 20,
-      elevation: 3,
+      elevation: 4,
     },
     messageContainer: {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: 10,
+      padding: 12,
+      backgroundColor: '#ffffff',
+      borderRadius: 12,
     },
     confirmationMessage: {
-      marginLeft: 10,
+      marginLeft: 12,
       color: 'green',
       fontWeight: 'bold',
     },
     declineMessage: {
-      marginLeft: 10,
+      marginLeft: 12,
       color: 'red',
       fontWeight: 'bold',
     },
   });
   
+  
+
 export default RequestsList;
