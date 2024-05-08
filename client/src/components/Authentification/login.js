@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Button, IconButton } from 'react-native-paper';
 import storage from './storage';
 import { API_AD } from '../../../config';
-
 const Signin = ({ navigation }) => {
   const navigateToSignup = () => {
     navigation.navigate('Signup');
