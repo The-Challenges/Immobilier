@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  Button,
   TouchableOpacity
 } from 'react-native';
 

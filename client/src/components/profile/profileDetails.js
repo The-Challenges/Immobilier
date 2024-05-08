@@ -73,7 +73,7 @@ const UserProfile = ({ navigation }) => {
 
           <View style={styles.line}></View>
 
-          <Action title={'Listings'} icon={'edit'} onPress={() => navigation.navigate("Listings")} />
+          <Action title={'Listings'} icon={'edit'} onPress={() => navigation.navigate("apartement")} />
           <Action title={'Contact'} icon={'edit-location'} onPress={() => navigation.navigate("Contact")} />
           <Action title={'Notifications'} icon={'notifications'} onPress={() => navigation.navigate("Notifications")} />
           <Action title={'Edit Profile'} icon={'edit'} onPress={() => navigation.navigate("EditProfile")} />

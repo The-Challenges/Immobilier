@@ -13,9 +13,7 @@ const Signin = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-
       const response = await axios.post(`${API_AD}/api/auth/login`, { email, password });
-
       if (response.data && response.data.user) {
         const { user, token } = response.data;
         await storage.save({ key: 'loginState', data: { token, user } });

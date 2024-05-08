@@ -83,7 +83,7 @@
 
         const Card = ({ house }) => {
         return (
-            <Pressable onPress={() => navigation.navigate("DetailsScreen", { house })}>
+            <Pressable onPress={() => navigation.navigate("Details", { house })}>
                 <View style={styles.card}>
                     <Image source={house.image} style={styles.cardImage} />
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
@@ -129,7 +129,7 @@
                     <View style={{ flexDirection: 'row' }}>
                         <View>
                             <Text style={{ marginTop: 7, fontSize: 12, marginRight: 5, textAlign: 'right' }}>Welcome Back</Text>
-                            <Text style={{ fontSize: 16, fontweight: 'bold', marginRight: 5, textAlign: 'right', color: COLORS.dark }}>{PersonName}</Text>
+                            <Text style={{ fontSize: 16, fontweight: 'bold', marginRight: 5, textAlign: 'right', color: COLORS.dark }}   >{PersonName}</Text>
                         </View>
                         <Pressable onPress={() => navigation.navigate("UserProfile")}>
                             <View>
