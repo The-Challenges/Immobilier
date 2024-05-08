@@ -57,6 +57,7 @@ const DetailsScreen = ({ navigation, route }) => {
           </View>
         </View>
 
+
         <View style={style.detailsContainer}>
           {/* Name and rating view container */}
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
