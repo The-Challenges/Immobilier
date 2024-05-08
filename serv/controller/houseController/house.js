@@ -57,10 +57,16 @@ module.exports = {
         }
 
         if (areaMin || areaMax) {
-            queryConditions.where.area = {};
-            if (areaMin) queryConditions.where.area[Op.gte] = areaMin;
-            if (areaMax) queryConditions.where.area[Op.lte] = areaMax;
+            if (areaMin) {
+                queryConditions.where.alt = queryConditions.where.alt || {};
+                queryConditions.where.alt[Op.gte] = parseFloat(areaMin);
+            }
+            if (areaMax) {
+                queryConditions.where.long = queryConditions.where.long || {};
+                queryConditions.where.long[Op.lte] = parseFloat(areaMax);
+            }
         }
+        
 
         if (bedrooms) queryConditions.where.numberbedrooms = bedrooms;
         if (bathrooms) queryConditions.where.numberbathrooms = bathrooms

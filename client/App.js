@@ -130,13 +130,18 @@
  */
 
 import React from 'react';
-import {
-  useColorScheme,
 
-} from 'react-native';
-import {
-  Colors
-} from 'react-native/Libraries/NewAppScreen';
+
+import ProfileDetails from './src/components/profile/profileDetails';
+// import Listings from './src/co  mponents/profile/Listings';
+// import Contact from './src/components/profile/Contact';
+// import Search from './src/components/profile/SearchBar';
+// import NotificationPage from './src/components/profile/Notification';
+// import Apartment from './src/components/profile/Apartment';
+// import Lands from './src/components/profile/Land';
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon2 from 'react-native-vector-icons/Ionicons';
 
 
 import {NavigationContainer} from '@react-navigation/native';
@@ -150,92 +155,75 @@ import { PaperProvider } from 'react-native-paper';
 // import chat from "./src/components/chat"
 import HomeScreen from "./src/screens/HomeScreen";
 import DetailsScreen from "./src/screens/DetailsScreen";
-import RecommendedScreen from "./src/screens/RecommendedScreen"
-import FilterScreen from "./src/screens/FilterScreen"
-
-import Icon from 'react-native-vector-icons/Ionicons';
-
-
-
+import FilterScreen from "./src/screens/FilterScreen";
+import RecommendedScreen from "./src/screens/RecommendedScreen";
+import ResultsScreen from "./src/screens/ResultsScreen"
+import Chat from "./src/components/chat/chat";
+// import Chatroom from "./src/components/chat/allrooms";
+import HomeTabs from './hpmetaps';
 
 const Stack = createNativeStackNavigator();
 
+// Main stack navigator
 function App() {
 
-  const isDarkMode = useColorScheme() === 'dark';
+  // const isDarkMode = useColorScheme() === 'dark';
   // console.log(process.env.API_URL,'aab');
   
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  // const backgroundStyle = {
+  //   backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  // };
   return (
-<PaperProvider>
-    <NavigationContainer style>
-      <Stack.Navigator>
+    <PaperProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="FrPage">
+          {/* <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} />
+          <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} />
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} /> */}
+          <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
+          <Stack.Screen name='chat' component={Chat} options={{ headerShown: false }} />
+          <Stack.Screen name='DetailsScreen' component={DetailsScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='HomeScreen' component={HomeScreen} options={{ headerShown: false }}  />
+          <Stack.Screen name='FilterScreen' component={FilterScreen} options={{ headerShown: false }}  />
+          <Stack.Screen name='ResultsScreen' component={ResultsScreen} options={{ headerShown: false }}  />
 
-        {/* <Stack.Screen name="first" component={first}  options={{ headerShown: false }}  />
-
-        <Stack.Screen name="two" component={two}   options={{ headerShown: false }} />
-
-     <Stack.Screen
-          name="login"
-          component={Signin}
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen
-          name="signup"
-          component={signup}
-          options={{ title: 'Sign Up' }} 
-        />
-         <Stack.Screen name="chat" component={chat}   options={{ headerShown: false }} />
-     */}
-
-<Stack.Screen name="HomeScreen" component={HomeScreen}   options={{ headerShown: false }} />
-
-<Stack.Screen name="DetailsScreen" component={DetailsScreen}   options={{ headerShown: false }} />
-<Stack.Screen name="FilterScreen" component={FilterScreen}   options={{ headerShown: false }} />
-
-
-<Stack.Screen 
-  name='RecommendedScreen'
-  component={RecommendedScreen}
-  options={({ navigation }) => ({
-    headerShown: true,
-    title: 'Recommended Houses',
-    headerStyle: {
-      backgroundColor: '#faebd7', 
-      shadowColor: '#000', 
-      shadowOffset: { width: 0, height: 2 }, 
-      shadowOpacity: 0.1, 
-      shadowRadius: 3, 
-      elevation: 5, 
-    },
-    headerTitleStyle: {
-      fontWeight: 'bold', 
-      fontSize: 22, 
-      fontFamily: 'Roboto, "Helvetica Neue", sans-serif', 
-    },
-    headerTintColor: 'black', 
-    headerLeft: () => (
-      <Icon
-        name="arrow-back-sharp"
-        size={24}
-        color="black"
-        onPress={() => navigation.goBack()}
-        style={{ marginLeft: 15 }}
+          <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }}  />
+          <Stack.Screen 
+          name='RecommendedScreen'
+          component={RecommendedScreen}
+          options={({ navigation }) => ({
+            headerShown: true,
+            title: 'Recommended Houses',
+            headerStyle: {
+              backgroundColor: '#faebd7', 
+              shadowColor: '#000', 
+              shadowOffset: { width: 0, height: 2 }, 
+              shadowOpacity: 0.1, 
+              shadowRadius: 3, 
+              elevation: 5, 
+            },
+            headerTitleStyle: {
+              fontWeight: 'bold', 
+              fontSize: 22, 
+              fontFamily: 'Roboto, "Helvetica Neue", sans-serif', 
+            },
+            headerTintColor: 'black', 
+            headerLeft: () => (
+              <Icon2
+                name="arrow-back-sharp"
+                size={24}
+                color="black"
+                onPress={() => navigation.goBack()}
+                style={{ marginLeft: 15 }}
+              />
+            ),
+          })}
       />
-    ),
-  })}
-/>
-
-
-
-
-       
-      </Stack.Navigator>
-  </NavigationContainer>
-  </PaperProvider>
-  );
+        </Stack.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
+  )
 }
 
 
