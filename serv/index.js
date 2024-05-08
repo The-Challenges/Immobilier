@@ -3,6 +3,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 require('dotenv').config();
+// require('./faker')()
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -16,10 +17,10 @@ const messageHistory = {};
 const usersRooms = {}; 
 
 // Middleware
-app.use(cors({
-    origin: 'http://192.168.11.15:4000',
-    methods: ["GET", "POST"]
-}));
+// app.use(cors({
+//     origin: 'http://192.168.11.15:4000',
+//     methods: ["GET", "POST"]
+// }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/../client/dist'));
@@ -29,6 +30,8 @@ app.use('/api/user', require('./routes/routerUser'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/house',require('./routes/routerHouse'))
 app.use('/api/land', require('./routes/routerLand'));
+app.use('/api/request', require('./routes/requestRoutes'));
+
 
 io.on('connection', (socket) => {
     console.log('A user connected');

@@ -9,24 +9,11 @@
  */
 
 import React from 'react';
-
-
-import {NavigationContainer} from '@react-navigation/native';
-
-
-
 import ProfileDetails from './src/components/profile/profileDetails';
-
-
 import Icon2 from 'react-native-vector-icons/Ionicons';
-
-
 import {NavigationContainer} from '@react-navigation/native';
-
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { PaperProvider } from 'react-native-paper';
-
-
 import Listings from './src/screens/Profile/Listings';
 import Contact from './src/screens/Profile/Contact';
 import Search from './src/screens/Profile/SearchBar';
@@ -34,14 +21,11 @@ import NotificationPage from './src/screens/Profile/Notification';
 import Apartment from './src/screens/Profile/Apartment';
 import Lands from './src/screens/Profile/Land';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-// import RequestsList from './src/components/profile/'
 import them from './src/font/font'
 import FrPage from "./src/components/first/frPage";
 import Two from "./src/components/two/two";
 import Login from "./src/components/Authentification/login";
 import Signup from "./src/components/Authentification/signup";
-
 import HomeScreen from "./src/screens/HomeScreen";
 import DetailsScreen from "./src/screens/DetailsScreen";
 import FilterScreen from "./src/screens/FilterScreen";
@@ -74,7 +58,7 @@ function App() {
           <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} />
           <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} />
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-          <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} /> */}
+          <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} /> 
           <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
           <Stack.Screen name='chat' component={Chat} options={{ headerShown: false }} />
           <Stack.Screen name='DetailsScreen' component={DetailsScreen} options={{ headerShown: false }} />
@@ -89,7 +73,7 @@ function App() {
           <Stack.Screen name='Land' component={Lands} options={{ headerShown: false }}  />
 
 
-          <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
+          {/* <Stack.Screen name='ProfileDetails' component={ProfileDetails} /> */}
           <Stack.Screen name='EditProfile' component={EditProfile} />
           <Stack.Screen name='AddHouse' component={AddHouse} />
           <Stack.Screen name='AddLand' component={AddLand} />
@@ -126,21 +110,8 @@ function App() {
           })}
       />
 
-            name='RecommendedScreen'
-            component={RecommendedScreen}
-          options={{ headerShown: false }} />
+           
 
-        {/* <Stack.Navigator initialRouteName="RequestsList">
-          <Stack.Screen 
-            name="RequestsList" 
-            component={RequestsList} 
-            options={{ title: "Manage Requests" }} 
-          />
-          <Stack.Screen 
-            name="AllRequests" 
-            component={AllRequests} 
-            options={{ title: "All Requests" }} 
-          /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

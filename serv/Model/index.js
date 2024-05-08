@@ -95,8 +95,8 @@ House.hasMany(View);
 View.belongsTo(House);
 House.hasMany(Media);
 Media.belongsTo(House);
-House.belongsToMany(User, { through: RequestHouse,foreignKey: 'landId' });
-User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'landId' });
+House.belongsToMany(User, { through: RequestHouse,foreignKey: 'houseId' });
+User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'userId' });
 
 /* **********************************************************jointable relationships******************************************** */
 
@@ -115,11 +115,11 @@ User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'landId' });
 
 // Conversation.hasMany(Chat);
 // Chat.belongsTo(Conversation);
-// async function  test(params) {
-//   await sequelize.sync({ force: true });
-// console.log('The table for the User model was just (re)created!');
-// }
-// test()
+async function  test(params) {
+  await sequelize.sync({ force: true });
+console.log('The table for the User model was just (re)created!');
+}
+test()
 // Export models and sequelize instance
 module.exports = {
   sequelize,
