@@ -54,7 +54,7 @@ module.exports = (Sequelize, DataTypes) => {
           houseAge:{
             type: DataTypes.ENUM('Established', 'New', 'All types'),
             defaultValue: 'All types'
-          },
+          }
           
           
         });

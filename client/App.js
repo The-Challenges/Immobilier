@@ -159,6 +159,11 @@ import FilterScreen from "./src/screens/FilterScreen";
 import RecommendedScreen from "./src/screens/RecommendedScreen";
 import ResultsScreen from "./src/screens/ResultsScreen"
 import Chat from "./src/components/chat/chat";
+
+import SeeAllHouses from "./src/screens/SeeAllHouses";
+import SeeAllLands from "./src/screens/SeeAllLands";
+
+
 // import Chatroom from "./src/components/chat/allrooms";
 import HomeTabs from './hpmetaps';
 
@@ -187,6 +192,8 @@ function App() {
           <Stack.Screen name='HomeScreen' component={HomeScreen} options={{ headerShown: false }}  />
           <Stack.Screen name='FilterScreen' component={FilterScreen} options={{ headerShown: false }}  />
           <Stack.Screen name='ResultsScreen' component={ResultsScreen} options={{ headerShown: false }}  />
+          <Stack.Screen name='SeeAllHouses' component={SeeAllHouses} options={{ headerShown: false }}  />
+          <Stack.Screen name='SeeAllLands' component={SeeAllLands} options={{ headerShown: false }}  />
 
           <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }}  />
           <Stack.Screen 
