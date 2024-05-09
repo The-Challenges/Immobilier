@@ -5,14 +5,11 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
   Alert,
-  FlatList,
   ScrollView
   
 } from 'react-native';
 
-import Slider from '@react-native-community/slider';
 
 
 import axios from 'axios';
@@ -26,12 +23,9 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
 import COLORS from '../consts/colors';
 
-const { width } = Dimensions.get('screen');
 
-const priceOptions = [100, 300, 400, 500, 600, 700, 800, 900, 950];
-const areaOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const bedroomOptions = [1, 2, 3, 4, 5, 6];
-const bathroomOptions = [1, 2, 3, 4];
+const bedroomOptions = [1, 2, 3, 4, 5, 6,7,8];
+const bathroomOptions = [1, 2, 3, 4,5,6,7,8];
 
 const FilterScreen = ({ navigation }) => {
 
@@ -39,8 +33,9 @@ const FilterScreen = ({ navigation }) => {
   const [propertyType, setPropertyType] = useState('All types');
   const [priceMin, setPriceMin] = useState(100);
   const [priceMax, setPriceMax] = useState(1000);
-  const [areaMin, setAreaMin] = useState(1);
-  const [areaMax, setAreaMax] = useState(10);
+  const [areaMin, setAreaMin] = useState(100);
+  
+  const [areaMax, setAreaMax] = useState(900);
   const [transactionType, setTransactionType] = useState('buy');
 
   const [bedrooms, setBedrooms] = useState(1);
@@ -50,46 +45,38 @@ const FilterScreen = ({ navigation }) => {
   const [hasGarage, setHasGarage] = useState(false);
   const [hasParking, setHasParking] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
-  const [purchaseOption, setPurchaseOption] = useState('Unknown');
+  const [purchaseOption, setPurchaseOption] = useState('Choose Option');
   const [houseAge, setHouseAge] = useState('All types');
 
   const fetchFilteredHouses = async () => {
     try {
       const response = await axios.get('http://192.168.103.5:4000/api/house/filterhouses', {
         params: {
-          priceMin,    
-          priceMax,   
-          bedrooms,    
-          bathrooms,   
-          areaMin,     
-          areaMax,     
-          hasGarage,
-             
-          hasParking,  
-          isVerified,
-
-            
-
-          purchaseOption, 
-          propertyType,   
-           houseAge,  
+          // priceMin,    
+          // priceMax,   
+          // bedrooms,    
+          // bathrooms,   
+          // areaMin,     
+          // areaMax,     
+          // hasGarage,
+          // hasParking,  
+          // isVerified,
+          // purchaseOption, 
+          // propertyType,   
+          houseAge,  
         }
       });
       setHouses(response.data);  
+      navigation.navigate('ResultsScreen', { houses: response.data }); 
+
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch filtered houses');
     }
   };
   
-
-
-  
-  
-
-  const applyFilters = async () => {
+   const applyFilters = async () => {
     await fetchFilteredHouses(); 
-     navigation.navigate('ResultsScreen', { houses });
-  };
+    };
   
 
   const resetFilters = () => {
@@ -97,8 +84,8 @@ const FilterScreen = ({ navigation }) => {
     setPropertyType('home');
     setPriceMin(100);
     setPriceMax(1000);
-    setAreaMin(1);
-    setAreaMax(10);
+    setAreaMin(100);
+    setAreaMax(900);
     setBedrooms(1);
     setBathrooms(1);
     setHasGarage(false);
@@ -133,12 +120,13 @@ const FilterScreen = ({ navigation }) => {
         ))}
       </Picker>
 
-      <View style={styles.container}>
+
+
+      <View style={styles.priceContainer}>
   <Text style={styles.sectionTitle}>Price Range</Text>
   <View style={styles.sliderContainer}>
     <MultiSlider
       values={[priceMin, priceMax]}
-      sliderLength={Dimensions.get('window').width - 40} // Responsive slider width
       onValuesChange={values => {
         setPriceMin(values[0]);
         setPriceMax(values[1]);
@@ -148,24 +136,25 @@ const FilterScreen = ({ navigation }) => {
       step={50}
       allowOverlap={false}
       minMarkerOverlapDistance={10}
-      snapped={true}  // Ensures slider snaps to steps
+      snapped={true} 
       selectedStyle={{
-        backgroundColor: '#1e90ff',  // Highlight color for the selected range
+        backgroundColor:'#1e90ff',  
       }}
       unselectedStyle={{
-        backgroundColor: '#d3d3d3',  // Color for the unselected range
+        backgroundColor:'#d3d3d3',
       }}
       containerStyle={{
-        height: 40,  // Adjusts the touch area height for easier manipulation
+        height: 40,
       }}
       markerStyle={{
-        height: 30,
-        width: 30,
+        
+        height: 16,
+        width: 16,
         borderRadius: 15,
-        backgroundColor: '#ff6347',  // Marker color
+        backgroundColor: '#bc8f8f',
       }}
       trackStyle={{
-        height: 10,  // Reduces track height for a subtler look
+        height:3.8,
         borderRadius: 5,
       }}
     />
@@ -177,40 +166,51 @@ const FilterScreen = ({ navigation }) => {
 </View>
 
 
-      <Text style={styles.sectionTitle}>Area (sqft)</Text>
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={areaMin}
-          onValueChange={setAreaMin}
-          style={styles.picker}>
-          {areaOptions.map(option => (
-            <Picker.Item label={`${option} sqft`} value={option} key={option} />
-          ))}
-        </Picker>
-        <Picker
-          selectedValue={areaMax}
-          onValueChange={setAreaMax}
-          style={styles.picker}>
-          {areaOptions.map(option => (
-            <Picker.Item label={`${option} sqft`} value={option} key={option} />
-          ))}
-        </Picker>
+      <View style={styles.areaContainer}>
+  <Text style={styles.sectionTitle}>Area (sqft)</Text>
+  <View style={styles.sliderContainer}>
+  <MultiSlider
+  values={[areaMin, areaMax]}
+  onValuesChange={(values) => {
+    setAreaMin(values[0]);
+    setAreaMax(values[1]);
+  }}
+  min={100}
+  max={900}
+  step={50}
+  allowOverlap={false}
+  snapped={true}
+  selectedStyle={styles.selectedSlider}
+  unselectedStyle={styles.unselectedSlider}
+  containerStyle={styles.slider}
+  markerStyle={styles.marker}
+  trackStyle={styles.track}
+/>
+
+    <View style={styles.valueLabels}>
+      <Text style={styles.labelText}>Min: {areaMin} sqft</Text>
+      <Text style={styles.labelText}>Max: {areaMax} sqft</Text>
+    </View>
       </View>
+      </View>  
+
+
       <Text style={styles.sectionTitle}>Purchase Option</Text>
       <Picker
         selectedValue={purchaseOption}
         onValueChange={setPurchaseOption}
         style={styles.picker}>
-        {['Choose Option','Finance', 'Cash'].map(option => (
+        {['Finance', 'Cash'].map(option => (
           <Picker.Item label={option} value={option} key={option} />
         ))}
       </Picker>
+      
       <Text style={styles.sectionTitle}>Property Type</Text>
       <Picker
         selectedValue={propertyType}
         onValueChange={setPropertyType}
         style={styles.picker}>
-        {['Choose Option','Villa', 'Rural', 'Retirement Living'].map(type => (
+        {['Villa', 'Rural', 'Retirement Living'].map(type => (
           <Picker.Item label={type} value={type} key={type} />
         ))}
       </Picker>
@@ -219,7 +219,7 @@ const FilterScreen = ({ navigation }) => {
         selectedValue={houseAge}
         onValueChange={setHouseAge}
         style={styles.picker}>
-        {['Choose Option', 'Established', 'New'].map(age => (
+        {['Established', 'New'].map(age => (
           <Picker.Item label={age} value={age} key={age} />
         ))}
       </Picker>
@@ -292,18 +292,78 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: COLORS.white,
   },
+  
+  
+  
+  priceContainer: {
+    padding: 20,
+    backgroundColor: '#ffffff',  // Consistent background for all slider sections
+    borderRadius: 15,  // Rounded corners for a softer look
+    shadowColor: "#000000",  // Subtle shadow for depth
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 6,
+    marginBottom: 20,
+  },
+
+  valueLabels: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',  // Ensures labels are at each end
+    width: '100%',  // Labels stretch to match slider width
+    marginTop: 12,  // Space above the labels
+  },
+  
+
+  marker: {
+    height: 20,
+    width: 20,
+    borderRadius: 15,
+    backgroundColor: '#bc8f8f',  // Distinctive marker color
+    borderWidth: 2,
+    borderColor: '#ffffff',  // White border for visual pop
+  },
+
+  selectedSlider: {
+    backgroundColor: '#1e90ff',  // Vibrant selection color
+  },
+  unselectedSlider: {
+    backgroundColor: '#e6e6e6',  // Neutral unselected color
+  },
+
+  slider: {
+    height: 40,  // Adequate touch area for usability
+  },
+
+  track: {
+    height: 4,  // Visible but not overly thick
+    borderRadius: 5,  // Soft rounded corners
+  },
+
+  areaContainer: {
+    padding: 20,
+    backgroundColor: '#ffffff',  // Consistent background for all slider sections
+    borderRadius: 15,  // Match styling for both sliders
+    shadowColor: "#000000",  // Consistent shadow
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 6,
+    marginBottom: 20,
+  },
+
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 10,
-    color: '#8b4513',
-    textAlign: 'center'
+    fontSize: 19,
+    fontWeight: '700',  // Bold font for clear section titles
+    color: '#333333',  // Dark color for high contrast
+    marginBottom: 18,  // Space below the title
+    textAlign: 'center',
   },
   pickerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 30,
-    paddingHorizontal: 20,
+    paddingHorizontal: 220,
     backgroundColor: '#ffffff',
     borderRadius: 25,
     borderWidth: 1,
@@ -380,17 +440,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#ccc',
   },
-  listText: {
-    fontSize: 18,
+   labelText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#666666',  // Light grey for a softer look
+    marginTop: 10,  // Space between the slider and the text
+    textAlign: 'center',
   },
 
   sliderContainer: {
-    width: '100%',  // Ensures the slider uses full available width
-    alignItems: 'stretch',
-    paddingHorizontal: 20,  // Adds padding to the sides
-    paddingTop: 10,  // Adds padding on top for visual spacing
-    paddingBottom: 30,  // Adds padding below for label space
+    paddingHorizontal: 10,  // Uniform padding for better alignment
+    paddingBottom: 20,  // Padding below to space out from the next section
+    alignItems: 'center',  // Center alignment for neat appearance
   },
+  
 
   
   priceLabel: {
@@ -403,10 +466,12 @@ const styles = StyleSheet.create({
 
   priceLabelsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',  // Aligns labels to the sides
-    width: '100%',  // Ensures labels stretch to the container width
-    paddingHorizontal: 20,  // Aligns label edges with the slider
-  }
+    justifyContent: 'space-between',  // Ensures labels are at each end
+    width: '100%',  // Labels stretch to match slider width
+    paddingHorizontal: 20,
+      // Aligns labels with slider padding
+  },
+  
   
   
 });

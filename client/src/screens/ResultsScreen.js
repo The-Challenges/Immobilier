@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
 
 const ResultsScreen = ({ route }) => {
@@ -12,6 +12,14 @@ const ResultsScreen = ({ route }) => {
         keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.listItem}>
+
+            {item.Media && item.Media.length > 0 && (
+              <Image
+                source={{ uri: item.Media[0].link }}
+                style={{ width: 100, height: 100 }}  // Ensure you define this style
+              />
+            )}
+
             <Text style={styles.titleText}>{item.title}</Text>
             <View style={styles.detailContainer}>
               <Icon name="cash" size={20} color="#4CAF50" />

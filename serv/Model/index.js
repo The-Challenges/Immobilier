@@ -102,6 +102,21 @@ House.belongsToMany(User, { through: RequestHouse,foreignKey: 'landId' });
 User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'landId' });
 
 
+// function setupAssociations() {
+//   db.User.hasMany(db.House);
+//   db.House.belongsTo(db.User);
+
+//   db.House.hasMany(db.Media, { as: 'images' });
+//   db.Media.belongsTo(db.House, { as: 'house' });
+
+// }
+// setupAssociations();
+
+
+
+
+
+
 
 /* **********************************************************jointable relationships******************************************** */
 

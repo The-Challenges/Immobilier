@@ -58,6 +58,13 @@ module.exports = (Sequelize, DataTypes) => {
           
           
         });
+        House.associate = function(models) {
+          House.hasMany(models.Media, {
+              foreignKey: 'HouseId',
+              as: 'images'
+          });
+      };
+        
         
     return House;
 };
