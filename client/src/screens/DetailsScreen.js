@@ -9,7 +9,8 @@ import {
   Image,
   Dimensions,
   ScrollView,
-  Button
+  Button,
+  TouchableOpacity
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -55,6 +56,7 @@ const DetailsScreen = ({ navigation, route }) => {
             <Text style={{color: COLORS.white}}>Virtual tour</Text>
           </View>
         </View>
+
 
         <View style={style.detailsContainer}>
           {/* Name and rating view container */}
@@ -105,21 +107,33 @@ const DetailsScreen = ({ navigation, route }) => {
           />
 
           {/* footer container */}
-          <View style={style.footer}>
-            <View>
-              <Text
-                style={{color: COLORS.blue, fontWeight: 'bold', fontSize: 18}}>
-                $1,500
-              </Text>
-              <Text
-                style={{fontSize: 12, color: COLORS.grey, fontWeight: 'bold'}}>
-                Total Price
-              </Text>
-            </View>
-            <View style={style.bookNowBtn}>
-              <Button style={{color: COLORS.white}}  onPress={navig}  >Book Now</Button>
-            </View>
-          </View>
+<View style={style.footer}>
+  <View>
+    <Text
+      style={{color: COLORS.blue, fontWeight: 'bold', fontSize: 18}}>
+      $1,500
+    </Text>
+    <Text
+      style={{fontSize: 12, color: COLORS.grey, fontWeight: 'bold'}}>
+      Total Price
+    </Text>
+  </View>
+  <View style={style.bookNowBtn}>
+  <TouchableOpacity 
+    onPress={navig} 
+    style={{
+      padding: 10,
+      borderRadius: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%', 
+    }}>
+    <Text style={{ color: COLORS.white, fontWeight: 'bold' }}>Book Now</Text>
+  </TouchableOpacity>
+</View>
+
+</View>
+
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -153,7 +167,9 @@ const style = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 3, // Added elevation for a subtle shadow effect
   },
+
   ratingTag: {
     height: 30,
     width: 35,
@@ -161,7 +177,13 @@ const style = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000', // Added shadow for depth
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
   },
+
+
   virtualTag: {
     top: -20,
     width: 120,
@@ -171,13 +193,21 @@ const style = StyleSheet.create({
     backgroundColor: COLORS.dark,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000', // Added shadow for a more pronounced look
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 6,
   },
+
   interiorImage: {
     width: width / 3 - 20,
     height: 80,
     marginRight: 10,
     borderRadius: 10,
+    borderWidth: 1, // Added border to define image boundaries
+    borderColor: COLORS.lightGrey,
   },
+
   footer: {
     height: 70,
     backgroundColor: COLORS.light,
@@ -187,18 +217,47 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 10,
+    shadowColor: '#000', // Added shadow for a floating effect
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
   },
+
   bookNowBtn: {
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.dark,
+    backgroundColor: COLORS.primary, // Changed to primary color for consistency
     borderRadius: 10,
     paddingHorizontal: 20,
+    shadowColor: '#000', // Added shadow for button prominence
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 7,
   },
-  detailsContainer: {flex: 1, paddingHorizontal: 20, marginTop: 40},
-  facility: {flexDirection: 'row', marginRight: 15},
-  facilityText: {marginLeft: 5, color: COLORS.grey},
-});
+
+detailsContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    marginTop: 40,
+    backgroundColor: COLORS.veryLightGrey, // Added a very light background color for a cleaner look
+  },
+  facility: {
+    flexDirection: 'row',
+    marginRight: 15,
+    backgroundColor: COLORS.white, // Added background color for each facility icon
+    padding: 5, // Added padding for better spacing
+    borderRadius: 5, // Rounded edges for a smoother look
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+
+  facilityText: {
+    marginLeft: 5,
+    color: COLORS.darkGrey, // Adjusted text color for better readability
+    fontWeight: 'bold', // Bolded text for emphasis
+  },});
 
 export default DetailsScreen;

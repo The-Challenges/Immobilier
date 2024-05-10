@@ -3,18 +3,20 @@ import { View, Text, Image, StyleSheet, SafeAreaView, Pressable, ScrollView } fr
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Feather from 'react-native-vector-icons/Feather';
 import { Surface } from 'react-native-paper';
-// import AntDesign from 'react-native-vector-icons/AntDesign';
-const Action = ({ icon, title }) => {
+
+const Action = ({ icon, title, onPress }) => {
   return (
-    <View style={styles.action}>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View style={styles.iconContainer}>
-          <Icon name={icon} size={23} color={'white'} />
+    <Pressable onPress={onPress}>
+      <View style={styles.action}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.iconContainer}>
+            <Icon name={icon} size={23} color={'white'} />
+          </View>
+          <Text style={styles.actionTitle}>{title}</Text>
         </View>
-        <Text style={styles.actionTitle}>{title}</Text>
+        <Icon name={'chevron-right'} size={25} color={'#15273F'} />
       </View>
-      <Icon name={'chevron-right'} size={25} color={'#15273F'} />
-    </View>
+    </Pressable>
   );
 }
 
@@ -71,27 +73,15 @@ const UserProfile = ({ navigation }) => {
 
           <View style={styles.line}></View>
 
-          <Pressable onPress={() => navigation.navigate("Listings")}>
-            <Action title={'Listings'} icon={'edit'} />
-          </Pressable>
+          <Action title={'Listings'} icon={'edit'} onPress={() => navigation.navigate("apartement")} />
+          <Action title={'Contact'} icon={'edit-location'} onPress={() => navigation.navigate("Contact")} />
+          <Action title={'Notifications'} icon={'notifications'} onPress={() => navigation.navigate("Notifications")} />
+          <Action title={'Edit Profile'} icon={'edit'} onPress={() => navigation.navigate("EditProfile")} />
+          <Action title={'Requests'} icon={'insert-invitation'} onPress={() => navigation.navigate("Received")} />
+          <Action title={'Add House'} icon={'home'} onPress={() => navigation.navigate("AddHouse")} />
+          <Action title={'Add Land'} icon={'landscape'} onPress={() => navigation.navigate("AddLand")} />
+          <Action title={'Logout'} icon={'logout'} onPress={() => navigation.navigate("profile")} />
 
-          <Pressable onPress={() => navigation.navigate("Contact")}>
-            <Action title={'Contact'} icon={'edit-location'} />
-          </Pressable>
-
-          <Pressable onPress={() => navigation.navigate("Notifications")}>
-            <Action title={'Notifications'} icon={'notifications'} />
-          </Pressable>
-
-          <Action title={'Edit Profile'} icon={'help'} />
-
-          <Pressable onPress={() => navigation.navigate("profile")}>
-            <Action title={'Logout'} icon={'logout'} />
-          </Pressable>
-
-          {/* <View style={styles.versionContainer}>
-            <Text style={styles.versionText}>Version: 0.0.1</Text>
-          </View> */}
         </ScrollView>
       </View>
     </SafeAreaView>

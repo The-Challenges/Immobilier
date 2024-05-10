@@ -26,14 +26,18 @@ module.exports = (Sequelize, DataTypes) => {
             defaultValue: false
         },
         alt:{
-            type: DataTypes.FLOAT    },
+            type: DataTypes.FLOAT 
+             },
             
             long:{
-              type: DataTypes.FLOAT    },
+              type: DataTypes.FLOAT 
+               },
+
               purchaseoption:{
                 type: DataTypes.ENUM('Finance','cash','Unknown'),
                 defaultValue: "Unknown"
               },
+              
               propretyType:{
                 type: DataTypes.ENUM('Villa', 'Rural', 'Retirement Living','All types'),
                 defaultValue: 'All types'
@@ -50,4 +54,4 @@ module.exports = (Sequelize, DataTypes) => {
     });
 
     return House;
-};
+}
