@@ -4,12 +4,19 @@ const db = require('../../Model/index');
 module.exports = {
     getAllHouses: async (req, res) => {
         try {
-            const houses = await db.House.findAll();
+            const houses = await db.House.findAll({
+                include: [{
+                    model: db.Media,
+                    // as: 'images', 
+                    attributes: ['type', 'name', 'link'] 
+                }]
+            });
             res.json(houses);
         } catch (error) {
-            res.status(500).json({ error: `Error fetching houses: ${error.message}` });
+            res.status(500).json({ error: `error fetching houses: ${error.message}` });
         }
     },
+    
     
     createHouses: async (req, res) => {
         const newHouses = req.body.houses;
@@ -45,17 +52,22 @@ module.exports = {
             hasParking,
             isVerified
         } = req.query;
-
+    
         const queryConditions = {
-            where: {}
+            where: {},
+            include: [{
+                model: db.Media,
+                // as: 'images',
+                attributes: ['type', 'name', 'link']
+            }]
         };
-
+    
         if (priceMin || priceMax) {
             queryConditions.where.price = {};
             if (priceMin) queryConditions.where.price[Op.gte] = priceMin;
             if (priceMax) queryConditions.where.price[Op.lte] = priceMax;
         }
-
+    
         if (areaMin || areaMax) {
             if (areaMin) {
                 queryConditions.where.alt = queryConditions.where.alt || {};
@@ -66,20 +78,26 @@ module.exports = {
                 queryConditions.where.long[Op.lte] = parseFloat(areaMax);
             }
         }
-        
-
+    
         if (bedrooms) queryConditions.where.numberbedrooms = bedrooms;
-        if (bathrooms) queryConditions.where.numberbathrooms = bathrooms
-        if (purchaseOption) queryConditions.where.purchaseoption = purchaseOption
-        if (propertyType) queryConditions.where.propretyType = propertyType;
+        if (bathrooms) queryConditions.where.numberbathrooms = bathrooms;
+        if (purchaseOption) queryConditions.where.purchaseoption = purchaseOption;
+        if (propertyType) queryConditions.where.propertyType = propertyType;
         if (houseAge) queryConditions.where.houseAge = houseAge;
-if (hasGarage !== undefined) {
-    const garageFlag = hasGarage === 'true';
-    queryConditions.where.garage = garageFlag ? { [Op.gt]: 0 } : 0;
-}
-        if (hasParking !== undefined) queryConditions.where.parking = hasParking;
-        if (isVerified !== undefined) queryConditions.where.isVerifie = isVerified
-
+    
+        if (hasGarage !== undefined) {
+            const garageFlag = hasGarage === 'true';
+            queryConditions.where.garage = garageFlag ? { [Op.gt]: 0 } : 0;
+        }
+    
+        if (hasParking !== undefined) {
+            queryConditions.where.parking = (hasParking === 'true');
+        }
+    
+        if (isVerified !== undefined) {
+            queryConditions.where.isVerified = (isVerified === 'true');
+        }
+    
         try {
             const filteredHouses = await db.House.findAll(queryConditions);
             res.json(filteredHouses);
@@ -88,4 +106,6 @@ if (hasGarage !== undefined) {
             res.status(500).json({ error: `error fetching filtered houses: ${error.message}` });
         }
     }
+    
+
 };
