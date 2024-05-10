@@ -1,111 +1,94 @@
+import React, { useState, useEffect } from 'react';
+import {
+    SafeAreaView,
+    StyleSheet,
+    Dimensions,
+    StatusBar,
+    FlatList,
+    ScrollView,
+    Pressable,
+    TextInput,
+    TouchableOpacity,
+    Image,
+    View,
+    Text,
+    Alert
+} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import COLORS from '../consts/colors';
+import axios from 'axios';
 
 
+const { width } = Dimensions.get("screen");
 
-
-
-
-
-    import React from 'react'
-    import {
-        SafeAreaView,
-        StyleSheet,
-        Dimensions,
-        StatusBar,
-        FlatList,
-        ScrollView,
-        Pressable,
-        TextInput,
-        BackHandler,
-        TouchableOpacity,
-        Image,
-        View,
-        Text
-    } from 'react-native'
-    // import { useBackHandler } from '@react-native-community/hooks'
-    import AwesomeIcon from "react-native-vector-icons/FontAwesome5"
-    import Icon from 'react-native-vector-icons/MaterialIcons'
-    import EntypoIcon from 'react-native-vector-icons/Entypo'
-    // import { useIsFocused } from '@react-navigation/native'
-    import COLORS from '../consts/colors'
-    import houses from '../consts/houses'
-
-
-    const { width } = Dimensions.get("screen");
-
-    const HomeScreen = ({ navigation }) => {
-        var location = "Lahore";
-        var PersonName = "Musawar Bilal";
-        
-        // dummy data
-        const ListCategories = () => {
-        const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState(0);
-        const categoryList = ['Popular', 'Recommended', 'Nearest'];
-            
-        const handleCategoryPress = (index) => {
-            setSelectedCategoryIndex(index);
-            // Navigate when "Recommended" is selected
-            if (categoryList[index] === 'Recommended') {
-                navigation.navigate('RecommendedScreen');
-            }
-        };
+const HomeScreen= ({ navigation }) => {
     
+    const [houses, setHouses] = useState([]);
+    <ListOptions />
+
+    useEffect(() => {
+        fetchHouses();
+        
+    }, []);
+
+    const fetchHouses = async () => {
+        try {
+            const response = await axios.get('http://192.168.103.5:4000/api/house/allhouses');
+            console.log("Houses fetched:", response.data);
+            setHouses(response.data);
+        } catch (error) {
+            Alert.alert('Error', 'Failed to fetch houses');
+            console.error("Failed to fetch houses:", error);
+        }
+    };
+
+    const ListOptions = () => {
+        const optionsList = [
+            { title: 'See all houses',
+             img: require('../assets/villa.jpg'),
+              action: () => navigation.navigate('SeeAllHouses')
+             },
+
+            { title: 'See all lands',
+             img: require('../assets/land2.jpg'),
+             action: () => navigation.navigate('SeeAllLands')
+            },
+        ];
         return (
-            <View style={styles.categoryListContainer}>
-                {categoryList.map((category, index) => (
-                    <Pressable key={index} onPress={() => handleCategoryPress(index)}>
-                        <Text style={[styles.categoryListText,
-                        index === selectedCategoryIndex && styles.activeCategoryListText]}>
-                            {category}
-                        </Text>
-                    </Pressable>
+            <View style={styles.optionListContainer}>
+                {optionsList.map((option, index) => (
+                    <TouchableOpacity key={index} onPress={option.action}>
+                        <View style={styles.optionCard}>
+                            <Image source={option.img} style={styles.optionCardImage} />
+                            <Text style={{ marginTop: 11, fontSize: 18, fontWeight: 'bold', color: COLORS.dark }}>
+                                {option.title}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
                 ))}
             </View>
         );
-    };
+    }
+
+
     
 
-        const ListOptions = () => {
-            const optionsList = [
-                { title: 'Buy a Home', img: require('../assets/house1.jpg') },
-                { title: 'Buy a Land', img: require('../assets/land.jpg') },
-            ];
-            return (
-                <View style={styles.optionListContainer}>
-                    {optionsList.map((option, index) => (
-                        <View style={styles.optionCard} key={index}>
-                            <Image source={option.img} style={styles.optionCardImage} />
-                            <Text style={{ marginTop: 11, fontSize: 18, fontWeight: 'bold', color: COLORS.dark }}>{option.title}</Text>
-                        </View>
-                    ))}
-                </View>
-            );
-        }
-
-        const Card = ({ house }) => {
+    const Card = ({ house }) => {
+        const imageUrl = house.Media && house.Media.length > 0 ? house.Media[0].link : 'https://cdn.pixabay.com/photo/2014/11/21/17/17/house-540796_1280.jpg';
         return (
             <Pressable onPress={() => navigation.navigate("Details", { house })}>
                 <View style={styles.card}>
-                    <Image source={house.image} style={styles.cardImage} />
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-                        <Text style={{ fontSize: 17, fontWeight: 'bold', color: COLORS.dark, width: "65%" }} numberOfLines={1}>{house.title}</Text>
-                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: COLORS.dark }}>
-                            Rs: <Text style={{ fontSize: 15, fontWeight: 'bold', color: COLORS.blue }}>{house.price}</Text>
-                        </Text>
-                    </View>
-                    <Text style={{ color: COLORS.gray, fontSize: 14, marginTop: 5 }}>{house.location}</Text>
-                    <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                        <Icon name='hotel' size={18} style={{ color: COLORS.dark }} />
-                        <Text style={styles.facilityText}>{house.bedrooms}</Text>
-                        <Icon name='bathtub' size={18} style={{ color: COLORS.dark }} />
-                        <Text style={styles.facilityText}>{house.bathrooms}</Text>
-                        <AwesomeIcon name='ruler-vertical' size={18} style={{ color: COLORS.dark }} />
-                        <Text style={styles.facilityText}>{house.area}</Text>
-                    </View>
+                    <Image source={{ uri: imageUrl }} style={styles.cardImage} />
+                    <Text style={styles.title}>{house.title}</Text>
+                    <Text style={styles.detailText}>Price: ${house.price}</Text>
+                    <Text style={styles.detailText}>Bedrooms: {house.numberbedrooms}</Text>
+                    <Text style={styles.detailText}>Bathrooms: {house.numberbathrooms}</Text>
                 </View>
             </Pressable>
         );
     };
     
+
         return (
             <SafeAreaView
                 style={{ backgroundColor: COLORS.white, flex: 1 }}>
@@ -272,17 +255,5 @@
     });
 
     export default HomeScreen;
-
-    // // ////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
 
 

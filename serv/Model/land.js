@@ -35,7 +35,13 @@ module.exports = (Sequelize, DataTypes) => {
                 defaultValue: false
               }
 
-    });
+          });
+          Land.associate = function(models) {
+            Land.hasMany(models.Media, {
+                foreignKey: 'LandId',
+                as: 'images'
+            });
+        };
 
     return Land;
 };

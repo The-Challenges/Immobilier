@@ -95,8 +95,10 @@ House.hasMany(View);
 View.belongsTo(House);
 House.hasMany(Media);
 Media.belongsTo(House);
+
 House.belongsToMany(User, { through: RequestHouse,foreignKey: 'houseId' });
 User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'userId' });
+
 
 /* **********************************************************jointable relationships******************************************** */
 
