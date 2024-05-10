@@ -1,99 +1,122 @@
 import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
-    Text,
     View,
     FlatList,
+    Text,
     Image,
-    Pressable,
-    Alert
+    Alert,
+    ActivityIndicator
 } from 'react-native';
+
 import axios from 'axios';
+import { Card, Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import COLORS from '../consts/colors';
 
 export default function SeeAllLands({ navigation }) {
     const [lands, setLands] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         fetchLands();
     }, []);
-    
-    const fetchLands = async () => {
-      try {
-        const response = await axios.get('http://192.168.1.3:4000/api/land/alllands');
-        console.log("Lands fetched:", response.data);
-        setLands(response.data);
-      } catch (error) {
-        Alert.alert('Error', 'Failed to fetch lands');
-            console.error("failed to fetch lands:", error);
-          }
-        };
-        
-        const LandCard = ({ land }) => {
-          const imageUrl = land.Media && land.Media.length > 0 ? land.Media[0].link : 'https://via.placeholder.com/200';
-          console.log("land details:", land)
 
-          console.log("image url:", imageUrl)
-          
-          return (
-            <Pressable onPress={() => navigation.navigate("LandDetailsScreen", { land })}>
-                <View style={styles.card}>
-                    <Image source={{ uri: imageUrl }} style={styles.cardImage} />
-                    <Text style={styles.title}>{land.title}</Text>
-                    <Text style={styles.detailText}>Price: ${land.price}</Text>
-                    <Text style={styles.detailText}>Size: {land.size} acres</Text>
-                    <Text style={styles.detailText}>Terrain Type: {land.TerrainType}</Text>
-                    <Text style={styles.detailText}>Zoning: {land.Zoning}</Text>
+    const fetchLands = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get('http://192.168.103.5:4000/api/land/alllands');
+            setLands(response.data);
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            Alert.alert('Error', 'Failed to fetch lands');
+            console.error("Failed to fetch lands:", error);
+        }
+    };
+    
+
+    const LandCard = ({ land }) => {
+        const imageUrl = land.Media && land.Media.length > 0 ? land.Media[0].link : 'https://via.placeholder.com/400x200.png?text=No+Image+Available';
+        return (
+            <Card>
+                <Card.Title>{land.title}</Card.Title>
+                <Card.Image source={{ uri: imageUrl }} style={styles.cardImage} />
+                <View style={styles.detailContainer}>
+                    <Icon name="cash-multiple" size={20} color={COLORS.green} />
+                    <Text style={[styles.detailText, {color: COLORS.green}]}>Price: ${land.price}</Text>
                 </View>
-            </Pressable>
+                <View style={styles.detailContainer}>
+                    <Icon name="texture" size={20} color={COLORS.orange} />
+                    <Text style={[styles.detailText, {color: COLORS.orange}]}>Size: {land.size} acres</Text>
+                </View>
+                <View style={styles.detailContainer}>
+                    <Icon name="image-area" size={20} color={COLORS.blue} />
+                    <Text style={[styles.detailText, {color: COLORS.blue}]}>Terrain Type: {land.terrainType}</Text>
+                </View>
+                <View style={styles.detailContainer}>
+                    <Icon name="office-building" size={20} color={COLORS.purple} />
+                    <Text style={[styles.detailText, {color: COLORS.purple}]}>Zoning: {land.zoning}</Text>
+                </View>
+                <Button
+                  icon={<Icon name="arrow-right" size={15} color="white" />}
+                  title=" View Details"
+                  buttonStyle={styles.button}
+                  onPress={() => navigation.navigate('LandDetailsScreen', { land })}
+                />
+            </Card>
         );
     };
 
+    if (loading) {
+        return (
+            <View style={styles.loader}>
+                <ActivityIndicator size="large" color={COLORS.primary} />
+            </View>
+        );
+    }
+
     return (
-        <View style={styles.container}>
+        <View style={{ flex: 1, backgroundColor: COLORS.white }}>
             <FlatList
-                data={lands}
-                keyExtractor={item => `${item.id}`}
-                renderItem={({ item }) => <LandCard land={item} />}
-                contentContainerStyle={styles.listContainer}
-            />
+    data={lands}
+    keyExtractor={item => `${item.id}`}
+    renderItem={({ item }) => <LandCard land={item} />}
+    contentContainerStyle={styles.listContainer}
+/>
+
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 10,
-        backgroundColor: COLORS.white
-    },
-    card: {
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 10,
-        marginBottom: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.22,
-        shadowRadius: 2.22,
-        elevation: 3,
+    listContainer: {
+        padding: 10
     },
     cardImage: {
         width: '100%',
-        height: 200,
-        borderRadius: 10
+        height: 200
     },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginTop: 5
+    detailContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10
     },
     detailText: {
-        fontSize: 16,
-        color: '#333',
-        marginTop: 5
+        marginLeft: 10,
+        fontSize: 16
     },
-    listContainer: {
-        paddingBottom: 20
+    button: {
+        backgroundColor: COLORS.primary,
+        borderRadius: 5,
+        marginLeft: 0,
+        marginRight: 0,
+        marginBottom: 0
+    },
+    loader: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: COLORS.white
     }
 });

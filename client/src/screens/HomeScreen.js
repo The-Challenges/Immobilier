@@ -17,7 +17,6 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import axios from 'axios';
-// import { useNavigation } from '@react-navigation/native';
 
 
 const { width } = Dimensions.get("screen");
@@ -34,7 +33,7 @@ const HomeScreen= ({ navigation }) => {
 
     const fetchHouses = async () => {
         try {
-            const response = await axios.get('http://192.168.1.3:4000/api/house/allhouses');
+            const response = await axios.get('http://192.168.103.5:4000/api/house/allhouses');
             console.log("Houses fetched:", response.data);
             setHouses(response.data);
         } catch (error) {
@@ -46,12 +45,12 @@ const HomeScreen= ({ navigation }) => {
     const ListOptions = () => {
         const optionsList = [
             { title: 'See all houses',
-             img: require('../assets/house1.jpg'),
+             img: require('../assets/villa.jpg'),
               action: () => navigation.navigate('SeeAllHouses')
              },
 
             { title: 'See all lands',
-             img: require('../assets/land.jpg'),
+             img: require('../assets/land2.jpg'),
              action: () => navigation.navigate('SeeAllLands')
             },
         ];
@@ -134,9 +133,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     optionCard: {
-        height: 200,
-        width: width / 2  - 30,
-        // elevation: 15,
+        height: 180, // Decreased from 200 to 180
+        width: width / 2 - 40, // Increased the subtracted value from 30 to 40
         backgroundColor: COLORS.white,
         alignItems: 'center',
         borderRadius: 10,
@@ -144,9 +142,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     optionCardImage: {
-        height: 150,
+        height: 110,
         borderRadius: 10,
-        width: '100%',
+        width: '120%',
     },
     
     

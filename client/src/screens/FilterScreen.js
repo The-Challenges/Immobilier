@@ -50,7 +50,7 @@ const FilterScreen = ({ navigation }) => {
 
   const fetchFilteredHouses = async () => {
     try {
-      const response = await axios.get('http://192.168.1.3:4000/api/house/filterhouses', {
+      const response = await axios.get('http://192.168.103.5:4000/api/house/filterhouses', {
         params: {
           priceMin,    
           priceMax,   
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1e90ff',  // Vibrant selection color
   },
   unselectedSlider: {
-    backgroundColor: '#e6e6e6',  // Neutral unselected color
+    backgroundColor: '#e6e6se6',  // Neutral unselected color
   },
 
   slider: {
