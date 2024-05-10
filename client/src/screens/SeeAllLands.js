@@ -6,7 +6,8 @@ import {
     Text,
     Image,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    TouchableOpacity
 } from 'react-native';
 
 import axios from 'axios';
@@ -25,7 +26,7 @@ export default function SeeAllLands({ navigation }) {
     const fetchLands = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://192.168.103.5:4000/api/land/alllands');
+            const response = await axios.get('http://192.168.103.10:4000/api/land/alllands');
             setLands(response.data);
             setLoading(false);
         } catch (error) {
@@ -34,7 +35,6 @@ export default function SeeAllLands({ navigation }) {
             console.error("Failed to fetch lands:", error);
         }
     };
-    
 
     const LandCard = ({ land }) => {
         const imageUrl = land.Media && land.Media.length > 0 ? land.Media[0].link : 'https://via.placeholder.com/400x200.png?text=No+Image+Available';
@@ -58,12 +58,17 @@ export default function SeeAllLands({ navigation }) {
                     <Icon name="office-building" size={20} color={COLORS.purple} />
                     <Text style={[styles.detailText, {color: COLORS.purple}]}>Zoning: {land.zoning}</Text>
                 </View>
-                <Button
-                  icon={<Icon name="arrow-right" size={15} color="white" />}
-                  title=" View Details"
-                  buttonStyle={styles.button}
-                  onPress={() => navigation.navigate('LandDetailsScreen', { land })}
-                />
+                <View style={styles.buttonContainer}>
+                    <Button
+                        icon={<Icon name="arrow-right" size={15} color="white" />}
+                        title=" View Details"
+                        buttonStyle={styles.button}
+                        onPress={() => navigation.navigate('LandDetailsScreen', { land })}
+                    />
+                    <TouchableOpacity style={styles.allRequestsButton} onPress={() => navigation.navigate('Received')}>
+                        <Text style={styles.allRequestsText}>All Requests</Text>
+                    </TouchableOpacity>
+                </View>
             </Card>
         );
     };
@@ -79,12 +84,11 @@ export default function SeeAllLands({ navigation }) {
     return (
         <View style={{ flex: 1, backgroundColor: COLORS.white }}>
             <FlatList
-    data={lands}
-    keyExtractor={item => `${item.id}`}
-    renderItem={({ item }) => <LandCard land={item} />}
-    contentContainerStyle={styles.listContainer}
-/>
-
+                data={lands}
+                keyExtractor={item => `${item.id}`}
+                renderItem={({ item }) => <LandCard land={item} />}
+                contentContainerStyle={styles.listContainer}
+            />
         </View>
     );
 }
@@ -106,12 +110,27 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontSize: 16
     },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 10
+    },
     button: {
         backgroundColor: COLORS.primary,
         borderRadius: 5,
-        marginLeft: 0,
-        marginRight: 0,
-        marginBottom: 0
+        width: '48%'
+    },
+    allRequestsButton: {
+        backgroundColor: COLORS.primary,
+        borderRadius: 5,
+        width: '48%',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    allRequestsText: {
+        color: COLORS.white,
+        fontWeight: 'bold',
+        fontSize: 14
     },
     loader: {
         flex: 1,

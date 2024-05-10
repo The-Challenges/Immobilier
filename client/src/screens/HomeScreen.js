@@ -33,7 +33,7 @@ const HomeScreen= ({ navigation }) => {
 
     const fetchHouses = async () => {
         try {
-            const response = await axios.get('http://192.168.103.5:4000/api/house/allhouses');
+            const response = await axios.get('http://192.168.103.10:4000/api/house/allhouses');
             console.log("Houses fetched:", response.data);
             setHouses(response.data);
         } catch (error) {
@@ -76,7 +76,7 @@ const HomeScreen= ({ navigation }) => {
     const Card = ({ house }) => {
         const imageUrl = house.Media && house.Media.length > 0 ? house.Media[0].link : 'https://cdn.pixabay.com/photo/2014/11/21/17/17/house-540796_1280.jpg';
         return (
-            <Pressable onPress={() => navigation.navigate("Details", { house })}>
+            <Pressable onPress={() => navigation.navigate("DetailsScreen", { house })}>
                 <View style={styles.card}>
                     <Image source={{ uri: imageUrl }} style={styles.cardImage} />
                     <Text style={styles.title}>{house.title}</Text>
@@ -90,170 +90,152 @@ const HomeScreen= ({ navigation }) => {
     
 
         return (
-            <SafeAreaView
-                style={{ backgroundColor: COLORS.white, flex: 1 }}>
-                <StatusBar
-                    translucent={false}
-                    backgroundColor={COLORS.white}
-                    barStyle='dark-content'
-                />
-                <View style={styles.header}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View>
-                            <EntypoIcon style={{ marginTop: 7, marginRight: 8 }} name="location" size={30} color="gray" />
-                        </View>
-                        <View>
-                            <Text style={{ color: COLORS.gray }}>Location</Text>
-                            <Text style={{ color: COLORS.dark, fontSize: 19, fontWeight: 'bold' }}>
-                                {location}
-                            </Text>
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View>
-                            <Text style={{ marginTop: 7, fontSize: 12, marginRight: 5, textAlign: 'right' }}>Welcome Back</Text>
-                            <Text style={{ fontSize: 16, fontweight: 'bold', marginRight: 5, textAlign: 'right', color: COLORS.dark }}   >{PersonName}</Text>
-                        </View>
-                        <Pressable onPress={() => navigation.navigate("UserProfile")}>
-                            <View>
-                                <Image source={require("../assets/house1.jpg")} style={styles.profileImage} />
-                            </View>
-                        </Pressable>
-                    </View>
-                </View>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+            <StatusBar backgroundColor={COLORS.white} barStyle='dark-content' />
+            <ScrollView showsVerticalScrollIndicator={false}>
+
+            <View style={styles.header}>
+  <View style={styles.searchInputContainer}>
+    <Icon name="search" style={styles.searchIcon} />
+    <TextInput
+      placeholder="Search address, city, location"
+      placeholderTextColor="#888" // Color for placeholder text
+      style={{ flex: 1 }} // Ensures text input uses the remaining space
+    />
+  </View>
+  <TouchableOpacity style={styles.sortBtn} onPress={() => navigation.navigate('FilterScreen')}>
+    <Icon name='tune' color={COLORS.white} size={28} />
+  </TouchableOpacity>
+</View>
+
+
+                <ListOptions />
+
                 
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            paddingHorizontal: 20,
-                        }}>
-                        <View style={styles.searchInputContainer}>
-                            <Icon name="search" size={30} color={COLORS.dark} />
-                            <TextInput placeholder='Search address, city, location' />
-                        </View>
+                <FlatList
+                    data={houses}
+                    keyExtractor={item => `${item.id}`}
+                    renderItem={({ item }) => <Card house={item} />}
+                    contentContainerStyle={styles.listContainer}
+                />
+            </ScrollView>
 
-                        <TouchableOpacity 
-                        style={styles.sortbtn}
-                        onPress={() => navigation.navigate('FilterScreen')}
-                        >
-                        <Icon name='tune' color={COLORS.white} size={27} />
-                    </TouchableOpacity>
+        </SafeAreaView>
+    );
+    
+};
 
-                    </View>
-                    <ListOptions />
-                    <ListCategories />
+const styles = StyleSheet.create({
+    optionListContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 23,
+        paddingHorizontal: 20,
+    },
+    optionCard: {
+        height: 180, // Decreased from 200 to 180
+        width: width / 2 - 40, // Increased the subtracted value from 30 to 40
+        backgroundColor: COLORS.white,
+        alignItems: 'center',
+        borderRadius: 10,
+        paddingTop: 10,
+        paddingHorizontal: 10,
+    },
+    optionCardImage: {
+        height: 110,
+        borderRadius: 10,
+        width: '120%',
+    },
+    
+    
+    
+    header: {
+        flexDirection: 'row', // Aligns the search input and sort button horizontally
+        justifyContent: 'space-between', // Spaces out the search input and sort button
+        padding: 10,
+        backgroundColor: '#f8f8f8', // A light grey background for the header section
+      },
+    
 
-                    <FlatList
-                        contentContainerStyle={{ paddingLeft: 20, marginVertical: 20 }}
-                        showsVerticalScrollIndicator={false}
-                        showsHorizontalScrollIndicator={false}
-                        data={houses}
-                        renderItem={({ item }) => <Card house={item} />}
-                    />
-                </ScrollView>
+      searchInputContainer: {
+        flex: 1, // Takes up all available space except for what the button needs
+        flexDirection: 'row', // Ensures icon aligns with text
+        backgroundColor: '#ffffff', // Pure white background for the input
+        borderRadius: 25, // Fully rounded ends
+        paddingHorizontal: 20, // Horizontal padding for text inside input
+        alignItems: 'center', // Centers items vertically
+        marginRight: 10, // Adds some margin to the right for spacing from the button
+        shadowColor: '#000', // Black color for shadow to create depth
+        shadowOffset: { width: 0, height: 10 }, // Position of shadow
+        shadowOpacity: 0.1, // Light shadow for subtlety
+        shadowRadius: 10, // Smooth shadow edges
+        elevation: 3, // Elevation for Android to create shadow effect
+        borderWidth: 0.5, // Slight border to define edges
+        borderColor: '#ddd', // Soft grey border color
+      },
 
+      searchIcon: {
+        marginRight: 10, // Space between icon and text
+        color: '#888', // Icon color
+        fontSize: 27, // Icon size
+        
+      },
+    sortBtn: {
+    padding: 10, // Adequate padding for touch area
+    backgroundColor: COLORS.primary, // Uses the primary color from your constants
+    borderRadius: 25, // Rounded edges
+    
 
-            </SafeAreaView>
-        );
-    };
+  },
+    navigationContainer: {
+        marginTop: 20,
+        marginBottom: 20,
+        alignItems: 'center',
+    },
+    navButton: {
+        backgroundColor: COLORS.primary,
+        padding: 15,
+        width: '90%',
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    navButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    listContainer: {
+        padding: 10
+    },
+    card: {
+        elevation: 2,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 10,
+        marginBottom: 10
+    },
+    cardImage: {
+        width: '100%',
+        height: 200,
+        borderRadius: 10
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginTop: 5
+    },
+    detailText: {
+        fontSize: 16,
+        color: '#333',
+        marginTop: 5
+    }
+});
 
-    const styles = StyleSheet.create({
-        header: {
-            paddingVertical: 20,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingHorizontal: 20,
-
-        },
-        profileImage: {
-            height: 50,
-            width: 50,
-            borderRadius: 25,
-        },
-        searchInputContainer: {
-            backgroundColor: COLORS.light,
-            height: 50,
-            flex: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingHorizontal: 20,
-            borderRadius: 10,
-        },
-        sortbtn: {
-            backgroundColor: COLORS.dark,
-            height: 50,
-            width: 50,
-            borderRadius: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginLeft: 10,
-        },
-        optionListContainer: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginTop: 20,
-            paddingHorizontal: 20,
-        },
-        optionCard: {
-            height: 210,
-            width: width / 2 - 30,
-            elevation: 15,
-            backgroundColor: COLORS.white,
-            alignItems: 'center',
-            borderRadius: 10,
-            paddingTop: 10,
-            paddingHorizontal: 10,
-        },
-        optionCardImage: {
-            height: 150,
-            borderRadius: 10,
-            width: '100%',
-        },
-        categoryListContainer: {
-            marginTop: 40,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingHorizontal: 40,
-        },
-        categoryListText: {
-            fontSize: 16,
-            fontWeight: 'bold',
-            paddingBottom: 5,
-            color: COLORS.gray,
-        },
-        activeCategoryListText: {
-            color: COLORS.dark,
-            borderBottomWidth: 2,
-            paddingBottom: 5,
-        },
-        card: {
-            height: 320,
-            backgroundColor: COLORS.white,
-            elevation: 10,
-            width: width - 40,
-            marginBottom: 20,
-            padding: 15,
-            borderRadius: 20,
-        },
-        cardImage: {
-            width: '100%',
-            height: 200,
-            borderRadius: 15,
-        },
-        facility: {
-            flexDirection: 'row',
-            marginRight: 15,
-        },
-        facilityText: {
-            marginLeft: 5,
-            color: COLORS.gray,
-        }
-
-
-    });
-
-    export default HomeScreen;
-
-
+export default HomeScreen;
