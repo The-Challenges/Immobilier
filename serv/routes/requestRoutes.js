@@ -3,6 +3,6 @@ const router = express.Router();
 const LandController = require('../controller/request/request');
 
 router.get('/:userId/:type',LandController.getAllEstateByBuyer)
-router.post('/:userId/:houseId/type',LandController.createRequset)
+router.post('/:userId/:houseId/:type',LandController.createRequest)
 
 module.exports = router;

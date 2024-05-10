@@ -1,25 +1,6 @@
-
-
-
-
-
-
-
     import React from 'react'
     import {
-        SafeAreaView,
-        StyleSheet,
-        Dimensions,
-        StatusBar,
-        FlatList,
-        ScrollView,
-        Pressable,
-        TextInput,
-        BackHandler,
-        TouchableOpacity,
-        Image,
-        View,
-        Text
+        SafeAreaView, StyleSheet,  Dimensions,  StatusBar,  FlatList,  ScrollView,  Pressable,  TextInput,  BackHandler,  TouchableOpacity,  Image,  View,  Text
     } from 'react-native'
     // import { useBackHandler } from '@react-native-community/hooks'
     import AwesomeIcon from "react-native-vector-icons/FontAwesome5"
@@ -83,7 +64,7 @@
 
         const Card = ({ house }) => {
         return (
-            <Pressable onPress={() => navigation.navigate("Details", { house })}>
+            <Pressable onPress={() => navigation.navigate("DetailsScreen", { house })}>
                 <View style={styles.card}>
                     <Image source={house.image} style={styles.cardImage} />
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
@@ -99,6 +80,7 @@
                         <Icon name='bathtub' size={18} style={{ color: COLORS.dark }} />
                         <Text style={styles.facilityText}>{house.bathrooms}</Text>
                         <AwesomeIcon name='ruler-vertical' size={18} style={{ color: COLORS.dark }} />
+
                         <Text style={styles.facilityText}>{house.area}</Text>
                     </View>
                 </View>
@@ -168,6 +150,7 @@
                         showsHorizontalScrollIndicator={false}
                         data={houses}
                         renderItem={({ item }) => <Card house={item} />}
+
                     />
                 </ScrollView>
 

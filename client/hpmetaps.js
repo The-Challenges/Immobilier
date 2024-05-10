@@ -6,9 +6,12 @@ import DetailsScreen from './src/screens/DetailsScreen'
 import RecommendedScreen from './src/screens/RecommendedScreen'
 import Chatroom from './src/components/chat/allrooms'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon4 from 'react-native-vector-icons/Feather';
+
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import ProfileDetails from './src/components/profile/profileDetails';
+import Request from './src/components/request/request';
 
 
 
@@ -36,6 +39,14 @@ function HomeTabs() {
             iconName = 'chatbox-ellipses-outline';
             Component = Icon2;
               break;
+
+              // case 'Request':
+              // iconName='bell';
+              // Component = Icon4
+              
+              // break;
+              
+
           
             default:
               iconName = 'alert-circle-outline';   
@@ -50,6 +61,7 @@ function HomeTabs() {
       <Tab.Screen name="ProfilDetail" component={ProfileDetails} options={{ headerShown: false }} />
       <Tab.Screen name="Recommended" component={RecommendedScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false }} />
+      {/* <Tab.Screen name='Request'  component={Request} options={{ headerShown: false }} /> */}
       {/* <Tab.Screen name="Chat" component={Chat} /> */}
     </Tab.Navigator>
   );

@@ -33,12 +33,16 @@ import RecommendedScreen from "./src/screens/RecommendedScreen";
 import ResultsScreen from "./src/screens/ResultsScreen"
 import Chat from "./src/components/chat/chat";
 
+
 import HomeTabs from './hpmetaps';
 import Onboarding from './src/components/Authentification/OnboardingScreen';
 import splach from './src/components/Authentification/SplashScreen'
 import EditProfile from './src/screens/Profile/editProfile';
 import AddLand from './src/components/profile/cratePosts/AddLand'
 import AddHouse from './src/components/profile/cratePosts/AddHouse'
+// import Request from './src/components/request/request';
+import TermsAndConditions from './src/components/request/sendRe/TermsAndConditions'
+import fraisPayment from './src/components/request/sendRe/fraisPayment'
 
 
 
@@ -64,53 +68,21 @@ function App() {
           <Stack.Screen name='DetailsScreen' component={DetailsScreen} options={{ headerShown: false }} />
           <Stack.Screen name='HomeScreen' component={HomeScreen} options={{ headerShown: false }}  />
           <Stack.Screen name='FilterScreen' component={FilterScreen} options={{ headerShown: false }}  />
-          <Stack.Screen name='ResultsScreen' component={ResultsScreen} options={{ headerShown: false }}  />
+          {/* <Stack.Screen name='Request' component={Request} options={{ headerShown: false }}  /> */}
+
 
           <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }}  />
           <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }}  />
           <Stack.Screen name='splash' component={splach} options={{ headerShown: false }}  />
           <Stack.Screen name='apartement' component={Apartment} options={{ headerShown: false }}  />
           <Stack.Screen name='Land' component={Lands} options={{ headerShown: false }}  />
-
-
-          {/* <Stack.Screen name='ProfileDetails' component={ProfileDetails} /> */}
+         {/* <Stack.Screen name='ProfileDetails' component={ProfileDetails} /> */}
           <Stack.Screen name='EditProfile' component={EditProfile} />
           <Stack.Screen name='AddHouse' component={AddHouse} />
           <Stack.Screen name='AddLand' component={AddLand} />
-          <Stack.Screen 
-
-          name='RecommendedScreen'
-          component={RecommendedScreen}
-          options={({ navigation }) => ({
-            headerShown: true,
-            title: 'Recommended Houses',
-            headerStyle: {
-              backgroundColor: '#faebd7', 
-              shadowColor: '#000', 
-              shadowOffset: { width: 0, height: 2 }, 
-              shadowOpacity: 0.1, 
-              shadowRadius: 3, 
-              elevation: 5, 
-            },
-            headerTitleStyle: {
-              fontWeight: 'bold', 
-              fontSize: 22, 
-              fontFamily: 'Roboto, "Helvetica Neue", sans-serif', 
-            },
-            headerTintColor: 'black', 
-            headerLeft: () => (
-              <Icon2
-                name="arrow-back-sharp"
-                size={24}
-                color="black"
-                onPress={() => navigation.goBack()}
-                style={{ marginLeft: 15 }}
-              />
-            ),
-          })}
-      />
-
-           
+          <Stack.Screen name='RecommendedScreen' component={RecommendedScreen}   options={({ navigation }) => ({ headerShown: true,   title: 'Recommended Houses',   headerStyle: {     backgroundColor: '#faebd7',      shadowColor: '#000',      shadowOffset: { width: 0, height: 2 },      shadowOpacity: 0.1,      shadowRadius: 3,      elevation: 5,    },   headerTitleStyle: {     fontWeight: 'bold',      fontSize: 22,      fontFamily: 'Roboto, "Helvetica Neue", sans-serif',    },   headerTintColor: 'black',    headerLeft: () => (     <Icon2  name="arrow-back-sharp" size={24}  color="black" onPress={() => navigation.goBack()}   style={{ marginLeft: 15 }}/>), })}  />
+          <Stack.Screen name='TermsAndConditions' component={TermsAndConditions} options={{ headerShown: false }}  />
+          <Stack.Screen name='fraisPayment' component={fraisPayment} options={{ headerShown: false }}  />
 
         </Stack.Navigator>
       </NavigationContainer>

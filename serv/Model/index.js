@@ -77,6 +77,9 @@ Land.hasMany(Media);
 Media.belongsTo(Land);
 Land.hasMany(Comment);
 Comment.belongsTo(Land);
+House.hasMany(RequestHouse)
+RequestHouse.belongsTo(House)
+
 
 Land.belongsToMany(User, { through: RequestLand, foreignKey: 'landId' });
 User.belongsToMany(Land, { through: RequestLand , foreignKey: 'userId'});
@@ -95,6 +98,8 @@ House.hasMany(View);
 View.belongsTo(House);
 House.hasMany(Media);
 Media.belongsTo(House);
+House.hasMany(RequestHouse)
+RequestHouse.belongsTo(House)
 House.belongsToMany(User, { through: RequestHouse,foreignKey: 'houseId' });
 User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'userId' });
 
@@ -115,11 +120,11 @@ User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'userId' });
 
 // Conversation.hasMany(Chat);
 // Chat.belongsTo(Conversation);
-async function  test(params) {
-  await sequelize.sync({ force: true });
-console.log('The table for the User model was just (re)created!');
-}
-test()
+// async function  test(params) {
+//   await sequelize.sync({ force: true });
+// console.log('The table for the User model was just (re)created!');
+// }
+// test()
 // Export models and sequelize instance
 module.exports = {
   sequelize,
