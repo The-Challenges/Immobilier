@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
         });
         House.hasMany(models.Indoor, {
             foreignKey: 'HouseId',
-            as: 'indoorOptions'
+            as: 'indoorOption'
         });
     };
 

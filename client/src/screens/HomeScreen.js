@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {API_AD} from '../../config';
 import {
     SafeAreaView,
     StyleSheet,
@@ -33,7 +34,7 @@ const HomeScreen= ({ navigation }) => {
 
     const fetchHouses = async () => {
         try {
-            const response = await axios.get('http://192.168.103.5:4000/api/house/allhouses');
+            const response = await axios.get(`${API_AD}/api/house/allhouses`);
             console.log("Houses fetched:", response.data);
             setHouses(response.data);
         } catch (error) {

@@ -5,17 +5,24 @@ module.exports = {
     getAllHouses: async (req, res) => {
         try {
             const houses = await db.House.findAll({
-                include: [{
-                    model: db.Media,
-                    // as: 'images', 
-                    attributes: ['type', 'name', 'link'] 
-                }]
+                include: [
+                    {
+                        model: db.Media,
+                        attributes: ['type', 'name', 'link'] 
+                    },
+                    {
+                        model: db.Indoor,
+                        attributes: ['options'] 
+                    }
+                    
+                ]
             });
             res.json(houses);
         } catch (error) {
             res.status(500).json({ error: `error fetching houses: ${error.message}` });
         }
     },
+    
     
     
     createHouses: async (req, res) => {
