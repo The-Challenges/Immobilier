@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, Platform,Text, PermissionsAndroid } from 'react-native';
+import { StyleSheet, View, Image, Platform,Text, PermissionsAndroid } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import MapViewDirections from 'react-native-maps-directions';
@@ -11,10 +11,13 @@ const GoogleMaps = () => {
     const [origin, setOrigin] = useState();
     const [destination, setDestination] = useState();
     const [persmissionGranter, setPersmissionGranter] = useState(false);
+    const [houses, setHouses] = useState([]);
+
 
 
     useEffect(()=>{
         _getLoactionPersmission();
+        fetchHouses();
     },[])  
 
     async function _getLoactionPersmission(){
@@ -70,6 +73,25 @@ const GoogleMaps = () => {
             longitudeDelta: 0.0121
         }, 2000);
     }
+
+
+
+    async function fetchHouses() {
+        try {
+            const response = await fetch('http://192.168.1.3:4000/api/house/allhouses');
+            const json = await response.json();
+            console.log('Full API response', json);
+            
+    
+            setHouses(Array.isArray(json.houses) ? json.houses : []);
+            console.log('Full API response', json);
+        } catch (error) {
+            console.error("Failed to fetch houses", error);
+            setHouses([]);  
+        }
+    }
+    
+
 
 
     if (!persmissionGranter) return <View><Text>Please Allow location permission to Continue..</Text></View>
@@ -159,21 +181,38 @@ const GoogleMaps = () => {
                 provider={PROVIDER_GOOGLE}
                 style={styles.map}
                 region={{
-                    latitude: 36.894136,
-                    longitude: 10.187458,
+                    latitude: 36.770441,
+                    longitude: 10.277006,
                     latitudeDelta: 0.1,
                     longitudeDelta: 0.1,
                 }}>
+
+
+            {houses.map(house => (
+                    <Marker
+                        key={house.id}
+                        coordinate={{ latitude: house.alt, longitude: house.long }}
+                        title={house.title}  
+                    >
+                        <Image
+                            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3307/3307713.png' }}  
+                            style={{width: 40, height: 40}}
+                            onError={(e) => console.log('Failed to load image:', e.nativeEvent.error)}
+                        />
+                    </Marker>
+                ))}   
+
+
                 {origin && (
                     <Marker
                         coordinate={origin}
-                        pinColor="red" // Custom color for the marker
+                        pinColor="red"
                     />
                 )}
                 {destination && (
                     <Marker
                         coordinate={destination}
-                        pinColor="red" // Custom color for the marker
+                        pinColor="red" 
                     />
                 )}
                 {origin && destination && (
@@ -181,7 +220,7 @@ const GoogleMaps = () => {
                         origin={origin}
                         destination={destination}
                         strokeWidth={3}
-                        strokeColor="hotpink" // Custom color for the path
+                        strokeColor="hotpink" 
                         apikey={'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}
                     />
                 )}

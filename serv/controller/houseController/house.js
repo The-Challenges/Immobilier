@@ -27,10 +27,16 @@ module.exports = {
     
     createHouses: async (req, res) => {
         const newHouses = req.body.houses;
+        if (!Array.isArray(newHouses) || newHouses.length === 0) {
+            return res.status(400).json({
+                error: "Invalid input: Expected an array of houses."
+            });
+        }
+    
         try {
             const createdHouses = await db.House.bulkCreate(newHouses, {
-                validate: true,  
-                individualHooks: true 
+                validate: true,
+                individualHooks: true
             });
             res.status(201).json({
                 message: "Houses created successfully",
@@ -43,6 +49,7 @@ module.exports = {
             });
         }
     },
+    
 
     filterHouses: async (req, res) => {
         const {

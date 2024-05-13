@@ -10,7 +10,7 @@ function getRandomElementFromArray(arr) {
   }
 module.exports = async (sequelize) => {
     // Adjust the number of seeds you want for each model
-    const userCount = 50;
+    const userCount = 500;
     const houseCount = 100;
     const landCount = 75;
     const indoo = 1000
@@ -31,6 +31,12 @@ module.exports = async (sequelize) => {
         });
       })
     );
+    
+
+
+
+
+
     const houses = await Promise.all(
       Array.from({ length: houseCount }).map(async () => {
           const user = users[Math.floor(Math.random() * userCount)];
@@ -50,6 +56,7 @@ module.exports = async (sequelize) => {
           });
       })
   );
+
   
 
       const lands =await Promise.all(
