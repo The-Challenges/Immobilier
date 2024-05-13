@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 import { View, ScrollView, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import { sendLandRequest } from '../socketserv';
 
-const TermsAndConditionsScreen = ({ navigation }) => {
+const TermsAndConditionsScreen = ({ route,navigation }) => {
     const [accepted, setAccepted] = useState(false);
+    const { receiverId,landId } = route.params;
 
     const handleAcceptanceToggle = () => setAccepted(!accepted);
-    const navigateToPayment = () => {
-        if (accepted) {
-            navigation.navigate('fraisPayment'); // Ensure this matches your navigation setup
+
+    const handleSendRequest = () => {
+        if (!accepted) {
+            Alert.alert('Error', 'You must accept the terms and conditions to proceed.');
+            return;
         }
-    };
+        sendLandRequest({ userId: receiverId, landId }); 
+        console.log(receiverId,userId,landId);
+        Alert.alert('Success', 'Request sent successfully');
+        navigation.navigate('HomeTabs');
+}
 
     return (
         <View style={styles.container}>
@@ -38,10 +46,10 @@ const TermsAndConditionsScreen = ({ navigation }) => {
                     <Text style={styles.checkboxLabel}>I accept the terms and conditions</Text>
                 </TouchableOpacity>
                 <Button
-                    title="Proceed to Payment"
-                    onPress={navigateToPayment}
+                    title="Send Request"
+                    onPress={handleSendRequest}
                     disabled={!accepted}
-                    color={accepted ? '#0E60E5' : '#0E60E5'}
+                    color={accepted ? '#0E60E5' : '#CCCCCC'}
                 />
             </View>
         </View>
@@ -112,4 +120,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default TermsAndConditionsScreen;
+export default TermsAndConditionsScreen

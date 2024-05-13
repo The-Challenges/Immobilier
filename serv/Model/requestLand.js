@@ -1,11 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
-    const Request = sequelize.define('RequestLand', {
-      status: {
-      type: DataTypes.ENUM("pending","Rejected","Confirmed"),
-      defaultValue:'pending'
-    },
-   
+    const RequestLand = sequelize.define('RequestLand', {
+        status: DataTypes.ENUM('pending', 'accepted', 'rejected'),
+        userId: {
+            type: DataTypes.INTEGER,
+            references: { model: 'User', key: 'id' }
+          },
+          landId: {
+            type: DataTypes.INTEGER,
+            references: { model: 'Land', key: 'id' }
+          }
     });
-  
-    return Request;
+    return RequestLand;
   };
+  

@@ -8,7 +8,8 @@
  * @format
  */
 
-import React from 'react';
+import React,{useEffect} from 'react';
+import { LogBox } from 'react-native';
 import ProfileDetails from './src/components/profile/profileDetails';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import {NavigationContainer} from '@react-navigation/native';
@@ -32,7 +33,13 @@ import FilterScreen from "./src/screens/FilterScreen";
 import RecommendedScreen from "./src/screens/RecommendedScreen";
 import ResultsScreen from "./src/screens/ResultsScreen"
 import Chat from "./src/components/chat/chat";
+import { connectSocket, disconnectSocket } from './src/components/request/socketserv'
 
+import SeeAllHouses from "./src/screens/SeeAllHouses";
+import SeeAllLands from "./src/screens/SeeAllLands";
+
+
+// import Chatroom from "./src/components/chat/allrooms";
 
 import HomeTabs from './hpmetaps';
 import Onboarding from './src/components/Authentification/OnboardingScreen';
@@ -42,16 +49,24 @@ import AddLand from './src/components/profile/cratePosts/AddLand'
 import AddHouse from './src/components/profile/cratePosts/AddHouse'
 // import Request from './src/components/request/request';
 import TermsAndConditions from './src/components/request/sendRe/TermsAndConditions'
-import fraisPayment from './src/components/request/sendRe/fraisPayment'
+
+import ViewDetails from './src/viewDetLand'
+import ReceiverRequestsScreen from './src/components/request/sendRe/responseReq'
 
 
-
+LogBox.ignoreLogs([
+  'Warning: componentWillReceiveProps has been renamed',
+  'Warning: TextElement: Support for defaultProps will be removed from function components in a future major release.'
+]);
 
 function App() {
 
 
 
-
+//   useEffect(() => {
+//     connectSocket();
+//     return () => disconnectSocket();
+// }, []);
   const Stack = createNativeStackNavigator();
 
   return (
@@ -70,6 +85,12 @@ function App() {
           <Stack.Screen name='FilterScreen' component={FilterScreen} options={{ headerShown: false }}  />
           {/* <Stack.Screen name='Request' component={Request} options={{ headerShown: false }}  /> */}
 
+          <Stack.Screen name='ResultsScreen' component={ResultsScreen} options={{ headerShown: false }}  />
+          <Stack.Screen name='SeeAllHouses' component={SeeAllHouses} options={{ headerShown: false }}  />
+          <Stack.Screen name='SeeAllLands' component={SeeAllLands} options={{ headerShown: false }}  />
+          <Stack.Screen name='ViewDetails' component={ViewDetails} options={{ headerShown: false }}  />
+          <Stack.Screen name='ReceiverRequestsScreen' component={ReceiverRequestsScreen} options={{ headerShown: false }}  />
+
 
           <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }}  />
           <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }}  />
@@ -82,7 +103,7 @@ function App() {
           <Stack.Screen name='AddLand' component={AddLand} />
           <Stack.Screen name='RecommendedScreen' component={RecommendedScreen}   options={({ navigation }) => ({ headerShown: true,   title: 'Recommended Houses',   headerStyle: {     backgroundColor: '#faebd7',      shadowColor: '#000',      shadowOffset: { width: 0, height: 2 },      shadowOpacity: 0.1,      shadowRadius: 3,      elevation: 5,    },   headerTitleStyle: {     fontWeight: 'bold',      fontSize: 22,      fontFamily: 'Roboto, "Helvetica Neue", sans-serif',    },   headerTintColor: 'black',    headerLeft: () => (     <Icon2  name="arrow-back-sharp" size={24}  color="black" onPress={() => navigation.goBack()}   style={{ marginLeft: 15 }}/>), })}  />
           <Stack.Screen name='TermsAndConditions' component={TermsAndConditions} options={{ headerShown: false }}  />
-          <Stack.Screen name='fraisPayment' component={fraisPayment} options={{ headerShown: false }}  />
+          
 
         </Stack.Navigator>
       </NavigationContainer>

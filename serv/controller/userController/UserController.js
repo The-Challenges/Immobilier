@@ -87,3 +87,4 @@ exports.insertAllUsers = async (req, res) => {
   }
 
 }
+
