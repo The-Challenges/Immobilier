@@ -47,6 +47,9 @@ import Received from "./src/components/profile/requestreceived"
 
 import UserProfile from "./src/components/UserProfile/UserProfile"
 
+import requestreceivedlands from "./src/components/profile/requestreceivedlands"
+import requeststatus from "./src/components/profile/requeststatus"
+import requeststatuslands from "./src/components/profile/requeststatuslands"
 
 
 
@@ -81,6 +84,13 @@ function App() {
           <Stack.Screen name='UserProfile' component={UserProfile} options={{ headerShown: false }}  />
 
           <Stack.Screen name='Received' component={Received} options={{ headerShown: false }}  />
+          <Stack.Screen name='requestreceivedlands' component={requestreceivedlands} options={{ headerShown: false }}  />
+          <Stack.Screen name='requeststatus' component={requeststatus} options={{ headerShown: false }}  />
+          <Stack.Screen name='requeststatuslands' component={requeststatuslands} options={{ headerShown: false }}  />
+
+
+
+
 
           <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }}  />
           <Stack.Screen name='splash' component={splach} options={{ headerShown: false }}  />

@@ -65,7 +65,7 @@ export default function SeeAllLands({ navigation }) {
                         buttonStyle={styles.button}
                         onPress={() => navigation.navigate('LandDetailsScreen', { land })}
                     />
-                    <TouchableOpacity style={styles.allRequestsButton} onPress={() => navigation.navigate('Received')}>
+                    <TouchableOpacity style={styles.allRequestsButton} onPress={() => navigation.navigate('requestreceivedlands')}>
                         <Text style={styles.allRequestsText}>All Requests</Text>
                     </TouchableOpacity>
                 </View>

@@ -17,7 +17,9 @@ const Signin = ({ navigation }) => {
       const response = await axios.post('http://192.168.103.10:4000/api/auth/login', { email, password });
       if (response.data && response.data.user) {
         const { user, token } = response.data;
+        console.log(user.userId); // Make sure this logs the expected value
         await storage.save({ key: 'loginState', data: { token, user } });
+        
         navigation.navigate('HomeTabs');
 
       } else {

@@ -99,8 +99,8 @@ const HomeScreen= ({ navigation }) => {
     <Icon name="search" style={styles.searchIcon} />
     <TextInput
       placeholder="Search address, city, location"
-      placeholderTextColor="#888" // Color for placeholder text
-      style={{ flex: 1 }} // Ensures text input uses the remaining space
+      placeholderTextColor="#888" 
+      style={{ flex: 1 }} 
     />
   </View>
   <TouchableOpacity style={styles.sortBtn} onPress={() => navigation.navigate('FilterScreen')}>
@@ -133,8 +133,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     optionCard: {
-        height: 180, // Decreased from 200 to 180
-        width: width / 2 - 40, // Increased the subtracted value from 30 to 40
+        height: 180, 
+        width: width / 2 - 40, 
         backgroundColor: COLORS.white,
         alignItems: 'center',
         borderRadius: 10,
@@ -150,40 +150,40 @@ const styles = StyleSheet.create({
     
     
     header: {
-        flexDirection: 'row', // Aligns the search input and sort button horizontally
-        justifyContent: 'space-between', // Spaces out the search input and sort button
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         padding: 10,
-        backgroundColor: '#f8f8f8', // A light grey background for the header section
+        backgroundColor: '#f8f8f8', 
       },
     
 
       searchInputContainer: {
-        flex: 1, // Takes up all available space except for what the button needs
-        flexDirection: 'row', // Ensures icon aligns with text
-        backgroundColor: '#ffffff', // Pure white background for the input
-        borderRadius: 25, // Fully rounded ends
-        paddingHorizontal: 20, // Horizontal padding for text inside input
-        alignItems: 'center', // Centers items vertically
-        marginRight: 10, // Adds some margin to the right for spacing from the button
-        shadowColor: '#000', // Black color for shadow to create depth
-        shadowOffset: { width: 0, height: 10 }, // Position of shadow
-        shadowOpacity: 0.1, // Light shadow for subtlety
-        shadowRadius: 10, // Smooth shadow edges
-        elevation: 3, // Elevation for Android to create shadow effect
-        borderWidth: 0.5, // Slight border to define edges
-        borderColor: '#ddd', // Soft grey border color
+        flex: 1, 
+        flexDirection: 'row', 
+        backgroundColor: '#ffffff', 
+        borderRadius: 25, 
+        paddingHorizontal: 20, 
+        alignItems: 'center', 
+        marginRight: 10, 
+        shadowColor: '#000', 
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.1, 
+        shadowRadius: 10, 
+        elevation: 3,
+        borderWidth: 0.5, 
+        borderColor: '#ddd', 
       },
 
       searchIcon: {
-        marginRight: 10, // Space between icon and text
-        color: '#888', // Icon color
-        fontSize: 27, // Icon size
+        marginRight: 10,
+        color: '#888', 
+        fontSize: 27,
         
       },
     sortBtn: {
-    padding: 10, // Adequate padding for touch area
-    backgroundColor: COLORS.primary, // Uses the primary color from your constants
-    borderRadius: 25, // Rounded edges
+    padding: 10, 
+    backgroundColor: COLORS.primary, 
+    borderRadius: 25,
     
 
   },

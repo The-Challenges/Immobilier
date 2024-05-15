@@ -25,7 +25,7 @@ const RequestStatus = ({ request, image }) => {
       <LinearGradient colors={['#ffffff', '#e6e6e6']} style={styles.statusGradient}>
         <Card.Content>
           <Text style={styles.prefaceTitle}>Your request for:</Text>
-          <Text style={styles.statusTitle}>House ID: {request.houseId}</Text>
+          <Text style={styles.statusTitle}>Land ID: {request.landId}</Text>
           <View style={styles.statusFooter}>
             <Text style={[styles.status, { color: getStatusColor() }]}>
               {request.status}
@@ -48,7 +48,7 @@ const RequestStatus = ({ request, image }) => {
 };
 
 const TestRequestStatus = () => {
-  const [houses, setHouses] = useState([]);
+  const [lands, setLands] = useState([]);
   const [userId, setUserId] = useState(null);  
 
   useEffect(() => {
@@ -66,12 +66,12 @@ const TestRequestStatus = () => {
 
   useEffect(() => {
     if (userId) {  
-      axios.get(`http://192.168.103.10:4000/api/request/${userId}/house`)
+      axios.get(`http://192.168.103.10:4000/api/request/${userId}/land`)
         .then(response => {
-          if (response.data && Array.isArray(response.data.Houses)) {
-            setHouses(response.data.Houses);
+          if (response.data && Array.isArray(response.data.Lands)) {
+            setLands(response.data.Lands);
           } else {
-            console.error("No houses data found:", response.data);
+            console.error("No lands data found:", response.data);
           }
         })
         .catch(error => {
@@ -82,12 +82,12 @@ const TestRequestStatus = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {houses.length > 0 ? (
-        houses.map(house => (
+      {lands.length > 0 ? (
+        lands.map(land => (
           <RequestStatus 
-            key={house.id} 
-            request={house.RequestHouse} 
-            image={house.Media && house.Media.length > 0 ? house.Media[0].link : null} 
+            key={land.id} 
+            request={land.RequestLand} 
+            image={land.Media && land.Media.length > 0 ? land.Media[0].link : null} 
           />
         ))
       ) : (
@@ -96,6 +96,7 @@ const TestRequestStatus = () => {
     </ScrollView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
