@@ -1,5 +1,6 @@
-
 import React, { useState } from 'react';
+import {API_AD} from '../../config';
+
 import {
   View,
   Text,
@@ -11,7 +12,6 @@ import {
 } from 'react-native';
 
 
-
 import axios from 'axios';
 import CheckBox from '@react-native-community/checkbox';
 import FilterHeader from '../components/FilterHeader/FilterHeader';
@@ -19,6 +19,7 @@ import TransactionTypeSelector from '../components/TransactionTypeSelector/Trans
 import PropertySelector from '../components/PropertySelector/PropertySelector';
 import { Picker } from '@react-native-picker/picker';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import { API_AD } from '../../config';
 
 
 import COLORS from '../consts/colors';
@@ -50,7 +51,9 @@ const FilterScreen = ({ navigation }) => {
 
   const fetchFilteredHouses = async () => {
     try {
-      const response = await axios.get('http://192.168.11.107:4000/api/house/filterhouses', {
+
+      const response = await axios.get(`${API_AD}/api/house/filterhouses`, {
+
         params: {
           priceMin,    
           priceMax,   
@@ -104,7 +107,7 @@ const FilterScreen = ({ navigation }) => {
   const renderHeader = () => (
     <>
       <FilterHeader onBackPress={() => navigation.goBack()} />
-      <TransactionTypeSelector transactionType={transactionType} onSelect={setTransactionType} />
+      {/* <TransactionTypeSelector transactionType={transactionType} onSelect={setTransactionType} /> */}
       <PropertySelector selectedType={propertyType} onSelectType={setPropertyType} />
       <Text style={styles.sectionTitle}>Bedrooms</Text>
       <Picker
@@ -370,7 +373,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 30,
     paddingHorizontal: 220,
-    backgroundColor: '#ffffff',
+    // backgroundColor: '#ffffff',
     borderRadius: 25,
     borderWidth: 1,
     borderColor: '#e1e1e1',

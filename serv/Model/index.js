@@ -2,6 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const { DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD } = require("../config/config");
 const requestHouse = require('./requestHouse');
 
+
 const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
   dialect: 'mysql',
   host: 'localhost',
@@ -141,5 +142,6 @@ module.exports = {
   Climat,
   Conversation,
   Access,
+  
   
 };

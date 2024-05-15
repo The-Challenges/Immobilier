@@ -11,11 +11,10 @@ module.exports = (Sequelize, DataTypes) => {
         size:{
           type: DataTypes.FLOAT,
         },
-        alt:{
-            type: DataTypes.FLOAT    },
-            
-            long:{
-              type: DataTypes.FLOAT    },
+        alt: DataTypes.DECIMAL(9, 6),
+
+        long: DataTypes.DECIMAL(9, 6),
+
               purchaseoption:{
                 type: DataTypes.ENUM('Finance','cash','Unknown'),
                 defaultValue: "Unknown"
@@ -36,12 +35,19 @@ module.exports = (Sequelize, DataTypes) => {
               }
 
           });
+
           Land.associate = function(models) {
             Land.hasMany(models.Media, {
                 foreignKey: 'LandId',
-                as: 'images'
+                // as: 'images'
+            });
+
+            Land.hasMany(models.View, {
+                foreignKey: 'LandId',
+                // as: 'view'
             });
         };
+        
 
     return Land;
 };

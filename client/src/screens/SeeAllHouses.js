@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {API_AD} from '../../config';
 import {
   SafeAreaView,
   StyleSheet,
@@ -16,6 +17,8 @@ import axios from 'axios';
 import COLORS from '../consts/colors';
 import { Card, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { API_AD } from '../../config';
+
 
 const { width } = Dimensions.get("window");
 
@@ -30,8 +33,11 @@ const SeeAllHouses = ({ navigation }) => {
   const fetchHouses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://192.168.103.10:4000/api/house/allhouses');
+
+      const response = await axios.get(`${API_AD}/api/house/allhouses`);
+
       setHouses(response.data);
+      console.log(response.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -41,6 +47,7 @@ const SeeAllHouses = ({ navigation }) => {
   };
 
   const HouseCard = ({ house }) => {
+   
     const imageUrl = house.Media && house.Media.length > 0 ? house.Media[0].link : 'https://via.placeholder.com/400x200.png?text=No+Image+Available';
     return (
       <Card containerStyle={styles.card}>
@@ -58,17 +65,14 @@ const SeeAllHouses = ({ navigation }) => {
           <Icon name="shower" size={20} color={COLORS.purple} />
           <Text style={[styles.detailText, {color: COLORS.purple}]}>Bathrooms: {house.numberbathrooms}</Text>
         </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            icon={<Icon name="arrow-right" size={15} color="white" />}
-            title=" View Details"
-            buttonStyle={styles.button}
-            onPress={() => navigation.navigate('DetailsScreen', { house })}
-          />
-          <TouchableOpacity style={styles.allRequestsButton} onPress={() => navigation.navigate('Received')}>
-            <Text style={styles.allRequestsText}>All Requests</Text>
-          </TouchableOpacity>
-        </View>
+
+        <Button
+          icon={<Icon name="arrow-right" size={15} color="white" />}
+          title=" View Details"
+          buttonStyle={styles.button}
+          onPress={() => navigation.navigate('ViewDetailsHouse', { house:houses ,UserId:house.UserId,info:{firstName:house.User.firstName,email:house.User.email,phoneNumber:house.User.phoneNumber  }  })}
+        />
+
       </Card>
     );
   };
