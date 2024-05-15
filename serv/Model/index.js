@@ -117,11 +117,11 @@ User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'userId' });
 
 // Conversation.hasMany(Chat);
 // Chat.belongsTo(Conversation);
-async function  test(params) {
-  await sequelize.sync({ force: true });
-console.log('The table for the User model was just (re)created!');
-}
-test()
+// async function  test(params) {
+//   await sequelize.sync({ force: true });
+// console.log('The table for the User model was just (re)created!');
+// }
+// test()
 // Export models and sequelize instance
 module.exports = {
   sequelize,
