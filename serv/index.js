@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "*", 
+        origin: "*",
         methods: ["GET", "POST"]
     }
 });
@@ -19,7 +19,7 @@ const usersRooms = {};
 // Middleware
 
 app.use(cors({
-    origin: 'http://192.168.103.18:4000',
+    origin: 'http://192.168.104.3:4000',
     methods: ["GET", "POST"]
 }));
 

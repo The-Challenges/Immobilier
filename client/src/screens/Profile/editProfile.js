@@ -1,102 +1,104 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, SafeAreaView, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Alert } from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import axios from 'axios';
+import axios from 'axios'; // Make sure to install axios for HTTP requests
 
-const EditProfile = () => {
-  const [firstName, setFirstName] = useState('');
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [age, setAge] = useState('');  // Age state
+const EditProfile = ({ userId }) => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+    age: ''
+  });
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
+  const handleChange = (name, value) => {
+    setFormData(prevState => ({ ...prevState, [name]: value }));
+  };
+
   const handleSave = async () => {
-    // Check if new passwords match
+    const { firstName, oldPassword, newPassword, confirmPassword, age } = formData;
+
     if (newPassword !== confirmPassword) {
-      setModalMessage('New passwords do not match!');
-      setModalVisible(true);
+      Alert.alert("Password Mismatch", "New passwords do not match.");
       return;
     }
 
-    // Verify old password and update profile
+    // Assume a base URL and correct endpoint for updating user data
     try {
-      const verifyResponse = await axios.post('https://your-api-url.com/api/users/verify-password', {
-        username: firstName,
-        password: oldPassword,
+      const response = await axios.put(`http://192.168.1.10:4000/api/user/${userId}`, {
+        firstName,
+        oldPassword,
+        newPassword,
+        age
+      }, {
+        headers: {
+          Authorization: `Bearer yourTokenHere` // You'll need to handle token management appropriately
+        }
       });
 
-      if (verifyResponse.data.isValid) {
-        const updateResponse = await axios.put('https://your-api-url.com/api/users/update', {
-          firstName,
-          password: newPassword,
-          age  // Include age in the update
-        });
-
-        if (updateResponse.status === 200) {
-          setModalMessage('Profile updated successfully!');
-          setModalVisible(true);
-        } else {
-          throw new Error('Failed to update profile');
-        }
+      if (response.status === 200) {
+        setModalMessage('Profile updated successfully!');
       } else {
-        setModalMessage('Old password is incorrect!');
-        setModalVisible(true);
+        setModalMessage('Failed to update profile');
       }
     } catch (error) {
       console.error('Error updating profile:', error);
       setModalMessage('Error updating profile: ' + error.message);
-      setModalVisible(true);
     }
+    setModalVisible(true);
   };
 
   return (
-    <SafeAreaView style={styles.fullScreen}>
-      <View style={styles.container}>
-        <Text style={styles.heading}>Edit Profile</Text>
-        
-        <TextInput
-          style={styles.input}
-          placeholder="First Name"
-          value={firstName}
-          onChangeText={setFirstName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Old Password"
-          secureTextEntry
-          value={oldPassword}
-          onChangeText={setOldPassword}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="New Password"
-          secureTextEntry
-          value={newPassword}
-          onChangeText={setNewPassword}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm New Password"
-          secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Age"
-          keyboardType="numeric"
-          value={age}
-          onChangeText={setAge}
-        />
-
-        <TouchableOpacity onPress={handleSave} style={styles.button}>
-          <Icon name="check-circle" size={20} color="#fff" />
-          <Text style={styles.buttonText}>Save</Text>
-        </TouchableOpacity>
-
+    <FlatList
+      data={[]}
+      ListHeaderComponent={
+        <View style={styles.container}>
+          <Text style={styles.heading}>Edit Profile</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            value={formData.firstName}
+            onChangeText={(text) => handleChange('firstName', text)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Old Password"
+            secureTextEntry
+            value={formData.oldPassword}
+            onChangeText={(text) => handleChange('oldPassword', text)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="New Password"
+            secureTextEntry
+            value={formData.newPassword}
+            onChangeText={(text) => handleChange('newPassword', text)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm New Password"
+            secureTextEntry
+            value={formData.confirmPassword}
+            onChangeText={(text) => handleChange('confirmPassword', text)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Age"
+            keyboardType="numeric"
+            value={formData.age}
+            onChangeText={(text) => handleChange('age', text)}
+          />
+          <TouchableOpacity onPress={handleSave} style={styles.button}>
+            <Icon name="check-circle" size={20} color="#fff" />
+            <Text style={styles.buttonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      }
+      ListFooterComponent={
         <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)}>
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>{modalMessage}</Text>
@@ -105,36 +107,32 @@ const EditProfile = () => {
             </TouchableOpacity>
           </View>
         </Modal>
-      </View>
-    </SafeAreaView>
+      }
+      renderItem={null}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  fullScreen: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#f0f0f0'
-  },
   container: {
+    flex: 1,
     padding: 20,
     alignItems: 'center',
+    backgroundColor: '#f0f0f0'
   },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
+    marginBottom: 20
   },
   input: {
+    width: '90%',
+    padding: 15,
+    marginBottom: 15,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    fontSize: 16,
-    width: '90%',
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
   },
   button: {
     flexDirection: 'row',
@@ -143,23 +141,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
-    width: '90%',
+    width: '90%'
   },
   buttonText: {
-    color: '#fff',
     marginLeft: 10,
-    fontSize: 18,
+    color: '#fff',
+    fontSize: 18
   },
   modalContent: {
-    backgroundColor: 'white',
     padding: 20,
+    backgroundColor: 'white',
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: 'center'
   },
   modalText: {
     fontSize: 16,
-    marginBottom: 20,
+    marginBottom: 20
   },
   closeButton: {
     padding: 10,
@@ -168,7 +165,7 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 16
   }
 });
 

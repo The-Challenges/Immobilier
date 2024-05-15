@@ -92,3 +92,53 @@ exports.insertAllUsers = async (req, res) => {
   }
 
 }
+
+exports.updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { firstName, email, oldPassword, newPassword, newPasswordConfirmation, phoneNumber, age, alt, long } = req.body;
+
+  try {
+    const user = await db.User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the email is changing and if the new email is already in use
+    if (email && email !== user.email) {
+      const emailExists = await db.User.findOne({ where: { email } });
+      if (emailExists) {
+        return res.status(409).json({ message: "Email already in use" });
+      }
+    }
+
+    let hashedPassword = user.password;
+    // Check if the old password is correct and new passwords match before setting a new password
+    if (oldPassword && newPassword && newPasswordConfirmation) {
+      if (!await bcrypt.compare(oldPassword, user.password)) {
+        return res.status(403).json({ message: "Incorrect old password" });
+      }
+      if (newPassword !== newPasswordConfirmation) {
+        return res.status(400).json({ message: "New password and confirmation do not match" });
+      }
+      hashedPassword = await bcrypt.hash(newPassword, 10);
+    }
+
+    // Update user data
+    const updatedUser = await user.update({
+      firstName: firstName || user.firstName,
+      email: email || user.email,
+      password: hashedPassword,
+      phoneNumber: phoneNumber || user.phoneNumber,
+      age: age || user.age,
+      alt: alt || user.alt,
+      long: long || user.long
+    });
+    res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to update user due to server error' });
+  }
+};
+
+
+

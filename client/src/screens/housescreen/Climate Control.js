@@ -2,16 +2,15 @@ import React from 'react';
 import { ScrollView, View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-
 function Screen7({ formData, handleChange, navigateToNext }) {
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>Climate Control</Text>
             {[
-                { field: 'airConditioning', label: 'Air Conditioning', icon: 'air-conditioner', iconColor: '#00ced1' },
-                { field: 'heating', label: 'Heating', icon: 'radiator', iconColor: '#db7093' },
-                { field: 'solarPanels', label: 'Solar Panels', icon: 'solar-power', iconColor: '#ffd700' },
-                { field: 'highEnergyEfficiency', label: 'High Energy Efficiency', icon: 'leaf', iconColor: '#228b22' }
+                { field: 'Air conditioning', label: 'Air Conditioning', icon: 'air-conditioner', iconColor: '#00ced1' },
+                { field: 'Heating', label: 'Heating', icon: 'radiator', iconColor: '#db7093' },
+                { field: 'Solar panels', label: 'Solar Panels', icon: 'solar-power', iconColor: '#ffd700' },
+                { field: 'High energy efficiency', label: 'High Energy Efficiency', icon: 'leaf', iconColor: '#228b22' }
             ].map(({ field, label, icon, iconColor }) => (
                 <View style={styles.switchContainer} key={field}>
                     <Icon name={icon} size={24} color={iconColor} />
@@ -31,6 +30,7 @@ function Screen7({ formData, handleChange, navigateToNext }) {
         </ScrollView>
     );
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0f4f7',
     },
     title: {
-        fontSize: 24, // Changed from "24" to 24
+        fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
         textAlign: 'center',
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     switchLabel: {
-        fontSize: 16, // Changed from "16" to 16
+        fontSize: 16,
         flex: 1,
         marginLeft: 10,
         color: '#333',
@@ -73,8 +73,8 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     buttonText: {
-        fontSize: 18, // Changed from "18" to 18
         color: '#ffffff',
+        fontSize: 18,
         fontWeight: '500',
     },
 });
