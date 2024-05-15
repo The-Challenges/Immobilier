@@ -11,14 +11,13 @@ exports.createRequest = async (req, res) => {
             userId: parseInt(userId),
             landId: parseInt(landId),
             status: 'pending',
-            createdAt: new Date(), 
-            updatedAt: new Date() 
+         
         });
-        req.io.emit('requestCreated', request); // Notify all clients
+        // req.io.emit('requestCreated', request); 
         res.status(201).send(request);
     } catch (error) {
       console.log(error);
-        res.status(500).send({ message: "Internal server error", details: error.message });
+        // res.status(500).send({ message: "Internal server error", details: error.message });
     }
 };
 

@@ -6,20 +6,40 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
 import COLORS from '../consts/colors';
 import { API_AD } from '../../config';
+import storage from '../components/Authentification/storage';
+
+import socketserv from '../components/request/socketserv';
 
 const SeeAllLands = ({ navigation }) => {
     const [lands, setLands] = useState([]);
     const [loading, setLoading] = useState(false);
-
+    const [user, setUser] = useState(null);
+const navigateDetails=(item)=>{
+    navigation.navigate('ViewDetailsLand', { land: item ,user ,landId:item.id,userId:item.UserId } )
+    socketserv.emit("receiver",item.UserId)
+}
     useEffect(() => {
         fetchLands();
+        getUserId();
+     
     }, []);
 
+    const getUserId = async () => {
+      try {
+        const userData = await storage.load({ key: 'loginState' });
+        console.log(userData)
+        setUser(userData.user);
+      } catch (error) {
+        console.error('Failed to retrieve user data:', error);
+      }
+    };
+   
     const fetchLands = async () => {
         setLoading(true);
         try {
             const response = await axios.get(`${API_AD}/api/land/alllands`);
             setLands(response.data);
+
         } catch (error) {
             handleFetchError();
         } finally {
@@ -44,11 +64,12 @@ const SeeAllLands = ({ navigation }) => {
                 <LandDetailIcon icon="office-building" color={COLORS.purple} text={`Zoning: ${item.Zoning}`} />
                 <LandDetailIcon icon="office-building" color={COLORS.purple} text={`purchaseoption: ${item.purchaseoption}`} />
 
+
                 <Button
                     icon={<Icon name="arrow-right" size={15} color="white" />}
                     title=" View Details"
                     buttonStyle={styles.button}
-                    onPress={() => navigation.navigate('ViewDetails', { land: item })}
+                    onPress={() =>navigateDetails(item) }
                 />
             </Card>
         );

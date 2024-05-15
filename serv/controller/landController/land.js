@@ -20,10 +20,16 @@ module.exports = {
                     },
                     {
                         model: db.Comment // Assuming Comment is the model for comments related to a land
-                    }
+                    },
+                    {
+                       model: db.User ,
+                       attributes:['firstName','email','phoneNumber']
+                    },
+
+
                 ]
             });
-            res.json(houses);
+            res.json(houses)
         } catch (error) {
             res.status(500).json({ error: `Error fetching houses: ${error.message}` });
         }

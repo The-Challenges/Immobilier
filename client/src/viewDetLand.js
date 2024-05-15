@@ -1,8 +1,12 @@
-import React from 'react';
+import React ,{useEffect}from 'react';
 import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';  // Updated to FontAwesome5 for better icon support
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon2 from 'react-native-vector-icons/SimpleLineIcons'
+import Icon1 from 'react-native-vector-icons/MaterialIcons'
+
 import COLORS from './consts/colors';
 import { Button } from 'react-native-elements';
+
 // Color and icon definitions (assuming FontAwesome5 supports all needed icons, replace if needed)
 const accessIcons = {
     Airport: "plane-departure",
@@ -41,32 +45,49 @@ const PropertyDetail = ({ category, details }) => (
 
 // Main component displaying the property details
 const ViewLandDetails = ({ route, navigation }) => {
-    const { land } = route.params;
+    const { land , user } = route.params;
+
+      
+ 
     const uniqueAccesses = [...new Set(land.Accesses.map(access => access.options))];
     const uniqueViews = [...new Set(land.Views.map(view => view.options))];
+
 
     return (
         <ScrollView style={styles.container}>
             <Image source={{ uri: land.image }} style={styles.image} />
             <Text style={styles.title}>{land.title}</Text>
+
             <View style={styles.iconContainer}>
                 <TouchableOpacity onPress={() => {}}>
                     <Icon name="heart" size={30} color={COLORS.dark} solid />
+                    
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
                     <Icon name="comments" size={30} color={COLORS.dark} />
                 </TouchableOpacity>
             </View>
             <View style={styles.detailsSection}>
-                <Text style={styles.price}>${land.price}</Text>
-                <Text style={styles.location}>{land.location}</Text>
-                <Button
-                    icon={<Icon name="arrow-right" size={15} color="white" />}
-                    title=" Contact Seller"
-                    buttonStyle={styles.contactButton}
-                    onPress={() => navigation.navigate('TermsAndConditions', { sellerId: land.sellerId })}
-                />
-            </View>
+    <Text style={styles.price}>
+        <Icon1 name="monetization-on" size={15} color="#4CAF50" /> {land.price}
+    </Text>
+    <Text style={styles.price}>
+        <Icon name="envelope" size={15} color="#FF9800" /> {land.User.email}
+    </Text>
+    <Text style={styles.price}>
+        <Icon2 name="phone" size={15} color="#2196F3" /> {land.User.phoneNumber}
+    </Text>
+
+    <Text style={styles.location}>
+        <Icon2 name="location-pin" size={15} color="#F44336" /> {land.User.location}
+    </Text>
+    <Button
+        icon={<Icon name="arrow-right" size={15} color="white" />}
+        title={`Contact ${land.User.firstName}`}
+        buttonStyle={styles.contactButton}
+        onPress={() => navigation.navigate('TermsAndConditions', { user,land })}
+    />
+</View>
             <PropertyDetail category="Access" details={uniqueAccesses} />
             <PropertyDetail category="View" details={uniqueViews} />
             <Text style={styles.description}>{land.description}</Text>

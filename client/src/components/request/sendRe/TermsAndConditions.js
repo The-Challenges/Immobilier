@@ -1,23 +1,35 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
-import { sendLandRequest } from '../socketserv';
-
+import { View, ScrollView, Text, StyleSheet, Button, TouchableOpacity,Alert } from 'react-native';
+import axios from 'axios';
+// import { sendLandRequest } from '../socketserv';
+import socketserv from '../socketserv';
 const TermsAndConditionsScreen = ({ route,navigation }) => {
     const [accepted, setAccepted] = useState(false);
-    const { receiverId,landId } = route.params;
-
+    const {user,land,userId,landId } = route.params;
+    
+    
     const handleAcceptanceToggle = () => setAccepted(!accepted);
 
     const handleSendRequest = () => {
-        if (!accepted) {
-            Alert.alert('Error', 'You must accept the terms and conditions to proceed.');
+        socketserv.emit('send_land_request',{user,land})
+        if (!user || !land) {
+            Alert.alert('Error', 'User ID or Land ID is missing.');
             return;
         }
-        sendLandRequest({ userId: receiverId, landId }); 
-        console.log(receiverId,userId,landId);
-        Alert.alert('Success', 'Request sent successfully');
-        navigation.navigate('HomeTabs');
-}
+    
+        const url = `http://192.168.11.50:4000/api/reqtest/${user.id}/${land.id}`;
+        axios.post(url)
+        .then(() => {
+            Alert.alert('Request Sent', 'Your request has been sent successfully!');
+            navigation.navigate('HomeTabs');
+        })
+        .catch((error) => {
+            console.error('Error sending land request:', error);
+            Alert.alert('Error', `Failed to send land request: ${error.response ? error.response.data : 'Unknown error'}`);
+        })
+
+    };
+
 
     return (
         <View style={styles.container}>

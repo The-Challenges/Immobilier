@@ -14,7 +14,8 @@ import Icon4 from 'react-native-vector-icons/Feather'; // Make sure to install i
 
 const Tab = createBottomTabNavigator();
 
-function HomeTabs() {
+function HomeTabs({ userId }) {
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -54,7 +55,11 @@ function HomeTabs() {
       <Tab.Screen name="Recommended" component={RecommendedScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false }} />
       {/* <Tab.Screen name="Requests" component={ReceiverRequestsScreen} options={{ headerShown: false }} /> */}
-      <Tab.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }}/>
+      <Tab.Screen 
+        name="Notifications" 
+        component={() => <NotificationsScreen userId={userId} />} 
+        options={{ headerShown: false }}
+      />
 
     </Tab.Navigator>
   );

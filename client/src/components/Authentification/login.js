@@ -14,18 +14,30 @@ const Signin = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-        const response = await axios.post(`${API_AD}/api/auth/login`, { email, password });
-        if (response.data && response.data.token) {
-            await AsyncStorage.setItem('userToken', response.data.token);  // Storing the token
-            navigation.navigate('HomeTabs');  // Navigating to the home screen after successful login
-        } else {
-            Alert.alert('Login failed', 'No token received');
-        }
+
+      const response = await axios.post(`${API_AD}/api/auth/login`, { email, password });
+      if (response.data && response.data.user) {
+        const { user, token } = response.data;
+        console.log(user.userId); // Make sure this logs the expected value
+        await storage.save({ key: 'loginState', data: { token, user } });
+        
+        navigation.navigate('HomeTabs');
+
+      } else {
+        Alert.alert('Login failed', 'No user data found in response');
+      }
     } catch (error) {
-        console.error(error);
-        Alert.alert('Login failed', error.message || 'An error occurred');
+      console.error(error);
+
+      Alert.alert('Login failed', 'An unexpected error occurred');
+
+      if (error.response) {
+        Alert.alert('Login failed', error.response.data.message);
+      } else {
+        Alert.alert('Login failed', 'An unexpected error occurred');
+      }
     }
-}
+  };
   
 
   return (

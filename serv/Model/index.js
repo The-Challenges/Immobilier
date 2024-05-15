@@ -1,7 +1,6 @@
-
-
 const { Sequelize, DataTypes } = require('sequelize');
 const { DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD } = require("../config/config");
+
 
 const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
   dialect: 'mysql',
@@ -58,10 +57,7 @@ Land.belongsTo(User);
 User.hasMany(Media);
 Media.belongsTo(User);
 
-User.hasMany(RequestHouse);
-RequestHouse.belongsTo(User);
-User.hasMany(RequestLand);
-RequestLand.belongsTo(User);
+
 
 User.hasMany(Favourite);
 Land.hasMany(Favourite);
@@ -77,91 +73,9 @@ Land.hasMany(Media);
 Media.belongsTo(Land);
 Land.hasMany(Comment);
 Comment.belongsTo(Land);
-// Land.hasMany(RequestLand)
-// RequestLand.belongsTo(Land)
-
-
-// Land.belongsToMany(User, { through: RequestLand, foreignKey: 'landId' });
-// User.belongsToMany(Land, { through: RequestLand , foreignKey: 'userId'});
-// Land.belongsTo(User, { as: 'Owner', foreignKey: 'ownerId' });
-// User.hasMany(Land, { foreignKey: 'ownerId' });
-
-// Requests
-
 Land.belongsToMany(User, { through: RequestLand, foreignKey: 'landId' });
 User.belongsToMany(Land, { through: RequestLand, foreignKey: 'userId' });
-RequestLand.belongsTo(User, { foreignKey: 'userId' });
-RequestLand.belongsTo(Land, { foreignKey: 'landId' });
 
-///////////////////////////////////////////other
-
-// User model association within the Sequelize define call
-// User.associate = function(models) {
-//   User.belongsToMany(models.Land, { through: models.RequestLand, foreignKey: 'userId' });
-// };
-
-// // Land model association within the Sequelize define call
-// Land.associate = function(models) {
-//   Land.belongsToMany(models.User, { through: models.RequestLand, foreignKey: 'landId' });
-//   Land.hasMany(models.Media, { as: 'images', foreignKey: 'LandId' });
-// };
-
-// // RequestLand model associations
-// // User model associations
-// User.associate = function(models) {
-//   User.belongsToMany(models.Land, { 
-//       through: models.RequestLand, 
-//       foreignKey: 'userId', // Explicitly defining the foreign key
-//       otherKey: 'landId'    // Define the other key in the relation
-//   });
-// };
-
-// // Land model associations
-// Land.associate = function(models) {
-//   Land.belongsToMany(models.User, { 
-//       through: models.RequestLand, 
-//       foreignKey: 'landId', // Explicitly defining the foreign key
-//       otherKey: 'userId'    // Define the other key in the relation
-//   });
- 
-// };
-
-// // RequestLand model associations
-// RequestLand.associate = function(models) {
-//   RequestLand.belongsTo(models.User, { 
-//       as: 'user', 
-//       foreignKey: 'userId' // Ensure this matches the 'foreignKey' in the belongsToMany association
-//   });
-//   RequestLand.belongsTo(models.Land, { 
-//       as: 'land', 
-//       foreignKey: 'landId' // Ensure this matches the 'foreignKey' in the belongsToMany association
-//   });
-// };
-
-
-///
-
-
-
-
-
-
-
-
-
-
-
-
-// RequestLand.belongsTo(Land, { foreignKey: 'landId' });
-// To access the RequestLand explicitly
-// Land.belongsTo(User, { as: 'Owner', foreignKey: 'ownerId' });
-// User.hasMany(Land, { foreignKey: 'ownerId' });
-
-// RequestLand.belongsTo(Land, { foreignKey: 'landId' });
-// Land.hasMany(RequestLand, { foreignKey: 'landId' });
-
-// RequestLand.belongsTo(User, { as: 'Requester', foreignKey: 'userId' });
-// User.hasMany(RequestLand, { foreignKey: 'userId' });
 
 
 /* **********************************************************house relationships******************************************** */
@@ -177,22 +91,15 @@ House.hasMany(View);
 View.belongsTo(House);
 House.hasMany(Media);
 Media.belongsTo(House);
-// House.hasMany(RequestHouse)
-// RequestHouse.belongsTo(House)
-House.belongsToMany(User, { through: RequestHouse,foreignKey: 'houseId' });
-User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'userId' });
+
+
+
+House.belongsToMany(User, { through: RequestHouse, foreignKey: 'houseId' });
+User.belongsToMany(House, { through: RequestHouse, foreignKey: 'userId' });
 
 
 
 
-
-
-
-
-Conversation.belongsTo(User, { as: "user1" });
-Conversation.belongsTo(User, { as: "user2" });
-Chat.belongsTo(Conversation);
-Conversation.hasMany(Chat);
 /* **********************************************************jointable relationships******************************************** */
 
 // Conversation.hasMany(User, { through: 'ConversationUser' });
@@ -215,7 +122,6 @@ Conversation.hasMany(Chat);
 // console.log('The table for the User model was just (re)created!');
 // }
 // test()
-// sequelize.sync({ force: true })
 // Export models and sequelize instance
 module.exports = {
   sequelize,
@@ -235,5 +141,6 @@ module.exports = {
   Climat,
   Conversation,
   Access,
+  
   
 };

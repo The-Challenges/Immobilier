@@ -40,7 +40,7 @@ exports.login = async (req, res) => {
 
     const token = jwt.sign({ id: user.userId, role: user.role }, jwtSecret, { expiresIn: "1000h" });
 
-    res.status(200).json({ token, user: { userId: user.userId, firstName: user.firstName, email: user.email } });
+    res.status(200).json({ token, user});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Login failed due to server error' });

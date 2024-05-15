@@ -14,18 +14,34 @@ import {
     Text,
     Alert
 } from 'react-native';
+import storage from '../components/Authentification/storage';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import axios from 'axios';
-
+import socket from '../components/request/socketserv'
 
 const { width } = Dimensions.get("screen");
 
 const HomeScreen = ({ navigation }) => {
+
     const [houses, setHouses] = useState([]);
     useEffect(() => {
         fetchHouses();
+        getUserId()
     }, []);
+  
+    const getUserId = async () => {
+        try {
+          const userData = await storage.load({ key: 'loginState' });
+          console.log(userData)
+          socket.emit('receiver', userData.user.id)
+
+        } catch (error) {
+          console.error('Failed to retrieve user data:', error);
+        }
+      };
+
 
     const fetchHouses = async () => {
         try {
