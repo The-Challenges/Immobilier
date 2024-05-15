@@ -33,6 +33,10 @@ import FilterScreen from "./src/screens/FilterScreen";
 import RecommendedScreen from "./src/screens/RecommendedScreen";
 import ResultsScreen from "./src/screens/ResultsScreen"
 import Chat from "./src/components/chat/chat";
+import FilterScreenLands from "./src/screens/FilterScreenLand";
+import ResultsScreenLand from "./src/screens/ResultsScreenLand";
+
+
 
 import SeeAllHouses from "./src/screens/SeeAllHouses";
 import SeeAllLands from "./src/screens/SeeAllLands";
@@ -100,10 +104,15 @@ function App() {
           <Stack.Screen name='ResultsScreen' component={ResultsScreen} options={{ headerShown: false }}  />
           <Stack.Screen name='SeeAllHouses'   component={SeeAllHouses} options={{ headerShown: false }}  />
           <Stack.Screen name='SeeAllLands' component={SeeAllLands} options={{ headerShown: false }}  />
+
           <Stack.Screen name='ViewDetailsLand' component={ViewDetailsLand}  options={{ headerShown: false }}  />
           <Stack.Screen name='ViewDetailsHouse' component={ViewDetailsHouse} options={{ headerShown: false }}  />
 
           <Stack.Screen name='ReceiverRequestsScreen' component={ReceiverRequestsScreen} options={{ headerShown: false }}  />
+
+          <Stack.Screen name='FilterScreenLands' component={FilterScreenLands} options={{ headerShown: false }}  />
+          <Stack.Screen name='ResultsScreenLand' component={ResultsScreenLand} options={{ headerShown: false }}  />
+
 
 
           <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }}  />

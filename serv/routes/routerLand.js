@@ -4,7 +4,10 @@ const db = require('../Model/index');
 const LandController = require('../controller/landController/land');
 
 router.get('/alllands',LandController.getAllLands)
+router.get('/filterlands',LandController.filterLands)
+
 router.post('/createlands',LandController.createlands)
+
 
 
 
@@ -35,4 +38,5 @@ router.post('/requests', async (req, res) => {
 });
 
 module.exports = router;
+
 

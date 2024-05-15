@@ -25,6 +25,7 @@ const app = express();
 
 
 // Middleware
+
 // app.use(cors({
 //     origin: 'http://192.168.11.50:4000',
 //     methods: ["GET", "POST"]
@@ -34,6 +35,7 @@ const app = express();
 //     req.io = io; 
 //     next();
 // })
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
