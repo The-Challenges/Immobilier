@@ -22,6 +22,21 @@ module.exports = {
             res.status(500).json({ error: `error fetching houses: ${error.message}` });
         }
     },
+
+
+     getHouseCoordinates : async (req, res) => {
+        try {
+            const coordinates = await db.House.findAll({
+                attributes: ['alt', 'long'], // Assuming 'alt' and 'long' are the fields for latitude and longitude
+                where: {} // Add conditions if necessary
+            });
+            res.json(coordinates);
+        } catch (error) {
+            console.error(`Error fetching house coordinates: ${error.message}`);
+            res.status(500).json({ error: `Error fetching house coordinates: ${error.message}` });
+        }
+    },
+    
     
     
     
