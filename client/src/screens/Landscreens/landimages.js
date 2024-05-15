@@ -1,32 +1,30 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker'; // Correct import for updated image picker
+import { launchImageLibrary } from 'react-native-image-picker';
 import axios from 'axios';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Ensure you have linked this library
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-// Function to handle the upload of images to Cloudinary
 const uploadImage = async (image) => {
     const formData = new FormData();
     formData.append('file', {
         uri: image.uri,
-        type: image.type || 'image/jpeg', // Default to jpeg if type not specified
+        type: image.type || 'image/jpeg',
         name: 'upload.jpg',
     });
-    formData.append('upload_preset', '2-xRNBOw4EyPDc33a22zd4s8Yqg'); // Replace with your Cloudinary upload preset
-    formData.append('cloud_name', 'Riadh88'); // Ensure you include cloud_name if required by your setup
+    formData.append('upload_preset', '439219526765747'); // Use your actual preset
     try {
-
         const response = await axios.post(`https://api.cloudinary.com/v1_1/dpxdxp4fj/image/upload`, formData);
-        console.log("response", response);
-        return response.data.url; // Assuming URL is the image path you need
+        return response.data.url;
     } catch (error) {
         console.error('Error uploading image: ', error);
+        Alert.alert('Upload Error', 'Failed to upload image.');
         throw error;
     }
 };
 
-function Screen4({ formData, handleChange, navigateToNext }) {
+function Screen4({ navigateToNext }) {
     const [selectedImages, setSelectedImages] = useState([]);
+    const [uploading, setUploading] = useState(false);
 
     const pickImage = () => {
         launchImageLibrary({
@@ -34,24 +32,25 @@ function Screen4({ formData, handleChange, navigateToNext }) {
             includeBase64: false,
             maxHeight: 200,
             maxWidth: 200,
-        }, (response) => {
+        }, async (response) => {
             if (response.didCancel) {
                 console.log('User cancelled image picker');
             } else if (response.error) {
                 console.log('ImagePicker Error: ', response.error);
             } else {
-                // Assuming you are handling the response and uploading to Cloudinary in uploadImage
-                uploadImage(response.assets[0])
-                    .then(imageUri => {
-                        console.log('Uploaded image URI:', imageUri);
-                        // Here you can update your state or do whatever is needed next
-                    })
-                    .catch(error => {
-                        console.error('Error uploading image:', error);
-                    });
+                setUploading(true);
+                try {
+                    const imageUri = await uploadImage(response.assets[0]);
+                    setSelectedImages(prev => [...prev, { uri: imageUri }]);
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                } finally {
+                    setUploading(false);
+                }
             }
         });
     };
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Image Upload</Text>
@@ -69,8 +68,9 @@ function Screen4({ formData, handleChange, navigateToNext }) {
                     ))
                 )}
             </ScrollView>
-            <TouchableOpacity style={styles.selectButton} onPress={pickImage}>
+            <TouchableOpacity style={styles.selectButton} onPress={pickImage} disabled={uploading}>
                 <Icon name="add-a-photo" size={24} color="#fff" />
+                {uploading && <Text>Uploading...</Text>}
             </TouchableOpacity>
             <TouchableOpacity style={styles.nextButton} onPress={navigateToNext}>
                 <Icon name="navigate-next" size={24} color="#fff" />
