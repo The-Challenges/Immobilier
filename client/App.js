@@ -173,6 +173,8 @@ import splash from "./src/components/Authentification/SplashScreen";
 import EditProfile from './src/screens/Profile/editProfile'
 import AddHouse from './src/components/profile/cratePosts/AddHouse'
 import AddLand from './src/components/profile/cratePosts/AddLand'
+import FilterScreenLands from "./src/screens/FilterScreenLand";
+import ResultsScreenLand from "./src/screens/ResultsScreenLand";
 
 
 import SeeAllHouses from "./src/screens/SeeAllHouses";
@@ -216,6 +218,8 @@ function App() {
           <Stack.Screen name='splash' component={splash} options={{ headerShown: false }}  />
           <Stack.Screen name='apartement' component={Apartment} options={{ headerShown: false }}  />
           <Stack.Screen name='Land' component={Lands} options={{ headerShown: false }}  />
+          <Stack.Screen name='FilterScreenLands' component={FilterScreenLands} options={{ headerShown: false }}  />
+          <Stack.Screen name='ResultsScreenLand' component={ResultsScreenLand} options={{ headerShown: false }}  />
 
 
           {/* <Stack.Screen name='ProfileDetails' component={ProfileDetails} /> */}
