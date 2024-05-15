@@ -213,5 +213,3 @@ module.exports = async (sequelize) => {
         )
 
 }
-
-

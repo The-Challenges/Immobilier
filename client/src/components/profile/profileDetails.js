@@ -32,7 +32,7 @@ const Action = ({ icon, title, onPress }) => (
         <View style={styles.iconContainer}>
           <Icon name={icon} size={23} color={'white'} />
         </View>
-        <Text style={styles.actionTitle}>{title}</Text>
+        <Icon name={'chevron-right'} size={25} color={'#15273F'} />
       </View>
       <Icon name={'chevron-right'} size={25} color={'#15273F'} />
     </View>
@@ -192,12 +192,19 @@ const UserProfile = ({ navigation }) => {
 
           <View style={styles.line}></View>
 
-          <Pressable onPress={() => navigation.navigate("Apartment")}>
-            <Action title={'Listings'} icon={'edit'} />
-          </Pressable>
+          <Action title={'Listings'} icon={'edit'} onPress={() => navigation.navigate("apartement")} />
+          <Action title={'Contact'} icon={'edit-location'} onPress={() => navigation.navigate("Contact")} />
+          <Action title={'Notifications'} icon={'notifications'} onPress={() => navigation.navigate("Notifications")} />
+          <Action title={'Edit Profile'} icon={'edit'} onPress={() => navigation.navigate("EditProfile")} />
+          <Action title={'My House Requests'} icon={'insert-invitation'} onPress={() => navigation.navigate("requeststatus")} />
+          <Action title={'My Lands Requests'} icon={'insert-invitation'} onPress={() => navigation.navigate("requeststatuslands")} />
 
           {/* Statistics display component */}
           {/* {statistics && <StatisticsDisplay stats={statistics} />} */}
+          <Action title={'Add House'} icon={'home'} onPress={() => navigation.navigate("AddHouse")} />
+          <Action title={'Add Land'} icon={'landscape'} onPress={() => navigation.navigate("AddLand")} />
+          <Action title={'Logout'} icon={'logout'} onPress={() => navigation.navigate("profile")} />
+
         </ScrollView>
       </View>
       <View contentContainerStyle={styles.container}>
