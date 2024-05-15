@@ -2,6 +2,16 @@ const { Sequelize } = require('sequelize');
 const db = require('./Model/index')
 const { faker ,Randomizer} = require('@faker-js/faker');
 const bcrypt =require("bcrypt")
+
+function counter(){
+  let count = 0
+  return function(){
+
+
+      return  count=count+1
+  
+  }
+}
 function getRandomElementFromArray(arr) {
     // Generate a random index within the bounds of the array
     const randomIndex = Math.floor(Math.random() * arr.length);
@@ -14,7 +24,7 @@ module.exports = async (sequelize) => {
     const houseCount = 100;
     const landCount = 75;
     const indoo = 1000
-  
+   
     // Generate random users
     const users = await Promise.all(
       Array.from({ length: userCount }).map(async () => {
@@ -32,26 +42,25 @@ module.exports = async (sequelize) => {
       })
     );
     const houses = await Promise.all(
-        Array.from({ length: houseCount }).map(async () => {
+      Array.from({ length: houseCount }).map(async () => {
           const user = users[Math.floor(Math.random() * userCount)];
           return await db.House.create({
-            title: faker.location.streetAddress(),
-            price: faker.commerce.price(),
-            numberbathrooms: faker.number.int({ min: 1, max: 5 }),
-            numberbedrooms: faker.number.int({ min: 1, max: 50 }),
-            garage: faker.datatype.boolean(),
-            parking: faker.datatype.boolean(),
-            alt:faker.location.latitude({ max: 10, min: -10, precision: 5 }), 
-            long:faker.location.longitude({ max: 10, min: -10 }),
-            purchaseoption:getRandomElementFromArray(['Finance','cash','Unknown']),
-            propretyType:getRandomElementFromArray(['Villa', 'Rural', 'Retirement Living','All types']),
-            houseAge:getRandomElementFromArray(['Established', 'New', 'All types']),
-            UserId: user.id, 
-           
+              title: faker.location.streetAddress(),
+              price: faker.commerce.price(),
+              numberbathrooms: faker.datatype.number({ min: 1, max: 5 }),
+              numberbedrooms: faker.datatype.number({ min: 1, max: 50 }),
+              garage: faker.datatype.boolean(),
+              parking: faker.datatype.boolean(),
+              alt: faker.location.latitude({ max: 10, min: -10, precision: 1 }),  // No decimals for latitude
+              long: faker.location.longitude({ max: 10, min: -10, precision: 1 }), // No decimals for longitude
+              purchaseoption: getRandomElementFromArray(['Finance', 'cash', 'Unknown']),
+              propretyType: getRandomElementFromArray(['Villa', 'Rural', 'Retirement Living', 'All types']),
+              houseAge: getRandomElementFromArray(['Established', 'New', 'All types']),
+              UserId: user.id,
           });
-        })
-      );
-      
+      })
+  );
+  
 
       const lands =await Promise.all(
         Array.from({ length: houseCount }).map(async () => {
@@ -142,7 +151,7 @@ module.exports = async (sequelize) => {
       const acees =await Promise.all(
         Array.from({ length: indoo }).map(async () => {
           const house = lands[Math.floor(Math.random() * landCount)];
-          return await db.View.create({
+          return await db.Access.create({
             options:getRandomElementFromArray(['Airport','Public transportation','Highway','road access','Unknown']),
             LandId:house.id
             
@@ -169,6 +178,32 @@ module.exports = async (sequelize) => {
              });
            })
          )
+
+         let counterany=counter()
+        const requestLands = await Promise.all(
+          Array.from({ length: 25 }).map(async () => {
+            const house = counterany();
+            const user = users[Math.floor(Math.random() * userCount)];
+
+            return await db.RequestLand.create({
+              landId:house,
+              userId:user.id
+              
+            });
+          })
+        );
+        const requestHouse =await Promise.all(
+          Array.from({ length: 25 }).map(async () => {
+            const house = counterany();
+            const user = users[Math.floor(Math.random() * userCount)];
+
+            return await db.RequestHouse.create({
+              houseId:house,
+              userId:user.id
+              
+            });
+          })
+        )
 
 }
 
