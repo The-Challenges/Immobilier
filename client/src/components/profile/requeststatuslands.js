@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
 import storage from '../Authentification/storage';
+import { API_AD } from '../../../config';
+
 
 const RequestStatus = ({ request, image }) => {
   const navigation = useNavigation();
@@ -66,7 +68,7 @@ const TestRequestStatus = () => {
 
   useEffect(() => {
     if (userId) {  
-      axios.get(`http://192.168.103.10:4000/api/request/${userId}/land`)
+      axios.get(`${API_AD}/api/request/${userId}/land`)
         .then(response => {
           if (response.data && Array.isArray(response.data.Lands)) {
             setLands(response.data.Lands);

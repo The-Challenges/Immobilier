@@ -1,5 +1,3 @@
-
-
 module.exports = (Sequelize, DataTypes) => {
   const View = Sequelize.define('View', {
    
@@ -9,6 +7,16 @@ module.exports = (Sequelize, DataTypes) => {
     },
  
   });
+
+  View.associate = function(models) {
+    View.belongsTo(models.Land, {
+        foreignKey: 'LandId',
+        as: 'land'  
+    });
+
+  }
+
+  
 
   return View;
 };

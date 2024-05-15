@@ -65,6 +65,7 @@ module.exports.getAllEstateByBuyer = async (req, res) => {
 // all house or land owned by user
 // all house or land owned by user
 module.exports.getAllEstateBySeller = async (req, res) => {
+  console.log("...........................................")
   try {
     const { userId, type } = req.params;
 

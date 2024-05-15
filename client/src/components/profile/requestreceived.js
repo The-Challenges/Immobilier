@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import storage from '../Authentification/storage';
+import { API_AD } from '../../../config';
 
 const FadeInView = ({ children, style }) => {
   const fadeAnim = new Animated.Value(0);
@@ -124,7 +125,7 @@ const RequestsList = () => {
 
   const fetchRequests = async (userId, savedStatuses) => {
     try {
-      const response = await axios.get(`http://192.168.103.10:4000/api/request/seller/${userId}/house`);
+      const response = await axios.get(`${API_AD}/api/request/seller/${userId}/house`);
       if (Array.isArray(response.data)) {
         const housesWithRequests = response.data.map(house => ({
           ...house,
@@ -142,7 +143,7 @@ const RequestsList = () => {
 
   const handleStatusChange = async (id, status) => {
     try {
-      await axios.post(`http://192.168.103.10:4000/api/request/updateStatus/${id}`, { status });
+      await axios.post(`${API_AD}/api/request/updateStatus/${id}`, { status });
       const updatedRequests = requests.map((request) => {
         if (request.id === id) {
           return {

@@ -1,14 +1,23 @@
-// PropertyTypeSelector.js
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import COLORS from '../../consts/colors';
+import { useNavigation } from '@react-navigation/native';
+
 
 const PropertySelector = ({ selectedType, onSelectType }) => {
+    const navigation = useNavigation();  // Get navigation object using the hook
+
     const propertyTypes = [
         { label: 'House', value: 'house', icon: require('../../assets/maison.png') },
         { label: 'Land', value: 'land', icon: require('../../assets/land.png') },
-        // Add more types as needed
     ];
+
+    const handlePress = (type) => {
+        onSelectType(type.value);
+        if (type.value === 'land') {
+            navigation.navigate('FilterScreenLands'); 
+          }
+    };
 
     return (
         <View style={styles.typeContainer}>
@@ -19,7 +28,7 @@ const PropertySelector = ({ selectedType, onSelectType }) => {
                         styles.typeButton,
                         selectedType === type.value ? styles.typeButtonSelected : {}
                     ]}
-                    onPress={() => onSelectType(type.value)}
+                    onPress={() => handlePress(type)}
                 >
                     <Image source={type.icon} style={styles.typeIcon} />
                     <Text style={styles.typeText}>
@@ -43,7 +52,7 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     typeButtonSelected: {
-        backgroundColor: COLORS.lightgrey,  
+        backgroundColor: COLORS.lightgrey,
     },
     typeIcon: {
         width: 50,

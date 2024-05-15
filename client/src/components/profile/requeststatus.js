@@ -5,6 +5,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import { API_AD } from '../../../config';
+
 
 import storage from '../Authentification/storage';
 
@@ -66,7 +68,7 @@ const TestRequestStatus = () => {
 
   useEffect(() => {
     if (userId) {  
-      axios.get(`http://192.168.103.10:4000/api/request/${userId}/house`)
+      axios.get(`${API_AD}/api/request/${userId}/house`)
         .then(response => {
           if (response.data && Array.isArray(response.data.Houses)) {
             setHouses(response.data.Houses);
