@@ -45,7 +45,7 @@ const HomeScreen = ({ navigation }) => {
             return nextIndex;
           }
         });
-      }, 3000); // Change slide every 3 seconds
+      }, 2000); 
       return () => clearInterval(interval);
     }
   }, [loading, houses]);
