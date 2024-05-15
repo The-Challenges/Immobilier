@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import {API_AD} from '../../config';
+
 import {
     StyleSheet,
     View,
@@ -25,7 +27,7 @@ export default function SeeAllLands({ navigation }) {
     const fetchLands = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://192.168.103.5:4000/api/land/alllands');
+            const response = await axios.get(`${API_AD}/api/land/alllands`);
             setLands(response.data);
             setLoading(false);
         } catch (error) {

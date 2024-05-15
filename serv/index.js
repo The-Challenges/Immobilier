@@ -17,12 +17,12 @@ const messageHistory = {};
 const usersRooms = {}; 
 
 // Middleware
+
 app.use(cors({
-
-    origin: 'http://192.168.103.16:4000',
-
+    origin: 'http://192.168.103.18:4000',
     methods: ["GET", "POST"]
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/../client/dist'));
