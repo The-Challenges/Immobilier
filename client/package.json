@@ -31,15 +31,22 @@
     "react-native": "0.74.0",
     "react-native-elements": "^3.4.3",
 
-    "react-native-app-intro-slider": "^4.0.4",
-
-    "react-native-gesture-handler": "^2.16.0",
-    "react-native-image-picker": "^7.1.2",
+    "react-native-geocoding": "^0.5.0",
+    "react-native-gesture-handler": "^2.16.2",
+    "react-native-get-location": "^4.0.1",
+    "react-native-google-places-autocomplete": "^2.5.6",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-maps": "^1.15.1",
+    "react-native-maps-directions": "^1.9.0",
+
+
+ 
+    "react-native-image-picker": "^7.1.2",
+
     "react-native-modal": "^13.0.1",
     "react-native-paper": "^5.12.3",
     "react-native-range-slider": "^0.1.2",
+    "react-native-reanimated": "^3.11.0",
     "react-native-safe-area-context": "^4.10.1",
     "react-native-screens": "^3.31.1",
     "react-native-segmented-control-tab": "^4.0.0",
@@ -47,6 +54,7 @@
     "react-native-storage": "^1.0.1",
     "react-native-swiper-flatlist": "^3.2.4",
     "react-native-vector-icons": "^10.1.0",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5"
   },

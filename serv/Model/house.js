@@ -27,12 +27,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         },
-        alt: {
-            type: DataTypes.FLOAT
-        },
-        long: {
-            type: DataTypes.FLOAT
-        },
+
+        alt: DataTypes.DECIMAL(9, 6),
+
+        long: DataTypes.DECIMAL(9, 6),
+
         purchaseoption: {
             type: DataTypes.ENUM('Finance', 'cash', 'Unknown'),
             defaultValue: "Unknown"
@@ -54,9 +53,13 @@ module.exports = (sequelize, DataTypes) => {
         });
         House.hasMany(models.Indoor, {
             foreignKey: 'HouseId',
-            as: 'indoorOptions'
+            as: 'indoorOption'
         });
     };
 
     return House;
-}
+
+};
+
+
+

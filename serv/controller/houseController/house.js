@@ -5,25 +5,53 @@ module.exports = {
     getAllHouses: async (req, res) => {
         try {
             const houses = await db.House.findAll({
-                include: [{
-                    model: db.Media,
-                    // as: 'images', 
-                    attributes: ['type', 'name', 'link'] 
-                }]
+                include: [
+                    {
+                        model: db.Media,
+                        attributes: ['type', 'name', 'link'] 
+                    },
+                    {
+                        model: db.Indoor,
+                        attributes: ['options'] 
+                    }
+                    
+                ]
             });
             res.json(houses);
         } catch (error) {
             res.status(500).json({ error: `error fetching houses: ${error.message}` });
         }
     },
+
+
+     getHouseCoordinates : async (req, res) => {
+        try {
+            const coordinates = await db.House.findAll({
+                attributes: ['alt', 'long'], // Assuming 'alt' and 'long' are the fields for latitude and longitude
+                where: {} // Add conditions if necessary
+            });
+            res.json(coordinates);
+        } catch (error) {
+            console.error(`Error fetching house coordinates: ${error.message}`);
+            res.status(500).json({ error: `Error fetching house coordinates: ${error.message}` });
+        }
+    },
+    
+    
     
     
     createHouses: async (req, res) => {
         const newHouses = req.body.houses;
+        if (!Array.isArray(newHouses) || newHouses.length === 0) {
+            return res.status(400).json({
+                error: "Invalid input: Expected an array of houses."
+            });
+        }
+    
         try {
             const createdHouses = await db.House.bulkCreate(newHouses, {
-                validate: true,  
-                individualHooks: true 
+                validate: true,
+                individualHooks: true
             });
             res.status(201).json({
                 message: "Houses created successfully",
@@ -36,6 +64,7 @@ module.exports = {
             });
         }
     },
+    
 
     filterHouses: async (req, res) => {
         const {
