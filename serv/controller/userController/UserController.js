@@ -18,7 +18,6 @@ exports.signup = async (req, res) => {
     throw error
   }
 }
-
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -28,7 +27,6 @@ exports.login = async (req, res) => {
     const user = await db.User.findOne({ where: { email } });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
-
     }
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
@@ -36,11 +34,13 @@ exports.login = async (req, res) => {
     }
 
 
+
     const jwtSecret = process.env.JWT_SECRET; 
 
     const token = jwt.sign({ id: user.userId, role: user.role }, jwtSecret, { expiresIn: "1000h" });
 
     res.status(200).json({ token, user});
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Login failed due to server error' });

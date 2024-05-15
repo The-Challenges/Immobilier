@@ -8,9 +8,9 @@ const Search = () => {
 
   const handleValueChange = (value) => {
     switch (value) {
-      case 'house':
-        navigation.navigate('Listings'); // Navigate to Listings screen for walking
-        break;
+      // case 'house':
+      //   navigation.navigate('Listings'); // Navigate to Listings screen for walking
+      //   break;
       case 'apartment':
         navigation.navigate('Apartment'); // Navigate to Apartment for transit
         break;
@@ -28,10 +28,10 @@ const Search = () => {
         value=""
         onValueChange={handleValueChange} // Call handleValueChange on segment value change
         buttons={[
-          {
-            value: 'house',
-            label: 'House',
-          },
+          // {
+          //   value: 'house',
+          //   label: 'House',
+          // },
           {
             value: 'apartment',
             label: 'Apartment',

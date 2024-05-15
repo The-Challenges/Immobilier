@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
+
 import { StyleSheet, View, FlatList, Text, Alert, ActivityIndicator , Image} from 'react-native';
+
 
 
 import axios from 'axios';
@@ -40,7 +42,9 @@ const navigateDetails=(item)=>{
     const fetchLands = async () => {
         setLoading(true);
         try {
+
             const response = await axios.get(`${API_AD}/api/land/alllands`);
+
             setLands(response.data);
 
         } catch (error) {
@@ -61,6 +65,7 @@ const navigateDetails=(item)=>{
             <Card>
                 <Card.Title>{item.title}</Card.Title>
                 <Card.Image source={{ uri: imageUrl }} style={styles.cardImage} />
+
                 <LandDetailIcon icon="cash-multiple" color={COLORS.green} text={`Price: $${item.price}`} />
                 <LandDetailIcon icon="texture" color={COLORS.orange} text={`Size: ${item.size} acres`} />
                 <LandDetailIcon icon="image-area" color={COLORS.blue} text={`Terrain Type: ${item.TerrainType}`} />
@@ -74,6 +79,7 @@ const navigateDetails=(item)=>{
                     buttonStyle={styles.button}
                     onPress={() =>navigateDetails(item) }
                 />
+
             </Card>
         );
     };
@@ -97,8 +103,10 @@ const navigateDetails=(item)=>{
         <View style={{ flex: 1, backgroundColor: COLORS.white }}>
             <FlatList
                 data={lands}
+
                 keyExtractor={(item) => `${item.id}`}
                 renderItem={renderLandCard}
+
                 contentContainerStyle={styles.listContainer}
             />
         </View>
@@ -126,12 +134,33 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontSize: 16,
     },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 10
+    },
     button: {
         backgroundColor: COLORS.primary,
         borderRadius: 5,
+
+        width: '48%'
+    },
+    allRequestsButton: {
+        backgroundColor: COLORS.primary,
+        borderRadius: 5,
+        width: '48%',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    allRequestsText: {
+        color: COLORS.white,
+        fontWeight: 'bold',
+        fontSize: 14
+
         marginLeft: 0,
         marginRight: 0,
         marginBottom: 0,
+
     },
     loader: {
         flex: 1,

@@ -1,6 +1,3 @@
-
-
-
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -51,11 +48,22 @@ import splach from './src/components/Authentification/SplashScreen'
 import EditProfile from './src/screens/Profile/editProfile';
 import AddLand from './src/components/profile/cratePosts/AddLand'
 import AddHouse from './src/components/profile/cratePosts/AddHouse'
+
+import Received from "./src/components/profile/requestreceived"
+
+import UserProfile from "./src/components/UserProfile/UserProfile"
+
+import requestreceivedlands from "./src/components/profile/requestreceivedlands"
+import requeststatus from "./src/components/profile/requeststatus"
+import requeststatuslands from "./src/components/profile/requeststatuslands"
+
+
 // import Request from './src/components/request/request';
 import TermsAndConditions from './src/components/request/sendRe/TermsAndConditions'
 import socketserv from './src/components/request/socketserv';
 import ViewDetailsLand from './src/viewDetLand'
 import ViewDetailsHouse from './src/viewDetHouse'
+
 
 import ReceiverRequestsScreen from './src/components/request/sendRe/responseReq'
 
@@ -116,11 +124,22 @@ function App() {
 
 
           <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }}  />
+          <Stack.Screen name='UserProfile' component={UserProfile} options={{ headerShown: false }}  />
+
+          <Stack.Screen name='Received' component={Received} options={{ headerShown: false }}  />
+          <Stack.Screen name='requestreceivedlands' component={requestreceivedlands} options={{ headerShown: false }}  />
+          <Stack.Screen name='requeststatus' component={requeststatus} options={{ headerShown: false }}  />
+          <Stack.Screen name='requeststatuslands' component={requeststatuslands} options={{ headerShown: false }}  />
+
+
+
+
+
           <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }}  />
           <Stack.Screen name='splash' component={splach} options={{ headerShown: false }}  />
           <Stack.Screen name='apartement' component={Apartment} options={{ headerShown: false }}  />
           <Stack.Screen name='Land' component={Lands} options={{ headerShown: false }}  />
-         {/* <Stack.Screen name='ProfileDetails' component={ProfileDetails} /> */}
+
           <Stack.Screen name='EditProfile' component={EditProfile} />
           <Stack.Screen name='AddHouse' component={AddHouse} />
           <Stack.Screen name='AddLand' component={AddLand} />

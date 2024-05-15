@@ -33,7 +33,9 @@ const SeeAllHouses = ({ navigation }) => {
   const fetchHouses = async () => {
     setLoading(true);
     try {
+
       const response = await axios.get(`${API_AD}/api/house/allhouses`);
+
       setHouses(response.data);
       console.log(response.data);
       setLoading(false);
@@ -63,12 +65,14 @@ const SeeAllHouses = ({ navigation }) => {
           <Icon name="shower" size={20} color={COLORS.purple} />
           <Text style={[styles.detailText, {color: COLORS.purple}]}>Bathrooms: {house.numberbathrooms}</Text>
         </View>
+
         <Button
           icon={<Icon name="arrow-right" size={15} color="white" />}
           title=" View Details"
           buttonStyle={styles.button}
           onPress={() => navigation.navigate('ViewDetailsHouse', { house:houses ,UserId:house.UserId,info:{firstName:house.User.firstName,email:house.User.email,phoneNumber:house.User.phoneNumber  }  })}
         />
+
       </Card>
     );
   };
@@ -84,9 +88,6 @@ const SeeAllHouses = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar backgroundColor={COLORS.white} barStyle='dark-content' />
-      <TouchableOpacity style={styles.backIcon} onPress={() => navigation.goBack()}>
-        <Icon name="arrow-back" size={24} color={COLORS.dark} />
-      </TouchableOpacity>
       <FlatList
         data={houses}
         keyExtractor={item => `${item.id}`}
@@ -124,23 +125,39 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10
+  },
   button: {
     backgroundColor: COLORS.primary,
-    borderRadius: 5
+    borderRadius: 5,
+    width: 100, 
+    height: 30, 
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  allRequestsButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 5,
+    width: 100, 
+    height: 30, 
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  allRequestsText: {
+    color: COLORS.white,
+    fontWeight: 'bold',
+    fontSize: 14 // Adjust the font size here
   },
   loader: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: COLORS.white
-  },
-  backIcon: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    padding: 10,
-    zIndex: 10  // Ensure it's clickable over other elements if necessary
   }
 });
+
 
 export default SeeAllHouses;

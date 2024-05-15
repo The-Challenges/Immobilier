@@ -77,6 +77,9 @@ const UserProfile = ({ navigation }) => {
           <Action title={'Contact'} icon={'edit-location'} onPress={() => navigation.navigate("Contact")} />
           <Action title={'Notifications'} icon={'notifications'} onPress={() => navigation.navigate("Notifications")} />
           <Action title={'Edit Profile'} icon={'edit'} onPress={() => navigation.navigate("EditProfile")} />
+          <Action title={'My House Requests'} icon={'insert-invitation'} onPress={() => navigation.navigate("requeststatus")} />
+          <Action title={'My Lands Requests'} icon={'insert-invitation'} onPress={() => navigation.navigate("requeststatuslands")} />
+
           <Action title={'Add House'} icon={'home'} onPress={() => navigation.navigate("AddHouse")} />
           <Action title={'Add Land'} icon={'landscape'} onPress={() => navigation.navigate("AddLand")} />
           <Action title={'Logout'} icon={'logout'} onPress={() => navigation.navigate("profile")} />

@@ -1,16 +1,18 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-module.exports = (sequelize, DataTypes) => {
-    const House = sequelize.define('House', {
+module.exports = (Sequelize, DataTypes) => {
+    const House = Sequelize.define('House', {
+ 
         title: DataTypes.STRING,
         price: {
             type: DataTypes.INTEGER,
-            defaultValue: 0
+            defaultValue:0
         },
         numberbathrooms: {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
+        
         numberbedrooms: {
             type: DataTypes.INTEGER,
             defaultValue: 0
@@ -23,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         },
+
         isVerified: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
@@ -60,6 +63,7 @@ module.exports = (sequelize, DataTypes) => {
     return House;
 
 };
+
 
 
 

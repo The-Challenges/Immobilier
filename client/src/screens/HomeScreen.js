@@ -45,14 +45,21 @@ const HomeScreen = ({ navigation }) => {
   
     const getUserId = async () => {
         try {
+
+            const response = await axios.get('http://192.168.103.10:4000/api/house/allhouses');
+            console.log("Houses fetched:", response.data);
+            setHouses(response.data);
+
           const userData = await storage.load({ key: 'loginState' });
           console.log(userData)
           socket.emit('receiver', userData.user.id)
+
 
         } catch (error) {
           console.error('Failed to retrieve user data:', error);
         }
       };
+
 
 
     
@@ -310,5 +317,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-export default HomeScreen
 
+
+export default HomeScreen;
