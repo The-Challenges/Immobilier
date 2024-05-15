@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } fro
 import axios from 'axios';
 import { Button, IconButton } from 'react-native-paper';
 import storage from './storage';
-
+import { API_AD } from '../../../config';
 const Signin = ({ navigation }) => {
   const navigateToSignup = () => {
     navigation.navigate('Signup');
@@ -13,17 +13,25 @@ const Signin = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.11.15:4000/api/auth/login', { email, password });
+      const response = await axios.post(`${API_AD}/api/auth/login`, { email, password });
       if (response.data && response.data.user) {
         const { user, token } = response.data;
         await storage.save({ key: 'loginState', data: { token, user } });
         navigation.navigate('HomeTabs');
+
       } else {
         Alert.alert('Login failed', 'No user data found in response');
       }
     } catch (error) {
       console.error(error);
+
       Alert.alert('Login failed', 'An unexpected error occurred');
+
+      if (error.response) {
+        Alert.alert('Login failed', error.response.data.message);
+      } else {
+        Alert.alert('Login failed', 'An unexpected error occurred');
+      }
     }
   };
   

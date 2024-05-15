@@ -62,6 +62,7 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+
   const ListOptions = () => {
     const optionsList = [
       {
@@ -282,5 +283,4 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-
-export default HomeScreen;
+export default HomeScreen

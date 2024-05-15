@@ -50,17 +50,25 @@ const FilterScreen = ({ navigation }) => {
 
   const fetchFilteredHouses = async () => {
     try {
+
       const response = await axios.get('http://192.168.103.18:4000/api/house/filterhouses', {
+
         params: {
           priceMin,    
           priceMax,   
           bedrooms,    
           bathrooms,   
+
           areaMin,     
           areaMax,     
           hasGarage,
           hasParking,  
           isVerified,
+
+          // hasGarage,   
+          // hasParking,  
+          // isVerified,  
+
           purchaseOption, 
           propertyType,   
           houseAge,  
