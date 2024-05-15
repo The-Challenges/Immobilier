@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import axios from 'axios';
 import { Button, IconButton } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import storage from './storage';
 import { API_AD } from '../../../config';
 const Signin = ({ navigation }) => {
@@ -13,10 +14,13 @@ const Signin = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
+
       const response = await axios.post(`${API_AD}/api/auth/login`, { email, password });
       if (response.data && response.data.user) {
         const { user, token } = response.data;
+        console.log(user.userId); // Make sure this logs the expected value
         await storage.save({ key: 'loginState', data: { token, user } });
+        
         navigation.navigate('HomeTabs');
 
       } else {

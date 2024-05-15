@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes, Op } = require('sequelize');
+const { Sequelize, DataTypes, Op, Model } = require('sequelize');
 const db = require('../../Model/index');
 
 module.exports = {
@@ -6,16 +6,37 @@ module.exports = {
         try {
             const houses = await db.House.findAll({
                 include: [
-                    {
-                        model: db.Media,
-                        attributes: ['type', 'name', 'link'] 
-                    },
-                    {
-                        model: db.Indoor,
-                        attributes: ['options'] 
-                    }
+
+                {
+                model: db.Media,
+                    attributes: ['type', 'name', 'link'] 
+                },
+             
+                {
+                    model: db.User,
+                    attributes: ['firstName', 'email', 'phoneNumber']
+                },
+                {
+                    model: db.View,
+                
+                },
+                // {
+                //     model: db.Climat,
                     
-                ]
+                // },
+                // {
+                //     model: db.Outdoor, 
+                // },
+                {
+                    model:db.Indoor,
+                   
+                },
+               
+            
+            
+            ]
+
+
             });
             res.json(houses);
         } catch (error) {

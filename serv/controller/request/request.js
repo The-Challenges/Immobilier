@@ -4,39 +4,47 @@ const db = require('../../Model/index');
 const express = require('express');
 const router = express.Router();
 
-module.exports.createRequset=async(req,res)=>{
+module.exports.createRequest = async (req, res) => {
   try {
-    const { userId, estateId ,type} = req.params
-    if(type==="land"){
-      
-      const creotor= await db.RequestLand.create({
-        landId:estateId,
-        userId:user.id
-        
-      });
-    return   res.status(200).send({ message: 'Request sent successfully' });
-       
+    const { userId, houseId, type } = req.params;
+// console.log(params,'aa');
+    // console.log('Estate ID:', estateId);
+
+    // if (!userId || !estateId) {
+    //   return res.status(400).send({ error: 'Missing userId or estateId' });
+    // }
+
+    if (type === "land") {
+      const creator = await db.RequestLand.create({
+        landId: houseId,
+        userId: userId
+      })
+      return res.status(200).send({ message: 'Request sent successfully' });
     }
-    if(type==="house"){
-      
-      const creotor= await db.RequestHouse.create({
-        houseId:estateId,
-        userId:user.id
-        
+
+    else if (type === "house") {
+      const creator = await db.RequestHouse.create({
+        houseId: houseId,
+        userId: userId,
       });
-    return   res.status(201).send({ message: 'Request sent successfully' });
-  }
-    } catch (error) {
-    
+
+      return res.status(201).send({ message: 'Request sent successfully' });
+    } else {
+      return res.status(400).send({ error: 'Invalid request type specified' });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ error: 'Error in the request', details: error.message });
   }
 }
+
 
 module.exports.getAllEstateByBuyer=async(req,res)=>{
   try {
     console.log(req.params)
     const { userId,type} = req.params
     if(type==="land"){
-      
+      console.log('Creating house request with estate ID:', estateId, 'and user ID:', userId);
       const creotor= await db.RequestLand.findAll({
       where:{
         userId:userId,

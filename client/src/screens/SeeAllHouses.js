@@ -17,6 +17,8 @@ import axios from 'axios';
 import COLORS from '../consts/colors';
 import { Card, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { API_AD } from '../../config';
+
 
 const { width } = Dimensions.get("window");
 
@@ -33,6 +35,7 @@ const SeeAllHouses = ({ navigation }) => {
     try {
       const response = await axios.get(`${API_AD}/api/house/allhouses`);
       setHouses(response.data);
+      console.log(response.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -42,6 +45,7 @@ const SeeAllHouses = ({ navigation }) => {
   };
 
   const HouseCard = ({ house }) => {
+   
     const imageUrl = house.Media && house.Media.length > 0 ? house.Media[0].link : 'https://via.placeholder.com/400x200.png?text=No+Image+Available';
     return (
       <Card containerStyle={styles.card}>
@@ -63,7 +67,7 @@ const SeeAllHouses = ({ navigation }) => {
           icon={<Icon name="arrow-right" size={15} color="white" />}
           title=" View Details"
           buttonStyle={styles.button}
-          onPress={() => navigation.navigate('DetailsScreen', { house })}
+          onPress={() => navigation.navigate('ViewDetailsHouse', { house:houses ,UserId:house.UserId,info:{firstName:house.User.firstName,email:house.User.email,phoneNumber:house.User.phoneNumber  }  })}
         />
       </Card>
     );

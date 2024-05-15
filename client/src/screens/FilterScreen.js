@@ -19,6 +19,7 @@ import TransactionTypeSelector from '../components/TransactionTypeSelector/Trans
 import PropertySelector from '../components/PropertySelector/PropertySelector';
 import { Picker } from '@react-native-picker/picker';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import { API_AD } from '../../config';
 
 
 import COLORS from '../consts/colors';
@@ -51,7 +52,7 @@ const FilterScreen = ({ navigation }) => {
   const fetchFilteredHouses = async () => {
     try {
 
-      const response = await axios.get('http://192.168.103.18:4000/api/house/filterhouses', {
+      const response = await axios.get(`${API_AD}/api/house/filterhouses`, {
 
         params: {
           priceMin,    
