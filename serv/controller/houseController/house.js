@@ -5,7 +5,19 @@ const media = require('../../Model/media');
 module.exports = {
     getAllHouses: async (req, res) => {
         try {
-            const houses = await db.House.findAll();
+            const houses = await db.House.findAll({
+                include: [
+                    {
+                        model: db.Media,
+                        attributes: ['type', 'name', 'link'] 
+                    },
+                    {
+                        model: db.Indoor,
+                        attributes: ['options'] 
+                    }
+                    
+                ]
+            });
             res.json(houses);
         } catch (error) {
             console.error('Error fetching houses:', error);

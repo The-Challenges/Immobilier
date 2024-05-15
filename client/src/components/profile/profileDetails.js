@@ -192,13 +192,9 @@ const UserProfile = ({ navigation }) => {
 
           <View style={styles.line}></View>
 
-          <Action title={'Listings'} icon={'edit'} onPress={() => navigation.navigate("Listings")} />
-          <Action title={'Contact'} icon={'edit-location'} onPress={() => navigation.navigate("Contact")} />
-          <Action title={'Notifications'} icon={'notifications'} onPress={() => navigation.navigate("Notifications")} />
-          <Action title={'Edit Profile'} icon={'edit'} onPress={() => navigation.navigate("EditProfile")} />
-          <Action title={'Add House'} icon={'home'} onPress={() => navigation.navigate("AddHouse")} />
-          <Action title={'Add Land'} icon={'landscape'} onPress={() => navigation.navigate("AddLand")} />
-          <Action title={'Logout'} icon={'logout'} onPress={() => navigation.navigate("profile")} />
+          <Pressable onPress={() => navigation.navigate("Apartment")}>
+            <Action title={'Listings'} icon={'edit'} />
+          </Pressable>
 
           {/* Statistics display component */}
           {/* {statistics && <StatisticsDisplay stats={statistics} />} */}

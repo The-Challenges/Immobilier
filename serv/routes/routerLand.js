@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const LandController = require('../controller/landController/land');
 
-router.get('/all', LandController.getAllHouses);
+router.get('/all', LandController.getAllLands);
 router.post('/postMany', LandController.insertAllHouses);
 router.post('/AddLand', LandController.addLand);
 router.post('/AddAccess/:landId', LandController.addAccessToLand);

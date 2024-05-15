@@ -1,21 +1,40 @@
+const { DataTypes } = require('sequelize');
 
+module.exports = (sequelize) => {
+    const Media = sequelize.define('Media', {
+        type: {
+            type: DataTypes.ENUM('pdf', 'jpg', 'png')
+        },
+        name: DataTypes.STRING,
+        link: DataTypes.STRING,
+        
+        HouseId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'Houses',
+                key: 'id'
+            }
+        },
 
-module.exports = (Sequelize, DataTypes) => {
-  const Media = Sequelize.define('Media', {
-   type:{
-    type: DataTypes.ENUM('pdf','jpg','png'),
-   
-   },
-name:{
-    type: DataTypes.STRING,
-  
-},
-link:{
-    type: DataTypes.STRING,
-  
-}
- 
-  });
+        LandId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'Lands',
+                key: 'id'
+            }
+        }
+    });
 
-  return Media;
+    Media.associate = function(models) {
+        Media.belongsTo(models.House, {
+            foreignKey: 'HouseId',
+            as: 'house'  
+        });
+        
+        Media.belongsTo(models.Land, {
+            foreignKey: 'LandId',
+            as: 'land'  
+        });
+    };
+    return Media;
 };

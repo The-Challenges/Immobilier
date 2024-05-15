@@ -1,12 +1,23 @@
 const db = require('../../Model/index');
 
 module.exports = {
-    getAllHouses: async (req, res) => {
+    getAllLands: async (req, res) => {
         try {
-            const houses = await db.Land.findAll();
-            res.json(houses);
+            const lands = await db.Land.findAll({
+                include: [
+                    {
+                        model: db.Media, 
+                        attributes: ['type', 'name', 'link'],
+                    },
+                    {
+                        model: db.View, 
+                        attributes: ['options'], 
+                    }
+                ]
+            });
+            res.json(lands);
         } catch (error) {
-            res.status(500).json({ error: `Error fetching houses: ${error.message}` });
+            res.status(500).json({ error: `Error fetching lands: ${error.message}` });
         }
     },
     
@@ -153,4 +164,5 @@ module.exports = {
             res.status(500).json({ success: false, message: "Failed to add view to land", error: error.message });
         }
     }
+    
 };
