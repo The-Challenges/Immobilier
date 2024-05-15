@@ -155,7 +155,7 @@ import FilterScreen from "./src/screens/FilterScreen";
 import RecommendedScreen from "./src/screens/RecommendedScreen";
 import ResultsScreen from "./src/screens/ResultsScreen"
 import Chat from "./src/components/chat/chat";
-
+import UserProfile from './src/components/profile/profileDetails';
 
 import SeeAllHouses from "./src/screens/SeeAllHouses";
 import SeeAllLands from "./src/screens/SeeAllLands";
