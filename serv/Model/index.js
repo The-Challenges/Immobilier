@@ -35,17 +35,17 @@ const House = require('./house')(sequelize, DataTypes);
 const Land = require('./land')(sequelize, DataTypes);
 const Notification = require('./notification')(sequelize, DataTypes);
 const Conversation = require('./conversation')(sequelize, DataTypes)
-const Media =require('./media')(sequelize,DataTypes)
-const Indoor =require('./indoorOption')(sequelize,DataTypes)
+const Media = require('./media')(sequelize, DataTypes)
+const Indoor = require('./indoorOption')(sequelize, DataTypes)
 
-const Outdoor =require('./outdoorOptions')(sequelize,DataTypes)
+const Outdoor = require('./outdoorOptions')(sequelize, DataTypes)
 
-const View =require('./viewOption')(sequelize,DataTypes)
-const Climat =require('./climate')(sequelize,DataTypes)
-const Comment =require('./comment')(sequelize,DataTypes)
-const Access =require('./accesOption')(sequelize,DataTypes)
-const RequestHouse =require('./requestHouse')(sequelize,DataTypes)
-const RequestLand =require('./requestLand')(sequelize,DataTypes)
+const View = require('./viewOption')(sequelize, DataTypes)
+const Climat = require('./climate')(sequelize, DataTypes)
+const Comment = require('./comment')(sequelize, DataTypes)
+const Access = require('./accesOption')(sequelize, DataTypes)
+const RequestHouse = require('./requestHouse')(sequelize, DataTypes)
+const RequestLand = require('./requestLand')(sequelize, DataTypes)
 
 
 
@@ -81,7 +81,7 @@ Land.hasMany(Comment);
 Comment.belongsTo(Land);
 
 Land.belongsToMany(User, { through: RequestLand, foreignKey: 'landId' });
-User.belongsToMany(Land, { through: RequestLand , foreignKey: 'userId'});
+User.belongsToMany(Land, { through: RequestLand, foreignKey: 'userId' });
 
 
 /* **********************************************************house relationships******************************************** */
@@ -98,8 +98,8 @@ View.belongsTo(House);
 House.hasMany(Media);
 Media.belongsTo(House);
 
-House.belongsToMany(User, { through: RequestHouse,foreignKey: 'landId' });
-User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'landId' });
+House.belongsToMany(User, { through: RequestHouse, foreignKey: 'landId' });
+User.belongsToMany(House, { through: RequestHouse, foreignKey: 'landId' });
 
 
 
@@ -120,9 +120,9 @@ User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'landId' });
 
 // Conversation.hasMany(Chat);
 // Chat.belongsTo(Conversation);
-// async function  test(params) {
+// async function test(params) {
 //   await sequelize.sync({ force: true });
-// console.log('The table for the User model was just (re)created!');
+//   console.log('The table for the User model was just (re)created!');
 // }
 // test()
 
@@ -136,7 +136,7 @@ module.exports = {
   House,
   Land,
   Notification,
-  Media,Comment,
+  Media, Comment,
   Indoor,
   Outdoor,
   View,
@@ -145,5 +145,5 @@ module.exports = {
   Climat,
   Conversation,
   Access,
-  
+
 };

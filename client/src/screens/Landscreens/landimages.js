@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker'; // Correct import for updated image picker
 import axios from 'axios';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // You can choose any icon set
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Ensure you have linked this library
 
 // Function to handle the upload of images to Cloudinary
-const uploadImage = async (uri) => {
+const uploadImage = async (image) => {
     const formData = new FormData();
     formData.append('file', {
-        uri,
-        type: 'image/jpeg', // Adjust the MIME type as necessary
+        uri: image.uri,
+        type: image.type || 'image/jpeg', // Default to jpeg if type not specified
         name: 'upload.jpg',
     });
-    formData.append('upload_preset', 'your_upload_preset'); // Replace with your Cloudinary upload preset
-
+    formData.append('upload_preset', '2-xRNBOw4EyPDc33a22zd4s8Yqg'); // Replace with your Cloudinary upload preset
+    formData.append('cloud_name', 'Riadh88'); // Ensure you include cloud_name if required by your setup
     try {
-        const response = await axios.post('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', formData);
-        return response.data;
+
+        const response = await axios.post(`https://api.cloudinary.com/v1_1/dpxdxp4fj/image/upload`, formData);
+        console.log("response", response);
+        return response.data.url; // Assuming URL is the image path you need
     } catch (error) {
         console.error('Error uploading image: ', error);
         throw error;
@@ -26,35 +28,30 @@ const uploadImage = async (uri) => {
 function Screen4({ formData, handleChange, navigateToNext }) {
     const [selectedImages, setSelectedImages] = useState([]);
 
-    const handleImageUpload = () => {
-        const options = {
-            title: 'Select Image',
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-        };
-
-        ImagePicker.showImagePicker(options, (response) => {
+    const pickImage = () => {
+        launchImageLibrary({
+            mediaType: 'photo',
+            includeBase64: false,
+            maxHeight: 200,
+            maxWidth: 200,
+        }, (response) => {
             if (response.didCancel) {
                 console.log('User cancelled image picker');
             } else if (response.error) {
                 console.log('ImagePicker Error: ', response.error);
             } else {
-                const source = { uri: response.uri };
-                setSelectedImages([...selectedImages, source]);
-
-                uploadImage(response.uri).then((cloudinaryResponse) => {
-                    console.log('Cloudinary response:', cloudinaryResponse);
-                    // Handle Cloudinary response as needed
-                }).catch(error => {
-                    console.error('Upload failed:', error);
-                    Alert.alert('Upload failed', 'Failed to upload image.');
-                });
+                // Assuming you are handling the response and uploading to Cloudinary in uploadImage
+                uploadImage(response.assets[0])
+                    .then(imageUri => {
+                        console.log('Uploaded image URI:', imageUri);
+                        // Here you can update your state or do whatever is needed next
+                    })
+                    .catch(error => {
+                        console.error('Error uploading image:', error);
+                    });
             }
         });
     };
-
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Image Upload</Text>
@@ -67,12 +64,12 @@ function Screen4({ formData, handleChange, navigateToNext }) {
                 ) : (
                     selectedImages.map((image, index) => (
                         <View key={index} style={styles.imageContainer}>
-                            <Image source={image} style={styles.image} />
+                            <Image source={{ uri: image.uri }} style={styles.image} />
                         </View>
                     ))
                 )}
             </ScrollView>
-            <TouchableOpacity style={styles.selectButton} onPress={handleImageUpload}>
+            <TouchableOpacity style={styles.selectButton} onPress={pickImage}>
                 <Icon name="add-a-photo" size={24} color="#fff" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.nextButton} onPress={navigateToNext}>

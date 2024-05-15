@@ -21,8 +21,10 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
     "axios": "^1.6.8",
+    "expo-image-picker": "^15.0.4",
     "react": "18.2.0",
     "react-native": "^0.73.8",
+    "react-native-chart-kit": "^6.12.0",
     "react-native-gesture-handler": "^2.16.0",
     "react-native-image-picker": "^7.1.2",
     "react-native-linear-gradient": "^2.8.3",
@@ -32,11 +34,13 @@
     "react-native-safe-area-context": "^4.10.1",
     "react-native-screens": "^3.31.1",
     "react-native-segmented-control-tab": "^4.0.0",
-    "react-native-storage": "^1.0.1",
+    "react-native-storage": "^0.2.4",
+    "react-native-svg": "^15.2.0",
     "react-native-swiper-flatlist": "^3.2.4",
     "react-native-vector-icons": "^10.1.0",
     "socket.io": "^4.7.5",
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "victory-native": "^40.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

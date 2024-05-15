@@ -8,16 +8,16 @@ function Screen3({ formData, handleChange, navigateToNext }) {
         <ScrollView style={styles.container}>
             <Text style={styles.title}>Indoor Options</Text>
             {[
-                { field: 'ensuite', label: 'Ensuite', icon: 'shower', iconColor: '#ff6347' },
-                { field: 'study', label: 'Study', icon: 'bookshelf', iconColor: '#daa520' },
-                { field: 'alarmSystem', label: 'Alarm System', icon: 'alarm', iconColor: '#6495ed' },
-                { field: 'floorboards', label: 'Floorboards', icon: 'texture', iconColor: '#deb887' },
-                { field: 'rumpusRoom', label: 'Rumpus Room', icon: 'sofa', iconColor: '#ff4500' },
-                { field: 'dishwasher', label: 'Dishwasher', icon: 'dishwasher', iconColor: '#b0c4de' },
-                { field: 'builtInRobes', label: 'Built-in Robes', icon: 'wardrobe-outline', iconColor: '#2e8b57' },
-                { field: 'broadband', label: 'Broadband', icon: 'wifi', iconColor: '#4682b4' },
-                { field: 'gym', label: 'Gym', icon: 'dumbbell', iconColor: '#a52a2a' },
-                { field: 'workshop', label: 'Workshop', icon: 'toolbox', iconColor: '#483d8b' }
+                { field: 'Ensuite', label: 'Ensuite', icon: 'shower', iconColor: '#ff6347' },
+                { field: 'Study', label: 'Study', icon: 'bookshelf', iconColor: '#daa520' },
+                { field: 'Alarm System', label: 'Alarm System', icon: 'alarm', iconColor: '#6495ed' },
+                { field: 'FloorBoards', label: 'Floorboards', icon: 'texture', iconColor: '#deb887' },
+                { field: 'Rumpus room', label: 'Rumpus Room', icon: 'sofa', iconColor: '#ff4500' },
+                { field: 'Dishwasher', label: 'Dishwasher', icon: 'dishwasher', iconColor: '#b0c4de' },
+                { field: 'Built in robe', label: 'Built-in Robes', icon: 'wardrobe-outline', iconColor: '#2e8b57' },
+                { field: 'Broadband', label: 'Broadband', icon: 'wifi', iconColor: '#4682b4' },
+                { field: 'Gym', label: 'Gym', icon: 'airbag', iconColor: '#a52a2a' },
+                { field: 'Workshop', label: 'Workshop', icon: 'toolbox', iconColor: '#483d8b' }
             ].map(({ field, label, icon, iconColor }) => (
                 <View style={styles.switchContainer} key={field}>
                     <Icon name={icon} size={24} color={iconColor} />
