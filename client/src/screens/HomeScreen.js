@@ -16,6 +16,8 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import storage from '../components/Authentification/storage';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import axios from 'axios';
