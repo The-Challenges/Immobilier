@@ -27,8 +27,8 @@ module.exports = (Sequelize, DataTypes) => {
                 type: DataTypes.ENUM('residential', 'commercial', 'agricultural', 'industrial', 'mixed-use','Unknown'),
                 defaultValue: 'Unknown'
               },
-             
-             
+
+
               isVerifie:{
                 type: DataTypes.BOOLEAN,
                 defaultValue: false
