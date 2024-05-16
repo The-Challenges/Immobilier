@@ -57,8 +57,8 @@ const HomeScreen = ({ navigation }) => {
       const response = await axios.get(`${API_AD}/api/house/allhouses`);
       setHouses(response.data);
     } catch (error) {
-      Alert.alert('Error', 'Failed to fetch houses');
-      console.error('Failed to fetch houses:', error);
+      Alert.alert('Error', 'failed to fetch houses');
+      console.error('failed to fetch houses:', error);
     } finally {
       setLoading(false);
     }

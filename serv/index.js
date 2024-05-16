@@ -19,7 +19,7 @@ const usersRooms = {};
 // Middleware
 
 app.use(cors({
-    origin: 'http://192.168.104.3:4000',
+    origin: 'http://192.168.103.18:4000',
     methods: ["GET", "POST"]
 }));
 
@@ -33,6 +33,15 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/house',require('./routes/routerHouse'))
 app.use('/api/land', require('./routes/routerLand'));
 app.use('/api/request', require('./routes/requestRoutes'));
+
+
+
+
+//walid Routes
+
+app.use('/api/house',require('./routes/walidRoutes/routerHome'))
+app.use('/api/land', require('./routes/walidRoutes/landRou'));
+
 
 
 io.on('connection', (socket) => {
