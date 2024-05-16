@@ -7,19 +7,32 @@ const { Op } = require('sequelize');
 module.exports = {
     getAllLands: async (req, res) => {
         try {
-            const lands = await db.Land.findAll({
+
+            const houses = await db.Land.findAll({
                 include: [
                     {
-                        model: db.Media, 
-                        attributes: ['type', 'name', 'link'],
+                        model: db.Media,
+                        attributes: ['type', 'name', 'link']
                     },
                     {
-                        model: db.View, 
-                        attributes: ['options'], 
-                    }
+                        model: db.Access // Assuming Access is the model for access related to a land
+                    },
+                    {
+                        model: db.View // Assuming View is the model for views related to a land
+                    },
+                    {
+                        model: db.Comment // Assuming Comment is the model for comments related to a land
+                    },
+                    {
+                       model: db.User ,
+                       attributes:['firstName','email','phoneNumber']
+                    },
+
+
                 ]
             });
-            res.json(lands);
+            res.json(houses)
+
         } catch (error) {
             res.status(500).json({ error: `Error fetching lands: ${error.message}` });
         }
@@ -119,4 +132,3 @@ module.exports = {
     }
     
 };
-

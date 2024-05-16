@@ -1,23 +1,22 @@
-
-
 const { Sequelize, DataTypes } = require('sequelize');
 const { DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD } = require("../config/config");
+
 
 const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
   dialect: 'mysql',
   host: 'localhost',
 });
 
-// async function authenticateConnection() {
-//   try {
-//     await sequelize.authenticate();
-//     console.log('Connection has been established successfully.');
-//   } catch (error) {
-//     console.error('Unable to connect to the database:', error);
-//   }
-// }
+async function authenticateConnection() {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+}
 
-// authenticateConnection()
+authenticateConnection()
 
 // sequelize.sync()
 //   .then(() => {
@@ -58,10 +57,7 @@ Land.belongsTo(User);
 User.hasMany(Media);
 Media.belongsTo(User);
 
-User.hasMany(RequestHouse);
-RequestHouse.belongsTo(User);
-User.hasMany(RequestLand);
-RequestLand.belongsTo(User);
+
 
 User.hasMany(Favourite);
 Land.hasMany(Favourite);
@@ -77,9 +73,9 @@ Land.hasMany(Media);
 Media.belongsTo(Land);
 Land.hasMany(Comment);
 Comment.belongsTo(Land);
-
 Land.belongsToMany(User, { through: RequestLand, foreignKey: 'landId' });
-User.belongsToMany(Land, { through: RequestLand , foreignKey: 'userId'});
+User.belongsToMany(Land, { through: RequestLand, foreignKey: 'userId' });
+
 
 
 /* **********************************************************house relationships******************************************** */
@@ -96,8 +92,12 @@ View.belongsTo(House);
 House.hasMany(Media);
 Media.belongsTo(House);
 
-House.belongsToMany(User, { through: RequestHouse,foreignKey: 'houseId' });
-User.belongsToMany(House, { through: RequestHouse ,foreignKey: 'userId' });
+
+
+House.belongsToMany(User, { through: RequestHouse, foreignKey: 'houseId' });
+User.belongsToMany(House, { through: RequestHouse, foreignKey: 'userId' });
+
+
 
 
 /* **********************************************************jointable relationships******************************************** */
@@ -141,5 +141,6 @@ module.exports = {
   Climat,
   Conversation,
   Access,
+  
   
 };

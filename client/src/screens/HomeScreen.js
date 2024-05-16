@@ -1,20 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { API_AD } from '../../config';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Dimensions,
-  StatusBar,
-  FlatList,
-  ScrollView,
-  Pressable,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  View,
-  Text,
-  Alert,
-  ActivityIndicator,
+import {SafeAreaView,StyleSheet,Dimensions,StatusBar,FlatList,ScrollView,Pressable,TextInput,TouchableOpacity,Image,View,Text,Alert,ActivityIndicator,
 } from 'react-native';
 import storage from '../components/Authentification/storage';
 
@@ -22,7 +8,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import axios from 'axios';
 
+// import socket from '../components/request/socketserv'
+
+
 const { width } = Dimensions.get('screen');
+
 
 const HomeScreen = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
@@ -30,9 +20,30 @@ const HomeScreen = ({ navigation }) => {
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    fetchHouses();
-  }, []);
+
+
+
+  
+    useEffect(() => {
+        fetchHouses();
+        getUserId()
+    }, []);
+  
+    const getUserId = async () => {
+        try {
+          const userData = await storage.load({ key: 'loginState' });
+          console.log(userData)
+          socket.emit('receiver', userData.user.id)
+
+        } catch (error) {
+          console.error('Failed to retrieve user data:', error);
+        }
+      };
+
+
+    
+
+
 
   useEffect(() => {
     if (!loading) {
@@ -47,7 +58,7 @@ const HomeScreen = ({ navigation }) => {
             return nextIndex;
           }
         });
-      }, 2000); 
+      }, 3000); // Change slide every 3 seconds
       return () => clearInterval(interval);
     }
   }, [loading, houses]);
@@ -285,4 +296,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
 export default HomeScreen

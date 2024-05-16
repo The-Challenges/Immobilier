@@ -27,8 +27,8 @@ module.exports = (Sequelize, DataTypes) => {
                 type: DataTypes.ENUM('residential', 'commercial', 'agricultural', 'industrial', 'mixed-use','Unknown'),
                 defaultValue: 'Unknown'
               },
-             
-             
+
+
               isVerifie:{
                 type: DataTypes.BOOLEAN,
                 defaultValue: false
@@ -36,18 +36,7 @@ module.exports = (Sequelize, DataTypes) => {
 
           });
 
-          Land.associate = function(models) {
-            Land.hasMany(models.Media, {
-                foreignKey: 'LandId',
-                // as: 'images'
-            });
 
-            Land.hasMany(models.View, {
-                foreignKey: 'LandId',
-                // as: 'view'
-            });
-        };
-        
 
     return Land;
 };
