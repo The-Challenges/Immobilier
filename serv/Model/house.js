@@ -46,16 +46,16 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
 
-    // House.associate = function(models) {
-    //     House.hasMany(models.Media, {
-    //         foreignKey: 'HouseId',
-    //         as: 'images'
-    //     });
-    //     House.hasMany(models.Indoor, {
-    //         foreignKey: 'HouseId',
-    //         as: 'indoorOption'
-    //     });
-    // };
+    House.associate = function(models) {
+        House.hasMany(models.Media, {
+            foreignKey: 'HouseId',
+            as: 'images'
+        });
+        House.hasMany(models.Indoor, {
+            foreignKey: 'HouseId',
+            as: 'indoorOption'
+        });
+    };
 
     return House;
 

@@ -9,7 +9,8 @@ function Screen4({ formData, handleChange, navigateToNext }) {
     const handleMapPress = (event) => {
         const { latitude, longitude } = event.nativeEvent.coordinate;
         setSelectedLocation({ latitude, longitude });
-        handleChange('location', { latitude, longitude });
+        handleChange('alt', latitude);
+        handleChange('long', longitude);
     };
 
     return (
@@ -26,7 +27,6 @@ function Screen4({ formData, handleChange, navigateToNext }) {
             >
                 {selectedLocation && <Marker coordinate={selectedLocation} />}
             </MapView>
-            {/* Example of safely displaying location data */}
             {selectedLocation && (
                 <View style={styles.coordinatesContainer}>
                     <Text>Latitude: {selectedLocation.latitude.toFixed(4)}</Text>

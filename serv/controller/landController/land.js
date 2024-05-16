@@ -1,8 +1,4 @@
 const db = require('../../Model/index');
-// const dummyLand=require('./Land.json')
-const { Op } = require('sequelize');
-
-
 
 module.exports = {
     getAllLands: async (req, res) => {
@@ -25,98 +21,148 @@ module.exports = {
         }
     },
     
-   
-    
-    createlands : async(req,res)=>{
-        try{
-            const land = await db.Land.bulkCreate(dummyLand)
-            res.status(200).json(land);            }
-           catch (error){
-              console.log(error);
-              console.error(error)
-        
-           }
+    insertAllHouses: async (req, res) => {
+        try {
+            const land = await db.Land.bulkCreate(dummyLand);
+            res.status(200).json({ success: true, message: "Land added successfully", data: land });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false, message: "Failed to add land", error: error.message });
+        }
     },
 
-
-    filterLands: async (req, res) => {
-        const {
-            priceMin,
-            priceMax,
-            sizeMin,
-            sizeMax,
-            altMin,
-            altMax,
-            longMin,
-            longMax,
-            terrainType,
-            zoning,
-            purchaseOption,
-            isVerified
-        } = req.query;
-    
-        const queryConditions = {
-            where: {},  
-            include: [
-                {
-                    model: db.Media,
-                    attributes: ['type', 'name', 'link']
-                },
-                {
-                    model: db.View,
-                    attributes: ['options']  // corrected to actual column name as previously discussed
-                },
-            ]
-        };
-        
-        if (priceMin || priceMax) {
-            queryConditions.where.price = {};
-            if (priceMin) queryConditions.where.price[Op.gte] = Number(priceMin);
-            if (priceMax) queryConditions.where.price[Op.lte] = Number(priceMax);
-        }
-    
-        if (sizeMin || sizeMax) {
-            queryConditions.where.size = {};
-            if (sizeMin) queryConditions.where.size[Op.gte] = parseFloat(sizeMin);
-            if (sizeMax) queryConditions.where.size[Op.lte] = parseFloat(sizeMax);
-        }
-    
-        if (altMin || altMax) {
-            queryConditions.where.alt = {};
-            if (altMin) queryConditions.where.alt[Op.gte] = parseFloat(altMin);
-            if (altMax) queryConditions.where.alt[Op.lte] = parseFloat(altMax);
-        }
-    
-        if (longMin || longMax) {
-            queryConditions.where.long = {};
-            if (longMin) queryConditions.where.long[Op.gte] = parseFloat(longMin);
-            if (longMax) queryConditions.where.long[Op.lte] = parseFloat(longMax);
-        }
-    
-        if (terrainType && terrainType !== 'Unknown') {
-            queryConditions.where.TerrainType = terrainType;
-        }
-    
-        if (zoning && zoning !== 'Unknown') {
-            queryConditions.where.Zoning = zoning;
-        }
-    
-        if (purchaseOption && purchaseOption !== 'Unknown') {
-            queryConditions.where.purchaseoption = purchaseOption;
-        }
-    
-        if (isVerified !== undefined) {
-            queryConditions.where.isVerifie = isVerified === 'true';
-          }
-    
+    addLand: async (req, res) => {
         try {
-            const filteredLands = await db.Land.findAll(queryConditions);
-            res.json(filteredLands);
+            const { title, price, size, alt, long, purchaseoption, TerrainType, Zoning, isVerifie, viewOptions, accessOptions } = req.body;
+            const newLand = await db.Land.create({
+                title,
+                price,
+                size,
+                alt,
+                long,
+                purchaseoption,
+                TerrainType,
+                Zoning,
+                isVerifie
+            });
+                const newView = await db.View.create({
+                options: viewOptions || 'Unknown'
+            });
+    
+            // Create an access entry
+            const newAccess = await db.Access.create({
+                options: accessOptions || 'Unknown'
+            });
+            await newLand.addView(newView);
+            await newLand.addAccess(newAccess);
+    
+            res.status(201).json({ success: true, message: "Land, view, and access added successfully", data: { newLand, newView, newAccess } });
         } catch (error) {
-            console.error(`Error fetching filtered lands: ${error.message}`);
-            res.status(500).json({ error: `Error fetching filtered lands: ${error.message}` });
+            console.error(error);
+            res.status(500).json({ success: false, message: "Failed to add land", error: error.message });
+        }
+    },
+    
+    updateLand: async (req, res) => {
+        try {
+            const { landId } = req.params;
+            const {
+                title, price, size, alt, long, purchaseoption, TerrainType, Zoning, isVerifie, viewOptions, accessOptions
+            } = req.body;
+
+            // Check if the land exists
+            let land = await db.Land.findByPk(landId);
+            if (!land) {
+                return res.status(404).json({ success: false, message: "Land not found" });
+            }
+
+            // Update land properties
+            land.title = title;
+            land.price = price;
+            land.size = size;
+            land.alt = alt;
+            land.long = long;
+            land.purchaseoption = purchaseoption;
+            land.TerrainType = TerrainType;
+            land.Zoning = Zoning;
+            land.isVerifie = isVerifie;
+
+            // Save the updated land
+            await land.save();
+
+            // Update associated view if provided
+            if (viewOptions) {
+                let view = await db.View.findOne({ where: { LandId: landId } });
+                if (!view) {
+                    view = await db.View.create({ options: viewOptions });
+                    await land.addView(view);
+                } else {
+                    view.options = viewOptions;
+                    await view.save();
+                }
+            }
+
+            // Update associated access if provided
+            if (accessOptions) {
+                let access = await db.Access.findOne({ where: { LandId: landId } });
+                if (!access) {
+                    access = await db.Access.create({ options: accessOptions });
+                    await land.addAccess(access);
+                } else {
+                    access.options = accessOptions;
+                    await access.save();
+                }
+            }
+
+            res.status(200).json({ success: true, message: "Land updated successfully", data: land });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false, message: "Failed to update land", error: error.message });
+        }
+    },
+
+    addAccessToLand: async (req, res) => {
+        try {
+            const { landId } = req.params;
+            const { options } = req.body;
+
+            // Check if the land exists
+            const land = await db.Land.findByPk(landId);
+            if (!land) {
+                return res.status(404).json({ success: false, message: "Land not found" });
+            }
+
+            // Add access to the land
+            const access = await db.Access.create({ options });
+            await land.addAccess(access);
+
+            res.status(201).json({ success: true, message: "Access added to land successfully", data: access });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false, message: "Failed to add access to land", error: error.message });
+        }
+    },
+
+    addViewToLand: async (req, res) => {
+        try {
+            const { landId } = req.params;
+            const { options } = req.body;
+
+            // Check if the land exists
+            const land = await db.Land.findByPk(landId);
+            if (!land) {
+                return res.status(404).json({ success: false, message: "Land not found" });
+            }
+
+            // Add view to the land
+            const view = await db.View.create({ options });
+            await land.addView(view);
+
+            res.status(201).json({ success: true, message: "View added to land successfully", data: view });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false, message: "Failed to add view to land", error: error.message });
         }
     }
     
 };
-
