@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
   View,
@@ -15,6 +16,8 @@ import {
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import GetLocation from 'react-native-get-location';
+import mapStyle from '../components/mapStyle/mapStyle';
+import { debounce } from 'lodash';
 
 const GoogleMaps = () => {
   const [houses, setHouses] = useState([]);
@@ -163,6 +166,11 @@ const GoogleMaps = () => {
     }
   };
 
+  const debouncedSetRegion = useCallback(
+    debounce((newRegion) => setRegion(newRegion), 1000),
+    []
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.sidebar}>
@@ -198,8 +206,9 @@ const GoogleMaps = () => {
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
+        customMapStyle={mapStyle}
         region={region}
-        onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
+        onRegionChangeComplete={(newRegion) => debouncedSetRegion(newRegion)}
       >
         {(filter === 'all' || filter === 'house') &&
           houses.map((house) => (
@@ -250,6 +259,7 @@ const GoogleMaps = () => {
           />
         )}
       </MapView>
+
       <Modal
         animationType="slide"
         transparent={true}

@@ -52,7 +52,8 @@ import requeststatus from "./src/components/profile/requeststatus"
 import requeststatuslands from "./src/components/profile/requeststatuslands"
 import Subscription from "./src/components/Subscription/Subscription"
 import FavoritesScreen from "./src/screens/FavoritesScreen"
-
+import FilterScreenLands from "./src/screens/FilterScreenLand"
+import ResultsScreenLand from './src/screens/ResultsScreenLand';
 
 
 
@@ -70,21 +71,27 @@ function App() {
       <NavigationContainer>
 
         <Stack.Navigator initialRouteName="splash">
-          <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} />
-          <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} />
+          {/* <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} /> */}
+          {/* <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} /> */}
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-          <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} /> 
+          {/* <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />  */}
           <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
           <Stack.Screen name='chat' component={Chat} options={{ headerShown: false }} />
+
+
+        {/* walid */}
           <Stack.Screen name='DetailsScreen' component={DetailsScreen} options={{ headerShown: false }} />
           <Stack.Screen name='HomeScreen' component={HomeScreen} options={{ headerShown: false }}  />
           <Stack.Screen name='FilterScreen' component={FilterScreen} options={{ headerShown: false }}  />
           <Stack.Screen name='ResultsScreen' component={ResultsScreen} options={{ headerShown: false }}  />
+          <Stack.Screen name='FilterScreenLands' component={FilterScreenLands} options={{ headerShown: false }}  />
+
           <Stack.Screen name='SeeAllHouses' component={SeeAllHouses} options={{ headerShown: false }}  />
           <Stack.Screen name='SeeAllLands' component={SeeAllLands} options={{ headerShown: false }}  />
 
           <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }}  />
           <Stack.Screen name='UserProfile' component={UserProfile} options={{ headerShown: false }}  />
+          {/* walid */}
 
           <Stack.Screen name='Received' component={Received} options={{ headerShown: false }}  />
           <Stack.Screen name='requestreceivedlands' component={requestreceivedlands} options={{ headerShown: false }}  />
@@ -101,11 +108,13 @@ function App() {
 
 
 
+
           <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }}  />
-          <Stack.Screen name='splash' component={splach} options={{ headerShown: false }}  />
+          {/* <Stack.Screen name='splash' component={splach} options={{ headerShown: false }}  /> */}
           <Stack.Screen name='apartement' component={Apartment} options={{ headerShown: false }}  />
           <Stack.Screen name='Land' component={Lands} options={{ headerShown: false }}  />
-        
+          {/* <Stack.Screen name='FilterScreenLands' component={FilterScreenLands} options={{ headerShown: false }}  /> */}
+          {/* <Stack.Screen name='ResultsScreenLand' component={ResultsScreenLand} options={{ headerShown: false }}  /> */}
 
 
           {/* <Stack.Screen name='ProfileDetails' component={ProfileDetails} /> */}

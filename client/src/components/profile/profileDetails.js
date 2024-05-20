@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import { Surface } from 'react-native-paper';
-// import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, Image, ScrollView, Pressable, TouchableOpacity, SafeAreaView, StyleSheet, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';

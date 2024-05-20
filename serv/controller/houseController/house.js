@@ -14,6 +14,14 @@ module.exports = {
                     {
                         model: db.Indoor,
                         attributes: ['options'] 
+                    },
+                    {
+                        model: db.Climate,
+                        attributes: ['options'] 
+                    },
+                    {
+                        model: db.Outdoor,
+                        attributes: ['options'] 
                     }
                     
                 ]
@@ -89,7 +97,7 @@ module.exports = {
             }
             if (climateOptions && climateOptions.length > 0) {
                 const climates = climateOptions.map(option => ({ options: option, HouseId: id }));
-                await db.Climat.bulkCreate(climates);
+                await db.Climate.bulkCreate(climates);
             }
             if (Media && Media.length > 0) {
                 const Media = Media.map(option => ({ options: option, HouseId: id }));
@@ -143,7 +151,7 @@ module.exports = {
                 }
                 if (climateOptions && climateOptions.length > 0) {
                     const climates = climateOptions.map(option => ({ options: option, HouseId: newHouse.id }));
-                    await db.Climat.bulkCreate(climates, { transaction: t });
+                    await db.Climate.bulkCreate(climates, { transaction: t });
                 }
     
                 // Create media associated with the house

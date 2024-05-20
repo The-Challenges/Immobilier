@@ -39,11 +39,13 @@ const Media = require('./media')(sequelize, DataTypes);
 const Indoor = require('./indoorOption')(sequelize, DataTypes);
 const Outdoor = require('./outdoorOptions')(sequelize, DataTypes);
 const View = require('./viewOption')(sequelize, DataTypes);
-const Climat = require('./climate')(sequelize, DataTypes);
+const Climate = require('./climate')(sequelize, DataTypes);
 const Comment = require('./comment')(sequelize, DataTypes);
 const Access = require('./accesOption')(sequelize, DataTypes);
 const RequestHouse = require('./requestHouse')(sequelize, DataTypes);
 const RequestLand = require('./requestLand')(sequelize, DataTypes);
+
+
 
 
 /* **********************************************************user relationships******************************************** */
@@ -82,8 +84,8 @@ User.belongsToMany(Land, { through: RequestLand, foreignKey: 'userId' });
 House.hasMany(Comment);
 Comment.belongsTo(House);
 
-House.hasMany(Climat);
-Climat.belongsTo(House);
+House.hasMany(Climate);
+Climate.belongsTo(House);
 
 House.hasMany(Indoor);
 Indoor.belongsTo(House);
@@ -158,7 +160,7 @@ module.exports = {
   View,
   RequestHouse,
   RequestLand,
-  Climat,
+  Climate,
   Conversation,
   Access,
   FavouriteHouse,

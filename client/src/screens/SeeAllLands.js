@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet,
-  View,
-  FlatList,
-  Text,
-  Image,
-  Alert,
-  ActivityIndicator,
-  TouchableOpacity
+  StyleSheet, View, FlatList, Text, Alert, ActivityIndicator, TouchableOpacity, Image
 } from 'react-native';
 import axios from 'axios';
 import { Card, Button } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Update this import
 import COLORS from '../consts/colors';
-import storage from '../components/Authentification/storage'; // Ensure the path to your storage module is correct
+import storage from '../components/Authentification/storage';
 
 export default function SeeAllLands({ navigation }) {
   const [lands, setLands] = useState([]);
@@ -33,7 +26,6 @@ export default function SeeAllLands({ navigation }) {
         Alert.alert('Error', 'Unable to load user data');
       }
     };
-
     initializeData();
   }, []);
 
@@ -91,21 +83,34 @@ export default function SeeAllLands({ navigation }) {
     const imageUrl = land.Media && land.Media.length > 0 ? land.Media[0].link : 'https://via.placeholder.com/400x200.png?text=No+Image+Available';
     return (
       <Card containerStyle={styles.card}>
-        <Card.Title>{land.title}</Card.Title>
+        <Card.Title style={styles.cardTitle}>{land.title}</Card.Title>
         <Card.Image source={{ uri: imageUrl }} style={styles.cardImage} />
         <View style={styles.detailContainer}>
-          <Icon name="cash-multiple" size={20} color={COLORS.green} />
-          <Text style={[styles.detailText, {color: COLORS.green}]}>Price: ${land.price}</Text>
-          <TouchableOpacity onPress={() => toggleFavorite(land.id)}>
-            <View style={[styles.favoriteIconContainer, isFavorite && styles.favoriteIconSelected]}>
-              <Icon name="heart" size={20} color={isFavorite ? COLORS.red : COLORS.grey} />
+          <View style={styles.priceContainer}>
+            <Icon name="attach-money" size={24} color={COLORS.green} style={styles.iconStyle}/>
+            <Text style={[styles.detailText, { color: COLORS.green }]}>{land.price}</Text>
+          </View>
+          <Text style={styles.cardType}>{land.TerrainType}</Text>
+          <View style={styles.favoriteAndRatingContainer}>
+            <TouchableOpacity onPress={() => toggleFavorite(land.id)}>
+              <View style={isFavorite ? styles.favoriteIconSelected : styles.favoriteIcon}>
+                <Icon
+                  name={isFavorite ? "favorite" : "favorite-border"}
+                  size={24}
+                  color={isFavorite ? COLORS.red : COLORS.yellow}
+                />
+              </View>
+            </TouchableOpacity>
+            <View style={styles.rating}>
+              <Icon name="star" size={16} color="#FFD700" />
+              <Text style={styles.ratingText}>{land.rating || '4.5'}</Text>
             </View>
-          </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.buttonContainer}>
           <Button
             icon={<Icon name="arrow-right" size={15} color="white" />}
-            title=" View Details"
+            title="View Details"
             buttonStyle={styles.button}
             onPress={() => navigation.navigate('LandDetailsScreen', { land })}
           />
@@ -116,6 +121,7 @@ export default function SeeAllLands({ navigation }) {
       </Card>
     );
   };
+  
 
   if (loading) {
     return (
@@ -126,7 +132,7 @@ export default function SeeAllLands({ navigation }) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <View style={styles.container}>
       <FlatList
         data={lands}
         keyExtractor={item => `${item.id}`}
@@ -138,77 +144,110 @@ export default function SeeAllLands({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    listContainer: {
-        padding: 10
-    },
-    card: {
-        borderRadius: 10,
-        elevation: 4,
-        shadowOpacity: 0.15,
-        shadowRadius: 5,
-        shadowOffset: { width: 0, height: 2 },
-        marginVertical: 8
-    },
-    cardImage: {
-        width: '100%',
-        height: 200,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10
-    },
-    detailContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10
-    },
-    detailText: {
-        marginLeft: 10,
-        fontSize: 16
-    },
-    favoriteIconContainer: {
-        backgroundColor: COLORS.white,
-        borderRadius: 50,
-        padding: 5,
-        borderWidth: 1,
-        borderColor: COLORS.grey,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 170,
-        marginTop:10
-      },
-    favoriteIconSelected: {
-        borderColor: COLORS.red,
-        backgroundColor: '#ffebee'
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 10
-    },
-    button: {
-        backgroundColor: COLORS.primary,
-        borderRadius: 5,
-        width: 100,
-        height: 30,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    allRequestsButton: {
-        backgroundColor: COLORS.primary,
-        borderRadius: 5,
-        width: 100,
-        height: 30,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    allRequestsText: {
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background
+  },
+  listContainer: {
+    padding: 20
+  },
+  card: {
+    borderRadius: 15,
+    elevation: 5,
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    marginVertical: 10,
+    backgroundColor: COLORS.white
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.dark
+  },
+  cardImage: {
+    width: '100%',
+    height: 250,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15
+  },
+  detailContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 15,
+    marginTop: 10
+  },
+  detailText: {
+    fontSize: 18,
+    fontWeight: '500'
+  },
+  cardType: {
+    fontSize: 16,
+    color: COLORS.primary,
+    fontWeight: 'bold'
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10  // Adjust spacing to other elements
+  },
+  iconStyle: {
+    marginRight: 5  // Reduce space between the icon and the price
+  },
+  detailText: {
+    fontSize: 18,
+    fontWeight: '500'
+  },
+  favoriteIconSelected: {
+    backgroundColor: '#FFFFFF'
+  },
+  favoriteAndRatingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  rating: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 10
+  },
+  ratingText: {
+    marginLeft: 5,
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: 15
+  },
+  button: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+    width: 120,
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  allRequestsButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+    width: 120,
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  allRequestsText: {
     color: COLORS.white,
     fontWeight: 'bold',
     fontSize: 14
-    },
-    loader: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: COLORS.white
-    }
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.white
+  }
 });
