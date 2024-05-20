@@ -1,8 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-module.exports = (Sequelize, DataTypes) => {
-  const User = Sequelize.define('User', {
-   
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define('User', {
     firstName: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -23,16 +22,20 @@ module.exports = (Sequelize, DataTypes) => {
       type: DataTypes.STRING,
       unique: true
     },
-    age :{
+    age: {
       type: DataTypes.STRING,
     },
-    alt:{
-      type: DataTypes.FLOAT    },
-      
-      long:{
-        type: DataTypes.FLOAT    },
-        
-
+    alt: {
+      type: DataTypes.FLOAT
+    },
+    long: {
+      type: DataTypes.FLOAT
+    },
+    deviceToken: {
+      type: DataTypes.STRING,
+      allowNull: true // Device token can be null initially
+    }
+    // Uncomment and add these fields if needed
     // isEmailVerified: {
     //   type: DataTypes.BOOLEAN,
     //   defaultValue: false

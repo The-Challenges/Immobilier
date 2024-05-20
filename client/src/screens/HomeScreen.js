@@ -27,6 +27,7 @@ const { width } = Dimensions.get('screen');
 const HomeScreen = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pressedCard, setPressedCard] = useState(null);
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -37,7 +38,7 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     if (!loading) {
       const interval = setInterval(() => {
-        setCurrentIndex(prevIndex => {
+        setCurrentIndex((prevIndex) => {
           const nextIndex = prevIndex + 1;
           if (nextIndex >= houses.slice(0, 5).length) {
             flatListRef.current.scrollToIndex({ index: 0, animated: true });
@@ -47,7 +48,7 @@ const HomeScreen = ({ navigation }) => {
             return nextIndex;
           }
         });
-      }, 2000); 
+      }, 2000);
       return () => clearInterval(interval);
     }
   }, [loading, houses]);
@@ -57,13 +58,12 @@ const HomeScreen = ({ navigation }) => {
       const response = await axios.get(`${API_AD}/api/house/allhouses`);
       setHouses(response.data);
     } catch (error) {
-      Alert.alert('Error', 'failed to fetch houses');
-      console.error('failed to fetch houses:', error);
+      Alert.alert('Error', 'Failed to fetch houses');
+      console.error('Failed to fetch houses:', error);
     } finally {
       setLoading(false);
     }
   };
-
 
   const ListOptions = () => {
     const optionsList = [
@@ -81,7 +81,12 @@ const HomeScreen = ({ navigation }) => {
     return (
       <View style={styles.optionListContainer}>
         {optionsList.map((option, index) => (
-          <TouchableOpacity key={index} onPress={option.action} style={styles.optionCard}>
+          <TouchableOpacity
+            key={index}
+            onPress={option.action}
+            style={styles.optionCard}
+            activeOpacity={0.8} // Improve touchable responsiveness
+          >
             <Image source={option.img} style={styles.optionCardImage} />
             <View style={styles.optionCardContent}>
               <Text style={styles.optionCardTitle}>{option.title}</Text>
@@ -92,17 +97,72 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
+  const toggleCard = (id) => {
+    setPressedCard(pressedCard === id ? null : id);
+  };
+
   const renderHouseItem = ({ item }) => (
-    <Pressable onPress={() => navigation.navigate('DetailsScreen', { house: item })}>
+    <Pressable onPress={() => toggleCard(item.id)}>
       <View style={styles.card}>
         <Image
           source={{ uri: item.Media[0]?.link || 'https://cdn.pixabay.com/photo/2014/11/21/17/17/house-540796_1280.jpg' }}
           style={styles.cardImage}
         />
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.detailText}>Price: ${item.price}</Text>
-        <Text style={styles.detailText}>Bedrooms: {item.numberbedrooms}</Text>
-        <Text style={styles.detailText}>Bathrooms: {item.numberbathrooms}</Text>
+        <View style={styles.cardContent}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardType}>{item.propertyType}</Text>
+            <View style={styles.iconContainer}>
+              <View style={styles.rating}>
+                <Icon name="star" size={20} color="#FFD700" />
+                <Text style={styles.ratingText}>{item.rating || '4.5'}</Text>
+              </View>
+              <TouchableOpacity style={styles.favoriteButton}>
+                <Icon name="favorite-border" size={20} color="#FFD700" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <Text style={styles.cardPrice}>${item.price}/month</Text>
+          <Text style={styles.cardTitle}>{item.title}</Text>
+          <Text style={styles.cardLocation}>{item.location}</Text>
+          {pressedCard === item.id && (
+            <View style={styles.iconsContainer}>
+              <View style={styles.iconRow}>
+                <Icon name="bathtub" size={20} color="#000" />
+                <Text style={styles.iconText}>{item.numberbathrooms}</Text>
+              </View>
+              <View style={styles.iconRow}>
+                <Icon name="king-bed" size={20} color="#000" />
+                <Text style={styles.iconText}>{item.numberbedrooms}</Text>
+              </View>
+              <View style={styles.iconRow}>
+                <Icon name="garage" size={20} color="#000" />
+                <Text style={styles.iconText}>{item.garage}</Text>
+              </View>
+              <View style={styles.iconRow}>
+                <Icon name="local-parking" size={20} color="#000" />
+                <Text style={styles.iconText}>{item.parking ? 'Yes' : 'No'}</Text>
+              </View>
+              <View style={styles.iconRow}>
+                <Icon name="check-circle" size={20} color={item.isVerified ? '#00FF00' : '#FF0000'} />
+                <Text style={styles.iconText}>{item.isVerified ? 'Verified' : 'Not Verified'}</Text>
+              </View>
+              <View style={styles.iconRow}>
+                <Icon name="attach-money" size={20} color="#000" />
+                <Text style={styles.iconText}>{item.purchaseoption}</Text>
+              </View>
+              <View style={styles.iconRow}>
+                <Icon name="home" size={20} color="#000" />
+                <Text style={styles.iconText}>{item.houseAge}</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.detailsButton}
+                onPress={() => navigation.navigate('DetailsScreen', { house: item })}
+              >
+                <Text style={styles.detailsButtonText}>View Details</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
       </View>
     </Pressable>
   );
@@ -139,9 +199,9 @@ const HomeScreen = ({ navigation }) => {
             ref={flatListRef}
             data={houses.slice(0, 5)}
             renderItem={renderHouseItem}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={(item) => item.id.toString()}
             horizontal
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
             snapToInterval={width - 40}
             snapToAlignment="center"
             decelerationRate="fast"
@@ -154,9 +214,11 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.sectionTitle}>All Properties</Text>
         <FlatList
           data={houses}
-          keyExtractor={item => item.id.toString()}
+          key={2} // Add a key prop to force re-render
+          keyExtractor={(item) => item.id.toString()}
           renderItem={renderHouseItem}
           contentContainerStyle={styles.listContainer}
+          numColumns={2} // Use two columns
         />
       </ScrollView>
     </SafeAreaView>
@@ -216,7 +278,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   optionCard: {
-    width: width / 2.3 ,
+    width: width / 2.3,
     backgroundColor: COLORS.white,
     borderRadius: 15,
     marginBottom: 20,
@@ -252,30 +314,97 @@ const styles = StyleSheet.create({
     elevation: 2,
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
+    marginBottom: 20,
+    marginHorizontal: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
-    width: width - 40,
-    marginRight: 20,
+    width: (width / 2) - 20, // Adjust the width of the card for two columns
+    overflow: 'hidden',
   },
   cardImage: {
     width: '100%',
-    height: 200,
-    borderRadius: 10,
+    height: 120, // Adjust the height of the card image
   },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 5,
+  cardContent: {
+    padding: 10,
   },
-  detailText: {
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cardType: {
+    fontSize: 14,
+    color: '#888',
+    backgroundColor: '#e0e0e0',
+    borderRadius: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rating: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 5,
+  },
+  ratingText: {
+    marginLeft: 5,
+    color: '#FFD700',
     fontSize: 16,
-    color: '#333',
-    marginTop: 5,
+  },
+  favoriteButton: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 5,
+    elevation: 5,
+    // marginLeft:10
+  },
+  cardPrice: {
+    fontSize: 16, // Adjust the font size of the price
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    marginVertical: 5,
+  },
+  cardTitle: {
+    fontSize: 16, // Adjust the font size of the title
+    fontWeight: 'bold',
+  },
+  cardLocation: {
+    fontSize: 12, // Adjust the font size of the location
+    color: '#888',
+    marginVertical: 5,
+  },
+  iconsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 10,
+  },
+  iconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10,
+    marginBottom: 10,
+  },
+  iconText: {
+    marginLeft: 5,
+    fontSize: 14,
+  },
+  detailsButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    marginTop: 10,
+  },
+  detailsButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
   sectionTitle: {
     fontSize: 22,
@@ -285,4 +414,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-export default HomeScreen
+
+export default HomeScreen;
