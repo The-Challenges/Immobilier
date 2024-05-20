@@ -4,6 +4,8 @@ const socketIo = require('socket.io');
 const cors = require('cors');
 require('dotenv').config();
 // require('./faker')()
+
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -19,7 +21,7 @@ const usersRooms = {};
 // Middleware
 
 app.use(cors({
-    origin: 'http://192.168.104.3:4000',
+    origin: 'http://192.168.11.123:4000',
     methods: ["GET", "POST"]
 }));
 
@@ -33,6 +35,8 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/house',require('./routes/routerHouse'))
 app.use('/api/land', require('./routes/routerLand'));
 app.use('/api/request', require('./routes/requestRoutes'));
+app.use('/api', require('./routes/favoritesRoutes'));
+
 
 
 io.on('connection', (socket) => {

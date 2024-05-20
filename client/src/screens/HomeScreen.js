@@ -111,25 +111,30 @@ const HomeScreen = ({ navigation }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar backgroundColor={COLORS.white} barStyle="dark-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <View style={styles.searchInputContainer}>
-            <Icon name="search" style={styles.searchIcon} />
-            <TextInput
-              placeholder="Search address, city, location"
-              placeholderTextColor="#888"
-              style={{ flex: 1 }}
-            />
-          </View>
-          <TouchableOpacity style={styles.sortBtn} onPress={() => navigation.navigate('FilterScreen')}>
-            <Icon name="tune" color={COLORS.white} size={28} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.notificationBtn} onPress={() => Alert.alert('Notifications', 'No new notifications')}>
-            <Icon name="notifications" color={COLORS.white} size={28} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.profileBtn} onPress={() => navigation.navigate('ProfileScreen')}>
-            <Icon name="person" color={COLORS.white} size={28} />
-          </TouchableOpacity>
-        </View>
+      <View style={styles.header}>
+  <View style={styles.searchInputContainer}>
+    <Icon name="search" style={styles.searchIcon} />
+    <TextInput
+      placeholder="Search address, city, location"
+      placeholderTextColor="#888"
+      style={{ flex: 1 }}
+    />
+  </View>
+  <TouchableOpacity style={styles.sortBtn} onPress={() => navigation.navigate('FilterScreen')}>
+    <Icon name="tune" color={COLORS.white} size={28} />
+  </TouchableOpacity>
+  <TouchableOpacity style={styles.notificationBtn} onPress={() => Alert.alert('Notifications', 'No new notifications')}>
+    <Icon name="notifications" color={COLORS.white} size={28} />
+  </TouchableOpacity>
+  <TouchableOpacity style={styles.profileBtn} onPress={() => navigation.navigate('ProfileScreen')}>
+    <Icon name="person" color={COLORS.white} size={28} />
+  </TouchableOpacity>
+  <TouchableOpacity style={styles.favoriteBtn} onPress={() => navigation.navigate('FavoritesScreen')}>
+    <Icon name="favorite" color={COLORS.white} size={28} />
+</TouchableOpacity>
+
+</View>
+
 
         <Text style={styles.sectionTitle}>Featured Properties</Text>
         {loading ? (
@@ -192,6 +197,13 @@ const styles = StyleSheet.create({
     color: '#888',
     fontSize: 27,
   },
+  favoriteBtn: {
+    padding: 10,
+    backgroundColor: COLORS.primary,
+    borderRadius: 25,
+    marginLeft: 10,
+  },
+  
   sortBtn: {
     padding: 10,
     backgroundColor: COLORS.primary,
