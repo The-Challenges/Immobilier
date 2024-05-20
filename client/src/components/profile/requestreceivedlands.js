@@ -5,9 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import storage from '../Authentification/storage';
-import { API_AD } from '../../../config';
-
+import storage from '../Authentification/storage'; 
 
 const FadeInView = ({ children, style }) => {
   const fadeAnim = new Animated.Value(0);
@@ -83,7 +81,7 @@ const RequestsList = () => {
   const fetchRequests = async (userId, savedStatuses = {}) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`${API_AD}/api/request/seller/${userId}/land`);
+      const response = await axios.get(`http://192.168.103.20:4000/api/request/seller/${userId}/land`);
       if (response.data && Array.isArray(response.data)) {
         const propertiesWithRequests = response.data.filter(property => property.Users && property.Users.length > 0);
         const updatedRequests = propertiesWithRequests.map(request => ({
@@ -102,7 +100,7 @@ const RequestsList = () => {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.post(`${API_AD}/api/request/updateLandRequestStatus/${id}`, { status });
+      await axios.post(`http://192.168.103.20:4000/api/request/updateLandRequestStatus/${id}`, { status });
       const updatedRequests = requests.map(request => ({
         ...request,
         confirmationVisible: status === 'Confirmed',
