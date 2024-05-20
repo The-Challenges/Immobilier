@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1087345794048",
+    "project_id": "immobilier-11d05",
+    "storage_bucket": "immobilier-11d05.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1087345794048:android:7bc84c7ae35511a79e4ce5",
+        "android_client_info": {
+          "package_name": "com.client"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdCotjrhpGBS9gD8GvHh4oADly4zVp9Jw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

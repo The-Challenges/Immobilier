@@ -213,7 +213,7 @@ function App() {
 
           <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }}  />
           <Stack.Screen name='UserProfile' component={UserProfile} options={{ headerShown: false }}  />
-        {/* walid */}
+          {/* walid */}
 
 
           {/* <Stack.Screen name='Received' component={Received} options={{ headerShown: false }}  /> */}

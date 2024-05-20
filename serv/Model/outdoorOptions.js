@@ -11,5 +11,7 @@ module.exports = (Sequelize, DataTypes) => {
  
   });
 
+  
+
   return Outdoor;
 };
