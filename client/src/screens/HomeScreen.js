@@ -1,26 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { API_AD } from '../../config';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Dimensions,
-  StatusBar,
-  FlatList,
-  ScrollView,
-  Pressable,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  View,
-  Text,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
-import storage from '../components/Authentification/storage';
-
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, StyleSheet, StatusBar, FlatList, ScrollView, TextInput, TouchableOpacity, Image, View, Text, Alert, ActivityIndicator, Dimensions, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import axios from 'axios';
+import FeaturedScroller from '../components/featuredScroller';
+import { API_AD } from '../../config';
+import PushNotification from 'react-native-push-notification';
+
 
 const { width } = Dimensions.get('screen');
 
@@ -28,30 +14,21 @@ const HomeScreen = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pressedCard, setPressedCard] = useState(null);
-  const flatListRef = useRef(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     fetchHouses();
+    createChannels
   }, []);
 
-  useEffect(() => {
-    if (!loading) {
-      const interval = setInterval(() => {
-        setCurrentIndex((prevIndex) => {
-          const nextIndex = prevIndex + 1;
-          if (nextIndex >= houses.slice(0, 5).length) {
-            flatListRef.current.scrollToIndex({ index: 0, animated: true });
-            return 0;
-          } else {
-            flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
-            return nextIndex;
-          }
-        });
-      }, 2000);
-      return () => clearInterval(interval);
-    }
-  }, [loading, houses]);
+
+  const createChannels=()=>{
+    PushNotification.createChannel(
+      {
+        channelId:"test-channel",
+        channelName:"Test Channel"
+      }
+    )
+  }
 
   const fetchHouses = async () => {
     try {
@@ -63,6 +40,10 @@ const HomeScreen = ({ navigation }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleCard = (id) => {
+    setPressedCard(pressedCard === id ? null : id);
   };
 
   const ListOptions = () => {
@@ -85,7 +66,7 @@ const HomeScreen = ({ navigation }) => {
             key={index}
             onPress={option.action}
             style={styles.optionCard}
-            activeOpacity={0.8} // Improve touchable responsiveness
+            activeOpacity={0.8}
           >
             <Image source={option.img} style={styles.optionCardImage} />
             <View style={styles.optionCardContent}>
@@ -95,10 +76,6 @@ const HomeScreen = ({ navigation }) => {
         ))}
       </View>
     );
-  };
-
-  const toggleCard = (id) => {
-    setPressedCard(pressedCard === id ? null : id);
   };
 
   const renderHouseItem = ({ item }) => (
@@ -195,18 +172,7 @@ const HomeScreen = ({ navigation }) => {
         {loading ? (
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : (
-          <FlatList
-            ref={flatListRef}
-            data={houses.slice(0, 5)}
-            renderItem={renderHouseItem}
-            keyExtractor={(item) => item.id.toString()}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            snapToInterval={width - 40}
-            snapToAlignment="center"
-            decelerationRate="fast"
-            contentContainerStyle={styles.featuredListContainer}
-          />
+          <FeaturedScroller houses={houses} navigation={navigation} toggleCard={toggleCard} pressedCard={pressedCard} />
         )}
 
         <ListOptions />
@@ -214,7 +180,6 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.sectionTitle}>All Properties</Text>
         <FlatList
           data={houses}
-          key={2} // Add a key prop to force re-render
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderHouseItem}
           contentContainerStyle={styles.listContainer}
@@ -362,20 +327,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 5,
     elevation: 5,
-    // marginLeft:10
   },
   cardPrice: {
-    fontSize: 16, // Adjust the font size of the price
+    fontSize: 16,
     fontWeight: 'bold',
     color: COLORS.primary,
     marginVertical: 5,
   },
   cardTitle: {
-    fontSize: 16, // Adjust the font size of the title
+    fontSize: 16,
     fontWeight: 'bold',
   },
   cardLocation: {
-    fontSize: 12, // Adjust the font size of the location
+    fontSize: 12,
     color: '#888',
     marginVertical: 5,
   },

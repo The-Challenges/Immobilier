@@ -1,19 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { API_AD } from '../../config';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Dimensions,
-  StatusBar,
-  FlatList,
-  View,
-  Text,
-  Image,
-  Alert,
-  ActivityIndicator,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import { SafeAreaView, StyleSheet, Dimensions, StatusBar, FlatList, View, Text, Image, Alert, ActivityIndicator, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import axios from 'axios';
 import COLORS from '../consts/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -33,7 +19,7 @@ const SeeAllHouses = ({ navigation }) => {
   const fetchHouses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_AD}/api/house/allhouses`);
+      const response = await axios.get(`http://192.168.103.18:4000/api/house/allhouses`);
       setHouses(response.data);
       setLoading(false);
     } catch (error) {
@@ -54,9 +40,46 @@ const SeeAllHouses = ({ navigation }) => {
     }));
   };
 
+  const indoorIcons = {
+    Broadband: 'wifi',
+    Workshop: 'build',
+    'Rumpus room': 'room',
+    'Built in robe': 'wardrobe',
+    FloorBoards: 'layers',
+    Ensuite: 'bath',
+    'Alarm System': 'alarm',
+    Study: 'book',
+    Gym: 'fitness-center',
+  };
+
+  const outdoorIcons = {
+    Balcony: 'balcony',
+    'Fully fenced': 'fence',
+    'Swimming pool': 'pool',
+    'Undercover parking': 'local-parking',
+    'Outdoor spa': 'spa',
+    'Outdoor area': 'park',
+    Shed: 'store',
+    Garage: 'garage',
+  };
+
+  const climateIcons = {
+    // Add climate icon mappings here
+  };
+
+  const renderIconRow = (options, iconMapping) => (
+    options.map((option, index) => (
+      <View key={index} style={styles.iconRow}>
+        <Icon name={iconMapping[option.options] || 'home'} size={20} color="#000" />
+        <Text style={styles.iconText}>{option.options}</Text>
+      </View>
+    ))
+  );
+
   const HouseCard = ({ house }) => {
     const imageUrl = house.Media && house.Media.length > 0 ? house.Media[0].link : 'https://via.placeholder.com/400x200.png?text=No+Image+Available';
     const isFavorite = favorites[house.id];
+
     return (
       <TouchableOpacity onPress={() => toggleCard(house.id)} style={styles.card}>
         <Image source={{ uri: imageUrl }} style={styles.cardImage} />
@@ -64,20 +87,20 @@ const SeeAllHouses = ({ navigation }) => {
           <View style={styles.cardHeader}>
             <Text style={styles.cardType}>{house.propertyType}</Text>
             <View style={styles.rating}>
-              <Icon name="star" size={16} color="#FFD700"  />
+              <Icon name="star" size={16} color="#FFD700" />
               <Text style={styles.ratingText}>{house.rating || '4.5'}</Text>
             </View>
             <View>
-            <TouchableWithoutFeedback
-              onPress={(e) => {
-                e.stopPropagation();
-                toggleFavorite(house.id);
-              }}
-            >
-              <View style={[styles.favoriteButton, isFavorite && styles.favoriteButtonActive]}>
-                <Icon name={isFavorite ? "favorite" : "favorite-border"} size={24} color={isFavorite ? "#FF0000" : "#FFD700"} />
-              </View>
-            </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(house.id);
+                }}
+              >
+                <View style={[styles.favoriteButton, isFavorite && styles.favoriteButtonActive]}>
+                  <Icon name={isFavorite ? "favorite" : "favorite-border"} size={40} color={isFavorite ? "#FF0000" : "#FFD700"} />
+                </View>
+              </TouchableWithoutFeedback>
             </View>
           </View>
           <Text style={styles.cardPrice}>${house.price}/month</Text>
@@ -113,6 +136,9 @@ const SeeAllHouses = ({ navigation }) => {
                 <Icon name="home" size={20} color="#000" />
                 <Text style={styles.iconText}>{house.houseAge}</Text>
               </View>
+              {renderIconRow(house.Indoors, indoorIcons)}
+              {renderIconRow(house.Outdoors, outdoorIcons)}
+              {renderIconRow(house.Climates, climateIcons)}
               <TouchableOpacity
                 style={styles.detailsButton}
                 onPress={() => navigation.navigate('DetailsScreen', { house })}
@@ -186,7 +212,7 @@ const styles = StyleSheet.create({
   rating: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft:240
+    marginLeft: 240,
   },
   ratingText: {
     marginLeft: 5,

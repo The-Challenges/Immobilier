@@ -72,7 +72,7 @@ export default function SeeAllLands({ navigation }) {
                                 toggleFavorite(land.id);
                             }}
                         >
-                            <Icon name="heart-outline" size={24} color="#FFD700" />
+                            <Icon name="heart-outline" size={30} color="#FFD700" />
                         </TouchableOpacity>
                         </View>
                         
