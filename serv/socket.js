@@ -1,7 +1,88 @@
+// const express = require('express');
+// const http = require('http');
+// const socketIo = require('socket.io');
+// const axios = require('axios');
+// const {API_AD}=require('./config')
+// const PORT = 4001;
+
+// const app = express();
+// const server = http.createServer(app);
+// const io = socketIo(server, {
+//   cors: {
+//     origin: '*',
+//   },
+// });
+
+// io.on('connection', (socket) => {
+//   console.log(`User connected: ${socket.id}`);
+
+//   socket.on('receiver', (ownerId) => {
+//     socket.join(ownerId);
+//     console.log(`User joined room: ${ownerId}`);
+//   });
+
+//   socket.on('send_land_request', async (data) => {
+//     const { land } = data;
+//     console.log("Land request received:", data);
+//     socket.to(land.UserId).emit('requestLandCreated', { ...data });
+//   });
+
+//   socket.on('send_house_request', async (data) => {
+//     const { house } = data;
+//     console.log("House request received:", data);
+//     socket.to(house.UserId).emit('requestHouseCreated', { ...data });
+//   });
+
+//   socket.on('respond_to_request_house', async (data) => {
+//     const { house, status } = data;
+    
+//     socket.to(house.UserId).emit('request_response_house', data);
+// try {
+//   await axios.put(`${API_AD}/api/reqtest/update-house-request/${house.UserId}/${house.id}`, { status });
+  
+//   console.log("House request response:", data);
+// } catch (error) {
+//   console.log(error);
+// }
+//   });
+
+//   socket.on('respond_to_request_land', async (data) => {
+//     const { land, status } = data;
+//     try {
+//       await axios.put(`${API_AD}/api/reqtest/update-land-request/${land.UserId}/${land.id}`, { status });
+//       console.log("Land request response:", data);
+//       socket.to(land.UserId).emit('request_response_land', data);
+//     } catch (error) {
+//       console.error("Error updating land request:", error);
+//     }
+//   });
+
+//   socket.on('accept_request', (data) => {
+//     const { userId, requestType } = data;
+//     console.log(`Request accepted: ${requestType} for user: ${userId}`);
+//     socket.to(userId).emit('request_accepted', { requestType });
+//   });
+
+//   socket.on('refuse_request', (data) => {
+//     const { userId, requestType } = data;
+//     console.log(`Request refused: ${requestType} for user: ${userId}`);
+//     socket.to(userId).emit('request_refused', { requestType });
+//   });
+
+//   socket.on('disconnect', () => {
+//     console.log('User disconnected');
+//   });
+// });
+
+// server.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-
+const axios = require('axios');
+const { API_AD } = require('./config');
 const PORT = 4001;
 
 const app = express();
@@ -12,102 +93,51 @@ const io = socketIo(server, {
   },
 });
 
-// const userSockets = {};
-// const connectedUsers = {};
-
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  // const userId = socket.handshake.query.userId;
-  // if (userId) {
-  //   console.log(`User ID: ${userId}`);
-  //   userSockets[userId] = socket.id;
-  //   connectedUsers[userId] = true;
+  socket.on('receiver', (ownerId) => {
+    socket.join(ownerId);
+    console.log(`User joined room: ${ownerId}`);
+  });
 
-  //   socket.join('global');
-  // }
+  socket.on('send_land_request', async (data) => {
+    const { land } = data;
+    console.log("Land request received:", data);
+    socket.to(land.UserId).emit('requestLandCreated', { ...data });
+  });
 
-  // socket.on('send_message', (data, callback) => {
-    // console.log(socket.userId)
-    // console.log('A user connected');
-    // console.log('A user connected with ID:', socket.id);
-    // socket.on('join_room', (roomId, userId) => {
-    //     socket.join(roomId);
-    //     console.log(`User ${userId} joined room: ${roomId}`);
-    //     usersRooms[userId] = usersRooms[userId] || [];
-    //     if (!usersRooms[userId].includes(roomId)) {
-    //         usersRooms[userId].push(roomId);
-    //     }
-    //     if (messageHistory[roomId]) {
-    //         socket.emit('message_history', messageHistory[roomId]);
-    //     }
-    // });
+  socket.on('send_house_request', async (data) => {
+    const { house } = data;
+    console.log("House request received:", data);
+    socket.to(house.UserId).emit('requestHouseCreated', { ...data });
+  });
 
-    // socket.on('chat_message', (data) => {
-    //     const { roomId, message, senderId } = data;
-    //     messageHistory[roomId] = messageHistory[roomId] || [];
-    //     messageHistory[roomId].push({ message, senderId });
-    //     io.in(roomId).emit('message', { message, senderId });
-    //     console.log(`Message sent in room ${roomId}: ${message}`);
-    // });
-    // console.log('A user connected with ID:', socket.userId);
-    socket.on('receiver', (ownerId) => {
-      socket.join(ownerId);
-      console.log(`User joined room: ${ownerId}`);
-    });
+  socket.on('respond_to_request_house', async (data) => {
+    const { house, status } = data;
 
-    socket.on('send_land_request', async (data) => {
-        
-        const { land} = data
-    console.log("data land is received for the user ",data)
-        socket.to(land.UserId).emit('requestLandCreated', {...data}); 
-     
-    });
-    socket.on('send_house_request', async (data) => {
-        
-        const {house } = req.params
-        console.log("data land is received for the user ",data)
-        io.to(house.UserId).emit('requestHouseCreated', {...data}); 
+ 
+      console.log(`Sending request to update house request: UserId=${house.UserId}, id=${data.id}, status=${status}`);
+      console.log("House request response:", data);
+      io.to(data.user.id).emit('request_response_house', data);
+  
+  }); 
+
+  socket.on('respond_to_request_land', async (data) => {
+    const { land, status } = data;
+
+      console.log(`Sending request to update land request: UserId=${land.UserId}, id=${data.id}, status=${status}`);
+      console.log("Land request response:", data);
+      io.to(data.user.id).emit('request_response_land', data);
+
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
 });
-//     socket.on('respond_to_request', async (data) => {
-//         const { requestId, status } = data; 
-//         try {
-//             const request = await db.RequestLand.update({ status }, {
-//                 where: { id: requestId }
-//             });
-//             const updatedRequest = await db.RequestLand.findByPk(requestId);
-//             io.to(updatedRequest.userId).emit('request_response', updatedRequest); 
-//         } catch (error) {
-//             socket.emit('error', { message: "Failed to update request" });
-//         }
-//     });
-
-//     socket.on('respond_to_house_request', async (data) => {
-//         const { requestId, response } = data;
-//         try {
-//             const request = await db.RequestHouse.findByPk(requestId);
-//             if (request.receiverId !== socket.userId) {
-//                 socket.emit('error', { message: 'Unauthorized' });
-//                 return;
-//             }
-//             request.status = response;
-//             await request.save();
-//             io.to(request.senderId).emit('land_request_response', { requestId, response });
-//         } catch (error) {
-//             console.error('Error responding to house request:', error);
-//             socket.emit('error', { message: 'Failed to respond to house request' });
-//         }
-//     });
-
-//     socket.on('disconnect', () => {
-//         console.log('A user disconnected');
-//     });
-});
-
-
-
-
 
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-})
+  console.log(`Server running on port ${PORT}`);
+});
+

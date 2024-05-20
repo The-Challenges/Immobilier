@@ -1,56 +1,52 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 import axios from 'axios';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // You can choose any icon set
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-// Function to handle the upload of images to Cloudinary
-const uploadImage = async (uri) => {
+const uploadImage = async (image) => {
     const formData = new FormData();
     formData.append('file', {
-        uri,
-        type: 'image/jpeg', // Adjust the MIME type as necessary
+        uri: image.uri,
+        type: image.type || 'image/jpeg',
         name: 'upload.jpg',
     });
-    formData.append('upload_preset', 'your_upload_preset'); // Replace with your Cloudinary upload preset
-
+    formData.append('upload_preset', '439219526765747'); // Use your actual preset
     try {
-        const response = await axios.post('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', formData);
-        return response.data;
+        const response = await axios.post(`https://api.cloudinary.com/v1_1/dpxdxp4fj/image/upload`, formData);
+        return response.data.url;
     } catch (error) {
         console.error('Error uploading image: ', error);
+        Alert.alert('Upload Error', 'Failed to upload image.');
         throw error;
     }
 };
 
-function Screen4({ formData, handleChange, navigateToNext }) {
+function Screen4({ navigateToNext }) {
     const [selectedImages, setSelectedImages] = useState([]);
+    const [uploading, setUploading] = useState(false);
 
-    const handleImageUpload = () => {
-        const options = {
-            title: 'Select Image',
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-        };
-
-        ImagePicker.showImagePicker(options, (response) => {
+    const pickImage = () => {
+        launchImageLibrary({
+            mediaType: 'photo',
+            includeBase64: false,
+            maxHeight: 200,
+            maxWidth: 200,
+        }, async (response) => {
             if (response.didCancel) {
                 console.log('User cancelled image picker');
             } else if (response.error) {
                 console.log('ImagePicker Error: ', response.error);
             } else {
-                const source = { uri: response.uri };
-                setSelectedImages([...selectedImages, source]);
-
-                uploadImage(response.uri).then((cloudinaryResponse) => {
-                    console.log('Cloudinary response:', cloudinaryResponse);
-                    // Handle Cloudinary response as needed
-                }).catch(error => {
-                    console.error('Upload failed:', error);
-                    Alert.alert('Upload failed', 'Failed to upload image.');
-                });
+                setUploading(true);
+                try {
+                    const imageUri = await uploadImage(response.assets[0]);
+                    setSelectedImages(prev => [...prev, { uri: imageUri }]);
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                } finally {
+                    setUploading(false);
+                }
             }
         });
     };
@@ -67,13 +63,14 @@ function Screen4({ formData, handleChange, navigateToNext }) {
                 ) : (
                     selectedImages.map((image, index) => (
                         <View key={index} style={styles.imageContainer}>
-                            <Image source={image} style={styles.image} />
+                            <Image source={{ uri: image.uri }} style={styles.image} />
                         </View>
                     ))
                 )}
             </ScrollView>
-            <TouchableOpacity style={styles.selectButton} onPress={handleImageUpload}>
+            <TouchableOpacity style={styles.selectButton} onPress={pickImage} disabled={uploading}>
                 <Icon name="add-a-photo" size={24} color="#fff" />
+                {uploading && <Text>Uploading...</Text>}
             </TouchableOpacity>
             <TouchableOpacity style={styles.nextButton} onPress={navigateToNext}>
                 <Icon name="navigate-next" size={24} color="#fff" />

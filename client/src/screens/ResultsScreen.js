@@ -16,7 +16,7 @@ const ResultsScreen = ({ route }) => {
             {item.Media && item.Media.length > 0 && (
               <Image
                 source={{ uri: item.Media[0].link }}
-                style={{ width: 100, height: 100 }}  // Ensure you define this style
+                style={{ width: 100, height: 100 }}  
               />
             )}
 

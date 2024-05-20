@@ -67,14 +67,14 @@ const HouseDetail = ({ category, details }) => (
 
 const ViewHouseDetails = ({ route, navigation }) => {
 
-    const { house, info } = route.params;
+    const { house, user } = route.params;
     console.log(house.UserId,'aaa')
 
     
 
     // Ensure house.Views and house.Indoors are defined and default to empty array if not
-    const uniqueViews = house.Views ? [...new Set(house.Views.map(view => view.options))] : [];
-    const uniqueIndoors = house.Indoors ? [...new Set(house.Indoors.map(indoor => indoor.options))] : []
+    // const uniqueViews = house.Views ? [...new Set(house.Views.map(view => view.options))] : [];
+    // const uniqueIndoors = house.Indoors ? [...new Set(house.Indoors.map(indoor => indoor.options))] : []
     return (
         
         <ScrollView style={styles.container}>
@@ -95,23 +95,23 @@ const ViewHouseDetails = ({ route, navigation }) => {
                     <Icon1 name="monetization-on" size={15} color="#4CAF50" /> {house.price}
                 </Text>
                 <Text style={styles.price}>
-                    <Icon name="envelope" size={15} color="#FF9800" /> {info.email}
+                    <Icon name="envelope" size={15} color="#FF9800" /> {house.User.email}
                 </Text>
                 <Text style={styles.price}>
-                    <Icon2 name="phone" size={15} color="#2196F3" /> {info.phoneNumber}
+                    <Icon2 name="phone" size={15} color="#2196F3" /> {house.User.phoneNumber}
                 </Text>
                 <Text style={styles.location}>
-                    <Icon2 name="location-pin" size={15} color="#F44336" /> {house.location}
+                    <Icon2 name="location-pin" size={15} color="#F44336" /> {house.User.location}
                 </Text>
                 <Button
                     icon={<Icon name="arrow-right" size={15} color="white" />}
-                    title={`Contact ${info.firstName}`}
+                    title={`Contact ${house.User.firstName}`}
                     buttonStyle={styles.contactButton}
-                    onPress={() => navigation.navigate('TermsAndConditions', { UserId: house.UserId, houseId: house.id })}
+                    onPress={() => navigation.navigate('TermsAndConditions', { user,house })}
                 />
             </View>
-            <HouseDetail category="View" details={uniqueViews} />
-            <HouseDetail category="Indoor" details={uniqueIndoors} />
+            <HouseDetail category="View" details={house.Views} />
+            <HouseDetail category="Indoor" details={house.Indoors} />
 
             <Text style={styles.description}>{house.description}</Text>
         </ScrollView>

@@ -40,7 +40,7 @@ const navigateDetails=(item)=>{
     const fetchLands = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`${API_AD}/api/land/alllands`);
+            const response = await axios.get(`${API_AD}/api/land/all`);
             setLands(response.data);
 
         } catch (error) {
@@ -125,6 +125,11 @@ const styles = StyleSheet.create({
     detailText: {
         marginLeft: 10,
         fontSize: 16,
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 10
     },
     button: {
         backgroundColor: COLORS.primary,

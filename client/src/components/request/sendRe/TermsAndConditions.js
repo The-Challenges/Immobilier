@@ -6,29 +6,41 @@ import socketserv from '../socketserv';
 
 const TermsAndConditionsScreen = ({ route,navigation }) => {
     const [accepted, setAccepted] = useState(false);
-    const {user,land,userId,landId } = route.params;
+    const {user,land,house } = route.params;
     
     
     const handleAcceptanceToggle = () => setAccepted(!accepted);
 
     const handleSendRequest = () => {
-        socketserv.emit('send_land_request',{user,land})
-        if (!user || !land) {
-            Alert.alert('Error', 'User ID or Land ID is missing.');
-            return;
-        }
-    
-        const url = `http://192.168.11.50:4000/api/reqtest/${user.id}/${land.id}`;
-        axios.post(url)
-        .then(() => {
-            Alert.alert('Request Sent', 'Your request has been sent successfully!');
-            navigation.navigate('HomeTabs');
-        })
-        .catch((error) => {
-            console.error('Error sending land request:', error);
-            Alert.alert('Error', `Failed to send land request: ${error.response ? error.response.data : 'Unknown error'}`);
-        })
+        if (land) {
+            socketserv.emit('send_land_request', { user, land });
 
+            const url = `http://192.168.11.251:4000/api/reqtest/${user.id}/${land.id}`;
+            axios.post(url)
+                .then(() => {
+                    console.log('Land request sent successfully');
+                    Alert.alert('Request Sent land', 'Your request has been sent successfully!');
+                    navigation.navigate('HomeTabs');
+                })
+                .catch((error) => {
+                    console.error('Error sending land request:', error);
+                    Alert.alert('Error', `Failed to send land request: ${error.response ? error.response.data : 'Unknown error'}`);
+                });
+        } else {
+            socketserv.emit('send_house_request', { user, house });
+
+            const url = `http://192.168.11.251:4000/api/reqtest/request/${user.id}/${house.id}`;
+            axios.post(url)
+                .then(() => {
+                    console.log('House request sent successfully');
+                    Alert.alert('Request Sent to house', 'Your request has been sent successfully!');
+                    navigation.navigate('HomeTabs');
+                })
+                .catch((error) => {
+                    console.error('Error sending house request:', error);
+                    Alert.alert('Error', `Failed to send house request: ${error.response ? error.response.data : 'Unknown error'}`);
+                });
+        }
     };
 
 

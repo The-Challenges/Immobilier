@@ -17,16 +17,35 @@ import axios from 'axios';
 import COLORS from '../consts/colors';
 import { Card, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import storage from '../components/Authentification/storage';
+import socketserv from '../components/request/socketserv';
+
 
 const { width } = Dimensions.get("window");
 
 const SeeAllHouses = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+
+  const navigateDetails=(house)=>{
+    navigation.navigate('ViewDetailsHouse', { house: house ,user ,houseId:house.id,userId:house.UserId } )
+    socketserv.emit("receiver",house.UserId)
+}
 
   useEffect(() => {
     fetchHouses();
+    getUserId()
   }, []);
+  const getUserId = async () => {
+    try {
+      const userData = await storage.load({ key: 'loginState' });
+      console.log(userData)
+      setUser(userData.user);
+    } catch (error) {
+      console.error('Failed to retrieve user data:', error);
+    }
+  };
 
   const fetchHouses = async () => {
     setLoading(true);
@@ -59,12 +78,17 @@ const SeeAllHouses = ({ navigation }) => {
           <Icon name="shower" size={20} color={COLORS.purple} />
           <Text style={[styles.detailText, {color: COLORS.purple}]}>Bathrooms: {house.numberbathrooms}</Text>
         </View>
-        <Button
-          icon={<Icon name="arrow-right" size={15} color="white" />}
-          title=" View Details"
-          buttonStyle={styles.button}
-          onPress={() => navigation.navigate('DetailsScreen', { house })}
-        />
+        <View style={styles.buttonContainer}>
+          <Button
+            icon={<Icon name="arrow-right" size={15} color="white" />}
+            title=" View Details"
+            buttonStyle={styles.button}
+            onPress={() =>navigateDetails(house) }
+          />
+          <TouchableOpacity style={styles.allRequestsButton} onPress={() => navigation.navigate('Received')}>
+            <Text style={styles.allRequestsText}>All Requests</Text>
+          </TouchableOpacity>
+        </View>
       </Card>
     );
   };
@@ -80,9 +104,6 @@ const SeeAllHouses = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar backgroundColor={COLORS.white} barStyle='dark-content' />
-      <TouchableOpacity style={styles.backIcon} onPress={() => navigation.goBack()}>
-        <Icon name="arrow-back" size={24} color={COLORS.dark} />
-      </TouchableOpacity>
       <FlatList
         data={houses}
         keyExtractor={item => `${item.id}`}
@@ -120,23 +141,39 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10
+  },
   button: {
     backgroundColor: COLORS.primary,
-    borderRadius: 5
+    borderRadius: 5,
+    width: 100, 
+    height: 30, 
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  allRequestsButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 5,
+    width: 100, 
+    height: 30, 
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  allRequestsText: {
+    color: COLORS.white,
+    fontWeight: 'bold',
+    fontSize: 14 // Adjust the font size here
   },
   loader: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: COLORS.white
-  },
-  backIcon: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    padding: 10,
-    zIndex: 10  // Ensure it's clickable over other elements if necessary
   }
 });
+
 
 export default SeeAllHouses;

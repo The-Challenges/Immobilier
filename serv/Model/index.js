@@ -2,29 +2,24 @@ const { Sequelize, DataTypes } = require('sequelize');
 const { DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD } = require("../config/config");
 
 
+
 const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
   dialect: 'mysql',
   host: 'localhost',
 });
 
-async function authenticateConnection() {
-  try {
-    await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-}
+// async function authenticateConnection() {
+//   try {
+//     await sequelize.authenticate();
+//     console.log('Connection has been established successfully.');
+//   } catch (error) {
+//     console.error('Unable to connect to the database:', error);
+//   }
+// }
 
-authenticateConnection()
+// authenticateConnection()
 
-// sequelize.sync()
-//   .then(() => {
-//     console.log('Database synchronized successfully.');
-//   })
-//   .catch((error) => {
-//     console.error('Unable to synchronize database:', error);
-//   });
+
 
 const User = require('./users')(sequelize, DataTypes);
 const Chat = require('./chat')(sequelize, DataTypes);
@@ -34,17 +29,17 @@ const House = require('./house')(sequelize, DataTypes);
 const Land = require('./land')(sequelize, DataTypes);
 const Notification = require('./notification')(sequelize, DataTypes);
 const Conversation = require('./conversation')(sequelize, DataTypes)
-const Media =require('./media')(sequelize,DataTypes)
-const Indoor =require('./indoorOption')(sequelize,DataTypes)
+const Media = require('./media')(sequelize, DataTypes)
+const Indoor = require('./indoorOption')(sequelize, DataTypes)
 
-const Outdoor =require('./outdoorOptions')(sequelize,DataTypes)
+const Outdoor = require('./outdoorOptions')(sequelize, DataTypes)
 
-const View =require('./viewOption')(sequelize,DataTypes)
-const Climat =require('./climate')(sequelize,DataTypes)
-const Comment =require('./comment')(sequelize,DataTypes)
-const Access =require('./accesOption')(sequelize,DataTypes)
-const RequestHouse =require('./requestHouse')(sequelize,DataTypes)
-const RequestLand =require('./requestLand')(sequelize,DataTypes)
+const View = require('./viewOption')(sequelize, DataTypes)
+const Climat = require('./climate')(sequelize, DataTypes)
+const Comment = require('./comment')(sequelize, DataTypes)
+const Access = require('./accesOption')(sequelize, DataTypes)
+const RequestHouse = require('./requestHouse')(sequelize, DataTypes)
+const RequestLand = require('./requestLand')(sequelize, DataTypes)
 
 /* **********************************************************user relationships******************************************** */
 User.hasMany(House);
@@ -75,7 +70,6 @@ Land.hasMany(Comment);
 Comment.belongsTo(Land);
 Land.belongsToMany(User, { through: RequestLand, foreignKey: 'landId' });
 User.belongsToMany(Land, { through: RequestLand, foreignKey: 'userId' });
-
 
 
 /* **********************************************************house relationships******************************************** */
@@ -117,9 +111,9 @@ User.belongsToMany(House, { through: RequestHouse, foreignKey: 'userId' });
 
 // Conversation.hasMany(Chat);
 // Chat.belongsTo(Conversation);
-// async function  test(params) {
+// async function test(params) {
 //   await sequelize.sync({ force: true });
-// console.log('The table for the User model was just (re)created!');
+//   console.log('The table for the User model was just (re)created!');
 // }
 // test()
 // Export models and sequelize instance
@@ -132,7 +126,7 @@ module.exports = {
   House,
   Land,
   Notification,
-  Media,Comment,
+  Media, Comment,
   Indoor,
   Outdoor,
   View,

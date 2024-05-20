@@ -1,54 +1,34 @@
 import React, { useState } from 'react';
 import { View, SafeAreaView, StatusBar, StyleSheet, Button, Alert } from 'react-native';
 import axios from 'axios';
-import Screen1 from '../../../screens/housescreen/housescren1';
-import Screen2 from '../../../screens/housescreen/housescren2';
-import Screen3 from '../../../screens/housescreen/housescreen4';
-import Screen4 from '../../../screens/housescreen/housescreen';
-import Screen5 from '../../../screens/housescreen/housescreen6';
-import Screen6 from '../../../screens/housescreen/housescreen7';
-import Screen7 from '../../../screens/housescreen/housescreen3';
+import Screen1 from '../../../screens/housescreen/Property Details';
+import Screen2 from '../../../screens/housescreen/Outdoor Options';
+import Screen3 from '../../../screens/housescreen/Indoor Options';
+import Screen4 from '../../../screens/housescreen/maps';  // Ensure correct capitalization if necessary
+import Screen5 from '../../../screens/housescreen/images';  // Ensure correct capitalization if necessary
+import Screen6 from '../../../screens/housescreen/sabmut';  // Adjusted to 'Submit' for clarity
+import Screen7 from '../../../screens/housescreen/Climate Control';
+import Viewoptions from "../../../screens/housescreen/viewoptions";  // Ensure correct capitalization if necessary
+import { API_AD } from '../../../../config';
 function FullCreateHouse() {
     const [formData, setFormData] = useState({
-        // option: '',
-        priceRange: '',
-        bedrooms: '',
-        bathrooms: '',
-        carSpaces: '',
-        purchaseTimeframe: '',
-        landSize: '',
-        location: '',
-        address: '',
-        isVerified: false,
-        finance: false,
-        cash: false,
-        ensuite: false,
-        study: false,
-        alarmSystem: false,
-        floorboards: false,
-        rumpusRoom: false,
-        dishwasher: false,
-        builtInRobes: false,
-        broadband: false,
-        gym: false,
-        workshop: false,
-        swimmingPool: false,
-        balcony: false,
-        undercoverParking: false,
-        fullyFenced: false,
-        tennisCourt: false,
+        title: "",
+        price: 0,
+        latitude: "",
+        longitude: "",
+        parking: false,
+        houseAge: "All types",
+        numberBedrooms: 0,
+        numberBathrooms: 0,
+        propertyType: "All types",
         garage: false,
-        outdoorArea: false,
-        shed: false,
-        outdoorSpa: false,
-        airConditioning: false,
-        heating: false,
-        solarPanels: false,
-        highEnergyEfficiency: false
+        // other properties initialized as before...
+        media: []
     });
     const [screenIndex, setScreenIndex] = useState(1);
 
     const handleChange = (name, value) => {
+        console.log("Updated:", name, value);  // More descriptive log
         setFormData(prevFormData => ({
             ...prevFormData,
             [name]: value
@@ -56,12 +36,12 @@ function FullCreateHouse() {
     };
 
     const navigateToNext = () => {
-        setScreenIndex(screenIndex + 1);
+        setScreenIndex(prevIndex => prevIndex + 1);
     };
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('https://your-api-url.com/houses', formData);
+            const response = await axios.post(`${API_AD}/api/house/postHouse`, formData);
             if (response.status === 200) {
                 Alert.alert("Success", "House has been listed successfully.");
             } else {
@@ -71,60 +51,29 @@ function FullCreateHouse() {
             Alert.alert("Error", error.message);
         }
     };
+
     return (
         <>
-            {screenIndex === 1 && (
-                <Screen1
-                    formData={formData}
-                    handleChange={handleChange}
-                    navigateToNext={navigateToNext}
-                />
-            )}
-            {screenIndex === 2 && (
-                <Screen2
-                    formData={formData}
-                    handleChange={handleChange}
-                    navigateToNext={navigateToNext}
-                />
-            )}
-            {screenIndex === 3 && (
-                <Screen3
-                    formData={formData}
-                    handleChange={handleChange}
-                    navigateToNext={navigateToNext}
-                />
-            )}
-            {screenIndex === 4 && (
-                    <Screen7
-                        formData={formData}
-                        handleChange={handleChange}
-                        navigateToNext={navigateToNext}
-                    />
-                )}
-            {screenIndex === 5 && (
-                <Screen4
-                    formData={formData}
-                    handleChange={handleChange}
-                    navigateToNext={navigateToNext}
-                />
-            )}
-            {screenIndex === 6 && (
-                <Screen5
-                    formData={formData}
-                    handleChange={handleChange}
-                    navigateToNext={navigateToNext}
-                />
-            )}
-
-             {screenIndex === 7 && (
-                <Screen6
-                    formData={formData}
-                    handleChange={handleChange}
-                    handleSubmit={handleSubmit}
-                />
-            )}
+            <StatusBar barStyle="dark-content" />
+            <SafeAreaView style={styles.container}>
+                {screenIndex === 1 && <Screen1 formData={formData} handleChange={handleChange} navigateToNext={navigateToNext} />}
+                {screenIndex === 2 && <Screen2 formData={formData} handleChange={handleChange} navigateToNext={navigateToNext} />}
+                {screenIndex === 3 && <Screen3 formData={formData} handleChange={handleChange} navigateToNext={navigateToNext} />}
+                {screenIndex === 4 && <Screen7 formData={formData} handleChange={handleChange} navigateToNext={navigateToNext} />}
+                {screenIndex === 5 && <Viewoptions formData={formData} handleChange={handleChange} navigateToNext={navigateToNext} />}
+                {screenIndex === 6 && <Screen4 formData={formData} handleChange={handleChange} navigateToNext={navigateToNext} />}
+                {screenIndex === 7 && <Screen5 formData={formData} handleChange={handleChange} navigateToNext={navigateToNext} />}
+                {screenIndex === 8 && <Screen6 formData={formData} handleChange={handleChange} handleSubmit={handleSubmit} />}
+            </SafeAreaView>
         </>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff'
+    }
+});
 
 export default FullCreateHouse;

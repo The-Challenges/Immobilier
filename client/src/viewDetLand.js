@@ -1,11 +1,13 @@
-import React ,{useEffect}from 'react';
+import React ,{useEffect,useState}from 'react';
 import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/SimpleLineIcons'
 import Icon1 from 'react-native-vector-icons/MaterialIcons'
-
+import { IconButton, Snackbar } from 'react-native-paper';
 import COLORS from './consts/colors';
 import { Button } from 'react-native-elements';
+import { API_AD } from '../config';
+import axios from 'axios';
 
 // Color and icon definitions (assuming FontAwesome5 supports all needed icons, replace if needed)
 const accessIcons = {
@@ -46,9 +48,39 @@ const PropertyDetail = ({ category, details }) => (
 // Main component displaying the property details
 const ViewLandDetails = ({ route, navigation }) => {
     const { land , user } = route.params;
+    const [hasRequested, setHasRequested] = useState(false);
+    // const [showSnackbar, setShowSnackbar] = useState(false);
+    useEffect(() => {
+        checkIfRequested();
+    }, []);
 
-    const uniqueAccesses = [...new Set(land.Accesses.map(access => access.options))];
-    const uniqueViews = [...new Set(land.Views.map(view => view.options))];
+    const checkIfRequested = async () => {
+        try {
+            const response = await axios.get(`${API_AD}/api/reqtest/check`, {
+                params: {
+                    userId: user.id,
+                    landId: land.id
+                }
+            });
+            setHasRequested(response.data.hasRequested);
+        } catch (error) {
+            console.error('Failed to check request status:', error);
+            Alert.alert('Error', 'Failed to check if request has already been sent.');
+        }
+    };
+
+
+    // const handleRequest = () => {
+    //     if (hasRequested) {
+    //         setShowSnackbar(true);
+    //     } else {
+    //         setShowSnackbar(false);
+    //     }
+    // };
+
+    // const closeSnackbar = () => setShowSnackbar(false);
+    // const uniqueAccesses = [...new Set(land.Accesses.map(access => access.options))];
+    // const uniqueViews = [...new Set(land.Views.map(view => view.options))];
 
 
     return (
@@ -81,14 +113,16 @@ const ViewLandDetails = ({ route, navigation }) => {
     </Text>
     <Button
         icon={<Icon name="arrow-right" size={15} color="white" />}
-        title={`Contact ${land.User.firstName}`}
+        title={hasRequested ? 'You have already sent a request' : `Contact ${land.User.firstName}`}
         buttonStyle={styles.contactButton}
         onPress={() => navigation.navigate('TermsAndConditions', { user,land })}
+        disabled={hasRequested}
     />
 </View>
-            <PropertyDetail category="Access" details={uniqueAccesses} />
-            <PropertyDetail category="View" details={uniqueViews} />
+            <PropertyDetail category="Access" details={land.Accesses} />
+            <PropertyDetail category="View" details={land.Views} />
             <Text style={styles.description}>{land.description}</Text>
+            
         </ScrollView>
     );
 };

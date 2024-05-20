@@ -4,11 +4,14 @@ const requestController = require('../controller/testRe/controllerrequest');
 
 // Route to create a new request
 router.post('/:userId/:landId', requestController.createRequest);
+router.post('/request/:userId/:houseId',requestController.createRequestHouse)
 
-// Route to update an existing request
-router.patch('/update', requestController.updateRequestStatus);
+router.put('/update-land-request/:userId/:landId', requestController.updateRequestLand);
 
-// Route to get all requests for a specific user
-router.get('/user/:userId', requestController.getRequestByUser);
+router.put('/update-house-request/:userId/:houseId', requestController.updateRequestHouse);
+
+
+router.get('/requests/owner/:userId/:type', requestController.getRequestByOwner)
+router.get('/check',requestController.check)
 
 module.exports = router;

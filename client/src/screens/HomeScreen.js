@@ -46,21 +46,21 @@ const HomeScreen = ({ navigation }) => {
 
 
   useEffect(() => {
-    if (!loading) {
-      const interval = setInterval(() => {
-        setCurrentIndex(prevIndex => {
-          const nextIndex = prevIndex + 1;
-          if (nextIndex >= houses.slice(0, 5).length) {
-            flatListRef.current.scrollToIndex({ index: 0, animated: true });
-            return 0;
-          } else {
-            flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
-            return nextIndex;
-          }
-        });
-      }, 3000); // Change slide every 3 seconds
-      return () => clearInterval(interval);
-    }
+    // if (!loading) {
+    //   const interval = setInterval(() => {
+    //     setCurrentIndex(prevIndex => {
+    //       const nextIndex = prevIndex + 1;
+    //       if (nextIndex >= houses.slice(0, 5).length) {
+    //         flatListRef.current.scrollToIndex({ index: 0, animated: true });
+    //         return 0;
+    //       } else {
+    //         flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
+    //         return nextIndex;
+    //       }
+    //     });
+    //   }, 3000); // Change slide every 3 seconds
+    //   return () => clearInterval(interval);
+    // }
   }, [loading, houses]);
 
   const fetchHouses = async () => {
@@ -68,8 +68,8 @@ const HomeScreen = ({ navigation }) => {
       const response = await axios.get(`${API_AD}/api/house/allhouses`);
       setHouses(response.data);
     } catch (error) {
-      Alert.alert('Error', 'Failed to fetch houses');
-      console.error('Failed to fetch houses:', error);
+      Alert.alert('Error', 'failed to fetch houses');
+      console.error('failed to fetch houses:', error);
     } finally {
       setLoading(false);
     }
