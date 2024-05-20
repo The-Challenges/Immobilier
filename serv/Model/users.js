@@ -31,10 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     long: {
       type: DataTypes.FLOAT
     },
-    deviceToken: {
-      type: DataTypes.STRING,
-      allowNull: true // Device token can be null initially
-    }
+  
     // Uncomment and add these fields if needed
     // isEmailVerified: {
     //   type: DataTypes.BOOLEAN,

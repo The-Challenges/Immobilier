@@ -1,43 +1,90 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, Dimensions, StatusBar, FlatList, View, Text, Image, Alert, ActivityIndicator, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { SafeAreaView, StyleSheet, Dimensions, StatusBar, FlatList, View, Text, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import COLORS from '../consts/colors';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Updated import
+import storage from '../components/Authentification/storage'; // Ensure path correctness
+import { Card, Button } from 'react-native-elements';
 
 const { width } = Dimensions.get('window');
 
 const SeeAllHouses = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [pressedCard, setPressedCard] = useState(null);
-  const [favorites, setFavorites] = useState({});
+  const [favorites, setFavorites] = useState(new Set());
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    fetchHouses();
-  }, []);
+    const initializeData = async () => {
+      try {
+        const userData = await storage.load({ key: 'loginState' });
+        setUserId(userData.user.userId);
+        fetchHouses();
+        fetchFavorites(userData.user.userId);
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        Alert.alert('Error', 'Unable to load user data');
+      }
+    };
+
+    initializeData();
+
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (userId) {
+        fetchFavorites(userId);
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, userId]);
 
   const fetchHouses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://192.168.103.18:4000/api/house/allhouses`);
+      const response = await axios.get('http://192.168.103.20:4000/api/house/allhouses');
       setHouses(response.data);
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
       Alert.alert('Error', 'Failed to fetch houses');
       console.error('Failed to fetch houses:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const toggleCard = (id) => {
-    setPressedCard(pressedCard === id ? null : id);
+  const fetchFavorites = async (userId) => {
+    if (!userId) return;
+    try {
+      const response = await axios.get(`http://192.168.103.20:4000/api/favorites/${userId}/house`);
+      const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
+      setFavorites(favoriteHouses);
+    } catch (error) {
+      console.error('Failed to fetch favorites:', error);
+    }
   };
 
-  const toggleFavorite = (houseId) => {
-    setFavorites((prevFavorites) => ({
-      ...prevFavorites,
-      [houseId]: !prevFavorites[houseId],
-    }));
+  const toggleFavorite = async (houseId) => {
+    if (!userId) {
+      Alert.alert('Error', 'User ID not set');
+      return;
+    }
+    setLoading(true);
+    try {
+      await axios.post(`http://192.168.103.20:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      setFavorites(prev => {
+        const updated = new Set(prev);
+        if (updated.has(houseId)) {
+          updated.delete(houseId);
+        } else {
+          updated.add(houseId);
+        }
+        return updated;
+      });
+    } catch (error) {
+      console.error("Failed to toggle favorite:", error);
+      Alert.alert('Error', 'Failed to update favorites');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const indoorIcons = {
@@ -77,92 +124,52 @@ const SeeAllHouses = ({ navigation }) => {
   );
 
   const HouseCard = ({ house }) => {
+    const isFavorite = favorites.has(house.id);
     const imageUrl = house.Media && house.Media.length > 0 ? house.Media[0].link : 'https://via.placeholder.com/400x200.png?text=No+Image+Available';
-    const isFavorite = favorites[house.id];
-
     return (
-      <TouchableOpacity onPress={() => toggleCard(house.id)} style={styles.card}>
-        <Image source={{ uri: imageUrl }} style={styles.cardImage} />
-        <View style={styles.cardContent}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardType}>{house.propertyType}</Text>
+      <Card containerStyle={styles.card}>
+        <Card.Title style={styles.cardTitle}>{house.title}</Card.Title>
+        <Card.Image source={{ uri: imageUrl }} style={styles.cardImage} />
+        <View style={styles.detailContainer}>
+          <View style={styles.priceContainer}>
+            <Icon name="attach-money" size={24} color={COLORS.green} style={styles.iconStyle} />
+            <Text style={[styles.detailText, { color: COLORS.green }]}>{house.price}</Text>
+          </View>
+          <Text style={styles.cardType}>{house.TerrainType}</Text>
+          <View style={styles.favoriteAndRatingContainer}>
+            <TouchableOpacity onPress={() => toggleFavorite(house.id)}>
+              <Icon
+                name={isFavorite ? "favorite" : "favorite-border"}
+                size={24}
+                color={isFavorite ? COLORS.red : COLORS.yellow}
+                style={styles.favoriteIcon}
+              />
+            </TouchableOpacity>
             <View style={styles.rating}>
               <Icon name="star" size={16} color="#FFD700" />
               <Text style={styles.ratingText}>{house.rating || '4.5'}</Text>
             </View>
-            <View>
-              <TouchableWithoutFeedback
-                onPress={(e) => {
-                  e.stopPropagation();
-                  toggleFavorite(house.id);
-                }}
-              >
-                <View style={[styles.favoriteButton, isFavorite && styles.favoriteButtonActive]}>
-                  <Icon name={isFavorite ? "favorite" : "favorite-border"} size={40} color={isFavorite ? "#FF0000" : "#FFD700"} />
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
           </View>
-          <Text style={styles.cardPrice}>${house.price}/month</Text>
-          <Text style={styles.cardTitle}>{house.title}</Text>
-          <Text style={styles.cardLocation}>{house.location}</Text>
-          {pressedCard === house.id && (
-            <View style={styles.iconsContainer}>
-              <View style={styles.iconRow}>
-                <Icon name="bathtub" size={20} color="#000" />
-                <Text style={styles.iconText}>{house.numberbathrooms}</Text>
-              </View>
-              <View style={styles.iconRow}>
-                <Icon name="king-bed" size={20} color="#000" />
-                <Text style={styles.iconText}>{house.numberbedrooms}</Text>
-              </View>
-              <View style={styles.iconRow}>
-                <Icon name="garage" size={20} color="#000" />
-                <Text style={styles.iconText}>{house.garage}</Text>
-              </View>
-              <View style={styles.iconRow}>
-                <Icon name="local-parking" size={20} color="#000" />
-                <Text style={styles.iconText}>{house.parking ? 'Yes' : 'No'}</Text>
-              </View>
-              <View style={styles.iconRow}>
-                <Icon name="check-circle" size={20} color={house.isVerified ? "#00FF00" : "#FF0000"} />
-                <Text style={styles.iconText}>{house.isVerified ? 'Verified' : 'Not Verified'}</Text>
-              </View>
-              <View style={styles.iconRow}>
-                <Icon name="attach-money" size={20} color="#000" />
-                <Text style={styles.iconText}>{house.purchaseoption}</Text>
-              </View>
-              <View style={styles.iconRow}>
-                <Icon name="home" size={20} color="#000" />
-                <Text style={styles.iconText}>{house.houseAge}</Text>
-              </View>
-              {renderIconRow(house.Indoors, indoorIcons)}
-              {renderIconRow(house.Outdoors, outdoorIcons)}
-              {renderIconRow(house.Climates, climateIcons)}
-              <TouchableOpacity
-                style={styles.detailsButton}
-                onPress={() => navigation.navigate('DetailsScreen', { house })}
-              >
-                <Text style={styles.detailsButtonText}>View Details</Text>
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
-      </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <Button
+            icon={<Icon name="arrow-right" size={15} color="white" />}
+            title="View Details"
+            buttonStyle={styles.button}
+            onPress={() => navigation.navigate('DetailsScreen', { house })}
+          />
+          <TouchableOpacity style={styles.allRequestsButton} onPress={() => navigation.navigate('Received')}>
+            <Text style={styles.allRequestsText}>All Requests</Text>
+          </TouchableOpacity>
+        </View>
+      </Card>
     );
   };
-
-  if (loading) {
-    return (
-      <View style={styles.loader}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
-      </View>
-    );
-  }
+  
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <StatusBar backgroundColor={COLORS.white} barStyle="dark-content" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
+      <StatusBar backgroundColor={COLORS.background} barStyle="dark-content" />
       <FlatList
         data={houses}
         keyExtractor={(item) => `${item.id}`}
@@ -174,112 +181,108 @@ const SeeAllHouses = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background
+  },
   listContainer: {
-    padding: width * 0.03,
+    padding: 20
   },
   card: {
-    borderRadius: 10,
-    elevation: 4,
-    shadowOpacity: 0.15,
-    shadowRadius: 5,
-    shadowOffset: { width: 0, height: 2 },
-    marginVertical: 8,
-    backgroundColor: COLORS.white,
-    overflow: 'hidden',
+    borderRadius: 15,
+    elevation: 5,
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    marginVertical: 10,
+    backgroundColor: COLORS.white
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.dark
   },
   cardImage: {
     width: '100%',
-    height: 200,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    height: 250,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15
   },
-  cardContent: {
-    padding: 10,
-  },
-  cardHeader: {
+  detailContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
+    marginHorizontal: 15,
+    marginTop: 10
+  },
+  priceContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
+  detailText: {
+    fontSize: 18,
+    fontWeight: '500',
+    marginLeft: 2,  // Adjust this value to control space between the dollar sign and the price
+  },
   cardType: {
-    fontSize: 14,
-    color: '#888',
-    backgroundColor: '#e0e0e0',
-    borderRadius: 5,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    fontSize: 16,
+    color: COLORS.primary,
+    fontWeight: 'bold'
+  },
+  iconStyle: {
+    marginRight: 5
+  },
+  favoriteIcon: {
+    margin: 8
+  },
+  favoriteAndRatingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   rating: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 240,
+    marginLeft: 10
   },
   ratingText: {
     marginLeft: 5,
     color: '#FFD700',
     fontSize: 16,
+    fontWeight: 'bold'
   },
-  favoriteButton: {
-    position: 'absolute',
-    top: -10,
-    right: -4,
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 5,
-    elevation: 5,
-    marginTop: 37,
-  },
-  favoriteButtonActive: {
-    backgroundColor: '#FFD700',
-  },
-  cardPrice: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginVertical: 5,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  cardLocation: {
-    fontSize: 14,
-    color: '#888',
-    marginVertical: 5,
-  },
-  iconsContainer: {
+  buttonContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 10,
+    justifyContent: 'space-between',
+    margin: 15
   },
-  iconRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10,
-    marginBottom: 10,
-  },
-  iconText: {
-    marginLeft: 5,
-    fontSize: 14,
-  },
-  detailsButton: {
+  button: {
     backgroundColor: COLORS.primary,
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    alignSelf: 'flex-start',
-    marginTop: 10,
+    borderRadius: 10,
+    width: 120,
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  detailsButtonText: {
-    color: '#fff',
-    fontSize: 16,
+  allRequestsButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+    width: 120,
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  allRequestsText: {
+    color: COLORS.white,
+    fontWeight: 'bold',
+    fontSize: 14
   },
   loader: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.white,
-  },
+    backgroundColor: COLORS.white
+  }
 });
 
 export default SeeAllHouses;
