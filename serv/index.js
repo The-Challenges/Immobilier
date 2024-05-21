@@ -36,7 +36,7 @@ app.use('/api/house',require('./routes/routerHouse'))
 app.use('/api/land', require('./routes/routerLand'));
 app.use('/api/request', require('./routes/requestRoutes'));
 app.use('/api', require('./routes/favoritesRoutes'));
-app.use('/api', require('./routes/paymentRoutes'));
+app.use('/api/payment', require('./routes/paymentRoutes'));
 
 
 

@@ -4,7 +4,7 @@
  *
  * @format
  */
-
+import { StripeProvider } from '@stripe/stripe-react-native';
 import React from 'react';
 import ProfileDetails from './src/components/profile/profileDetails';
 import Icon2 from 'react-native-vector-icons/Ionicons';
@@ -54,7 +54,9 @@ import Subscription from "./src/components/Subscription/Subscription"
 import FavoritesScreen from "./src/screens/FavoritesScreen"
 import FilterScreenLands from "./src/screens/FilterScreenLand"
 import ResultsScreenLand from './src/screens/ResultsScreenLand';
-// import PaymentScreen from './src/components/Subscription/Payment';
+import PaymentScreen from './src/components/Subscription/Payment';
+import PaymentConfirmationScreen from './src/components/Subscription/PaymentConfirmationScreen';
+
 
 
 
@@ -103,9 +105,11 @@ function App() {
           <Stack.Screen name='requeststatus' component={requeststatus} options={{ headerShown: false }}  />
           <Stack.Screen name='requeststatuslands' component={requeststatuslands} options={{ headerShown: false }}  />
           <Stack.Screen name='Subscription' component={Subscription} options={{ headerShown: false }}  />
-          {/* <Stack.Screen name='PaymentScreen' component={PaymentScreen} options={{ headerShown: false }}  /> */}
+          <Stack.Screen name='PaymentScreen' component={PaymentScreen} options={{ headerShown: false }}  />
 
           <Stack.Screen name='FavoritesScreen' component={FavoritesScreen} options={{ headerShown: false }}  />
+          <Stack.Screen name="PaymentConfirmation" component={PaymentConfirmationScreen} options={{ headerShown: false }}/>
+
 
 
 
