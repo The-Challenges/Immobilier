@@ -1,22 +1,15 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-module.exports = (sequelize, DataTypes) => {
 
-  const Climate = sequelize.define('Climate', {
+module.exports = (Sequelize, DataTypes) => {
+  const Climate = Sequelize.define('Climate', {
+   
     options: {
-      type: DataTypes.ENUM('Air conditioning','Heating','Solar panels','High energy efficiency','Unknown'),
+      type: DataTypes.ENUM('Air conditioning','Heating','Solar panets','High energy effcincy','Unknown'),
       defaultValue:'Unknown'
     },
-    HouseId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'Houses', 
-        key: 'id'
-      }
-    }
+ 
   });
-
-  
 
   return Climate;
 };

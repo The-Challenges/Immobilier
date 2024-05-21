@@ -54,6 +54,8 @@ import Subscription from "./src/components/Subscription/Subscription"
 import FavoritesScreen from "./src/screens/FavoritesScreen"
 import FilterScreenLands from "./src/screens/FilterScreenLand"
 import ResultsScreenLand from './src/screens/ResultsScreenLand';
+// import PaymentScreen from './src/components/Subscription/Payment';
+
 
 
 
@@ -71,6 +73,9 @@ function App() {
       <NavigationContainer>
 
         <Stack.Navigator initialRouteName="splash">
+        <Stack.Screen name='splash' component={splach} options={{ headerShown: false }}  />
+        <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }}  />
+
           {/* <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} /> */}
           {/* <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} /> */}
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
@@ -98,6 +103,8 @@ function App() {
           <Stack.Screen name='requeststatus' component={requeststatus} options={{ headerShown: false }}  />
           <Stack.Screen name='requeststatuslands' component={requeststatuslands} options={{ headerShown: false }}  />
           <Stack.Screen name='Subscription' component={Subscription} options={{ headerShown: false }}  />
+          {/* <Stack.Screen name='PaymentScreen' component={PaymentScreen} options={{ headerShown: false }}  /> */}
+
           <Stack.Screen name='FavoritesScreen' component={FavoritesScreen} options={{ headerShown: false }}  />
 
 
@@ -109,8 +116,7 @@ function App() {
 
 
 
-          <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }}  />
-          {/* <Stack.Screen name='splash' component={splach} options={{ headerShown: false }}  /> */}
+          {/* <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }}  /> */}
           <Stack.Screen name='apartement' component={Apartment} options={{ headerShown: false }}  />
           <Stack.Screen name='Land' component={Lands} options={{ headerShown: false }}  />
           {/* <Stack.Screen name='FilterScreenLands' component={FilterScreenLands} options={{ headerShown: false }}  /> */}
