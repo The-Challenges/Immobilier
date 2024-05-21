@@ -45,7 +45,7 @@ const ResultsScreenLand = ({ route, navigation }) => {
                 <Text style={styles.iconText}>Zoning: {item.Zoning}</Text>
               </View>
               <View style={styles.iconRow}>
-                <Icon name="map-marker-radius" size={20} color="#000" />
+                <Icon name="area-chart" size={20} color="#000" />
                 <Text style={styles.iconText}>Coordinates: Latitude {item.alt}, Longitude {item.long}</Text>
               </View>
               <View style={styles.iconRow}>
