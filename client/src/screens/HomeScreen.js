@@ -7,6 +7,7 @@ import storage from '../components/Authentification/storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import axios from 'axios';
+import FeaturedScroller from '../components/featuredScroller'; // Adjust the import path as needed
 
 const { width } = Dimensions.get('screen');
 
@@ -220,17 +221,11 @@ const HomeScreen = ({ navigation }) => {
         {loading ? (
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : (
-          <FlatList
-            ref={flatListRef}
-            data={houses.slice(0, 5)}
-            renderItem={renderHouseItem}
-            keyExtractor={(item) => item.id.toString()}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            snapToInterval={width - 40}
-            snapToAlignment="center"
-            decelerationRate="fast"
-            contentContainerStyle={styles.featuredListContainer}
+          <FeaturedScroller
+            houses={houses}
+            navigation={navigation}
+            toggleCard={toggleCard}
+            pressedCard={pressedCard}
           />
         )}
         <ListOptions />

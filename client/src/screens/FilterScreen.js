@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView, Animated } from 'react-native';
 import axios from 'axios';
 import COLORS from '../consts/colors';
 import FilterHeader from '../components/FilterHeader/FilterHeader';
@@ -32,6 +32,7 @@ const FilterScreen = ({ navigation }) => {
   const [selectedIndoorOptions, setSelectedIndoorOptions] = useState({});
   const [outdoorOptions, setOutdoorOptions] = useState([]);
   const [selectedOutdoorOptions, setSelectedOutdoorOptions] = useState({});
+  const fadeAnim = new Animated.Value(0);
 
   useEffect(() => {
     const fetchIndoorOptions = async () => {
@@ -64,6 +65,12 @@ const FilterScreen = ({ navigation }) => {
 
     fetchIndoorOptions();
     fetchOutdoorOptions();
+
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
   }, []);
 
   const getIconForOption = (option) => {
@@ -72,8 +79,8 @@ const FilterScreen = ({ navigation }) => {
       case 'Study': return 'book';
       case 'Ensuite': return 'bath';
       case 'Workshop': return 'build';
-      case 'Pool': return 'pool'; // Example outdoor option icon
-      case 'Garden': return 'nature'; // Example outdoor option icon
+      case 'Pool': return 'pool';
+      case 'Garden': return 'nature';
       default: return 'home';
     }
   };
@@ -84,8 +91,8 @@ const FilterScreen = ({ navigation }) => {
       case 'Study': return '#4682b4';
       case 'Ensuite': return '#8a2be2';
       case 'Workshop': return '#32cd32';
-      case 'Pool': return '#1e90ff'; // Example outdoor option color
-      case 'Garden': return '#32cd32'; // Example outdoor option color
+      case 'Pool': return '#1e90ff';
+      case 'Garden': return '#32cd32';
       default: return '#808080';
     }
   };
@@ -242,44 +249,56 @@ const FilterScreen = ({ navigation }) => {
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {renderHeader()}
-      <Text style={styles.sectionTitle}>Indoor Options</Text>
-      {indoorOptions.map(option => (
-        <CustomCheckbox
-          key={option.label}
-          label={option.label}
-          icon={option.icon}
-          color={option.color}
-          checked={!!selectedIndoorOptions[option.label]}
-          onChange={value => handleIndoorOptionChange(option.label, value)}
-        />
-      ))}
-      <Text style={styles.sectionTitle}>Outdoor Options</Text>
-      {outdoorOptions.map(option => (
-        <CustomCheckbox
-          key={option.label}
-          label={option.label}
-          icon={option.icon}
-          color={option.color}
-          checked={!!selectedOutdoorOptions[option.label]}
-          onChange={value => handleOutdoorOptionChange(option.label, value)}
-        />
-      ))}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.applyButton} onPress={applyFilters}>
-          <Text style={styles.applyButtonText}>Apply Filters</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
-          <Text style={styles.resetButtonText}>Reset Filters</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+    <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {renderHeader()}
+        <Text style={styles.sectionTitle}>Indoor Options</Text>
+        <View style={styles.optionsContainer}>
+          {indoorOptions.map(option => (
+            <CustomCheckbox
+              key={option.label}
+              label={option.label}
+              icon={option.icon}
+              color={option.color}
+              checked={!!selectedIndoorOptions[option.label]}
+              onChange={value => handleIndoorOptionChange(option.label, value)}
+              style={styles.optionItem}
+            />
+          ))}
+        </View>
+        <Text style={styles.sectionTitle}>Outdoor Options</Text>
+        <View style={styles.optionsContainer}>
+          {outdoorOptions.map(option => (
+            <CustomCheckbox
+              key={option.label}
+              label={option.label}
+              icon={option.icon}
+              color={option.color}
+              checked={!!selectedOutdoorOptions[option.label]}
+              onChange={value => handleOutdoorOptionChange(option.label, value)}
+              style={styles.optionItem}
+            />
+          ))}
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.applyButton} onPress={applyFilters}>
+            <Text style={styles.applyButtonText}>Apply Filters</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
+            <Text style={styles.resetButtonText}>Reset Filters</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: '#f4f4f4',
+  },
+  scrollContainer: {
     padding: 20,
     paddingBottom: 50,
   },
@@ -309,6 +328,18 @@ const styles = StyleSheet.create({
   },
   checkboxContainer: {
     marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  optionsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  optionItem: {
+    width: '48%',
+    marginBottom: 10,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -317,23 +348,35 @@ const styles = StyleSheet.create({
   },
   applyButton: {
     backgroundColor: '#1e90ff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
   },
   applyButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   resetButton: {
     backgroundColor: '#ff6347',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
   },
   resetButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
