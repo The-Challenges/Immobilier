@@ -21,7 +21,7 @@ const usersRooms = {};
 // Middleware
 
 app.use(cors({
-    origin: 'http://192.168.103.20:4000',
+    origin: 'http://192.168.103.18:4000',
     methods: ["GET", "POST"]
 }));
 
