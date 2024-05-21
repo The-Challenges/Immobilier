@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import axios from 'axios';
 import FeaturedScroller from '../components/featuredScroller'; // Adjust the import path as needed
+// import PushNotification from 'react-native-push-notification';
 
 const { width } = Dimensions.get('screen');
 
@@ -18,6 +19,9 @@ const HomeScreen = ({ navigation }) => {
   const [favorites, setFavorites] = useState(new Set());
   const [userId, setUserId] = useState(null);
   const flatListRef = useRef(null);
+
+
+
 
   useEffect(() => {
     const initializeData = async () => {
@@ -57,6 +61,7 @@ const HomeScreen = ({ navigation }) => {
       console.error('Failed to fetch favorites:', error);
     }
   };
+  
 
   const toggleFavorite = async (houseId) => {
     if (!userId) {
@@ -96,6 +101,16 @@ const HomeScreen = ({ navigation }) => {
         action: () => navigation.navigate('SeeAllLands'),
       },
     ];
+
+    
+
+
+
+
+
+
+
+    
     return (
       <View style={styles.optionListContainer}>
         {optionsList.map((option, index) => (
@@ -139,6 +154,7 @@ const HomeScreen = ({ navigation }) => {
                 <TouchableOpacity
                   style={[styles.favoriteButton, isFavorite && styles.favoriteButtonActive]}
                   onPress={() => toggleFavorite(item.id)}
+
                 >
                   <Icon name={isFavorite ? "favorite" : "favorite-border"} size={20} color={isFavorite ? COLORS.red : COLORS.yellow} />
                 </TouchableOpacity>
@@ -180,6 +196,7 @@ const HomeScreen = ({ navigation }) => {
                 <TouchableOpacity
                   style={styles.detailsButton}
                   onPress={() => navigation.navigate('DetailsScreen', { house: item })}
+                  
                 >
                   <Text style={styles.detailsButtonText}>View Details</Text>
                 </TouchableOpacity>
@@ -207,12 +224,8 @@ const HomeScreen = ({ navigation }) => {
           <TouchableOpacity style={styles.sortBtn} onPress={() => navigation.navigate('FilterScreen')}>
             <Icon name="tune" color={COLORS.white} size={28} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.notificationBtn} onPress={() => Alert.alert('Notifications', 'No new notifications')}>
-            <Icon name="notifications" color={COLORS.white} size={28} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.profileBtn} onPress={() => navigation.navigate('ProfileScreen')}>
-            <Icon name="person" color={COLORS.white} size={28} />
-          </TouchableOpacity>
+          
+          
           <TouchableOpacity style={styles.favoriteBtn} onPress={() => navigation.navigate('FavoritesScreen')}>
             <Icon name="favorite" color={COLORS.white} size={28} />
           </TouchableOpacity>
@@ -282,18 +295,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     borderRadius: 25,
   },
-  notificationBtn: {
-    padding: 10,
-    backgroundColor: COLORS.primary,
-    borderRadius: 25,
-    marginLeft: 10,
-  },
-  profileBtn: {
-    padding: 10,
-    backgroundColor: COLORS.primary,
-    borderRadius: 25,
-    marginLeft: 10,
-  },
+  
   optionListContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',

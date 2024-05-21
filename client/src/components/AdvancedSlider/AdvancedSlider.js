@@ -16,48 +16,51 @@ const AdvancedSlider = ({ label, values, onValuesChange, min, max, step, unit })
           {unit}{values[0]} - {unit}{values[1]}
         </Text>
       </View>
-      <MultiSlider
-        values={values}
-        onValuesChange={onValuesChange}
-        min={min}
-        max={max}
-        step={step}
-        allowOverlap={false}
-        minMarkerOverlapDistance={10}
-        snapped={true}
-        selectedStyle={styles.selectedStyle}
-        unselectedStyle={styles.unselectedStyle}
-        containerStyle={styles.sliderContainer}
-        markerStyle={styles.markerStyle}
-        customMarker={({ index, pressed }) => (
-          <View style={styles.markerContainer}>
-            {pressed && (
-              <Tooltip
-                isVisible={tooltipIndex === index}
-                content={<Text style={styles.tooltipText}>{unit}{values[index]}</Text>}
-                placement="top"
-                onClose={() => setTooltipIndex(null)}
-                arrowSize={{ width: 16, height: 8 }}
-                backgroundColor="rgba(0, 0, 0, 0.5)"
-                tooltipStyle={styles.tooltip}
-                animated
-              >
-                <Animated.View style={styles.animatedMarker}>
-                  <Icon name="location-pin" size={28} color={COLORS.primary} onPress={() => setTooltipIndex(index)} />
-                </Animated.View>
-              </Tooltip>
-            )}
-            <Animated.View style={styles.animatedMarker}>
-              <Icon
-                name="location-pin"
-                size={28}
-                color={pressed ? COLORS.primary : COLORS.gray}
-                onPress={() => setTooltipIndex(index)}
-              />
-            </Animated.View>
-          </View>
-        )}
-      />
+      <View style={styles.sliderWrapper}>
+        <MultiSlider
+          values={values}
+          onValuesChange={onValuesChange}
+          min={min}
+          max={max}
+          step={step}
+          allowOverlap={false}
+          minMarkerOverlapDistance={10}
+          snapped={true}
+          selectedStyle={styles.selectedStyle}
+          unselectedStyle={styles.unselectedStyle}
+          containerStyle={styles.sliderContainer}
+          trackStyle={styles.trackStyle}
+          markerStyle={styles.markerStyle}
+          customMarker={({ index, pressed }) => (
+            <View style={styles.markerContainer}>
+              {pressed && (
+                <Tooltip
+                  isVisible={tooltipIndex === index}
+                  content={<Text style={styles.tooltipText}>{unit}{values[index]}</Text>}
+                  placement="top"
+                  onClose={() => setTooltipIndex(null)}
+                  arrowSize={{ width: 16, height: 8 }}
+                  backgroundColor="rgba(0, 0, 0, 0.5)"
+                  tooltipStyle={styles.tooltip}
+                  animated
+                >
+                  <Animated.View style={styles.animatedMarker}>
+                    <Icon name="location-pin" size={28} color={COLORS.primary} onPress={() => setTooltipIndex(index)} />
+                  </Animated.View>
+                </Tooltip>
+              )}
+              <Animated.View style={styles.animatedMarker}>
+                <Icon
+                  name="location-pin"
+                  size={28}
+                  color={pressed ? COLORS.primary : COLORS.gray}
+                  onPress={() => setTooltipIndex(index)}
+                />
+              </Animated.View>
+            </View>
+          )}
+        />
+      </View>
       <View style={styles.trackContainer}>
         {new Array(max - min).fill(null).map((_, index) => (
           <View
@@ -78,7 +81,7 @@ const AdvancedSlider = ({ label, values, onValuesChange, min, max, step, unit })
 const styles = StyleSheet.create({
   container: {
     marginBottom: 30,
-    padding: 10,
+    padding: 20,
     backgroundColor: '#f9f9f9',
     borderRadius: 10,
     shadowColor: '#000',
@@ -101,9 +104,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.primary,
   },
+  sliderWrapper: {
+    paddingHorizontal: 10,
+    marginTop: 20,
+  },
   sliderContainer: {
     height: 40,
-    marginTop: 20,
   },
   selectedStyle: {
     backgroundColor: COLORS.primary,
@@ -111,9 +117,12 @@ const styles = StyleSheet.create({
   unselectedStyle: {
     backgroundColor: '#d3d3d3',
   },
+  trackStyle: {
+    height: 6,
+  },
   markerStyle: {
-    height: 24,
-    width: 24,
+    height: 30,
+    width: 30,
     backgroundColor: 'transparent',
   },
   tooltipText: {
