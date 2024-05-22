@@ -2,16 +2,14 @@ import React from 'react';
 import { ScrollView, View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-
-function Viewoptions({ formData, handleChange, navigateToNext }) {
+function Viewoptions({ formData, handleChange, navigateToNext, navigateToPrevious }) {
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.title}>view options</Text>
+            <Text style={styles.title}>View Options</Text>
             {[
-                { field: 'mountain', label:  'mountain', icon: 'pool', iconColor: '#1E90FF' },
-                { field: 'water views', label: 'water views', icon: 'balcony', iconColor: '#3CB371' },
-                { field:'city skyline', label: 'city skyline', icon: 'garage', iconColor: '#6a5acd' },
-
+                { field: 'mountain', label: 'Mountain', icon: 'pool', iconColor: '#1E90FF' },
+                { field: 'water views', label: 'Water Views', icon: 'balcony', iconColor: '#3CB371' },
+                { field: 'city skyline', label: 'City Skyline', icon: 'garage', iconColor: '#6a5acd' },
             ].map(({ field, label, icon, iconColor }) => (
                 <View style={styles.switchContainer} key={field}>
                     <Icon name={icon} size={24} color={iconColor} />
@@ -24,13 +22,16 @@ function Viewoptions({ formData, handleChange, navigateToNext }) {
                     />
                 </View>
             ))}
-            {/* Navigation Button */}
             <TouchableOpacity onPress={navigateToNext} style={styles.button}>
                 <Text style={styles.buttonText}>Next</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={navigateToPrevious} style={styles.button}>
+                <Text style={styles.buttonText}>Previous</Text>
             </TouchableOpacity>
         </ScrollView>
     );
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,

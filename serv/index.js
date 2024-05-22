@@ -25,7 +25,7 @@ app.use(express.json());
     // Routes
 app.use('/api/user', require('./routes/routerUser'));
 app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/house',require('./routes/routerHouse'))
+app.use('/api/house', require('./routes/routerHouse'))
 app.use('/api/land', require('./routes/routerLand'));
 app.use('/api/request', require('./routes/requestRoutes'));
 app.use('/api', require('./routes/favoritesRoutes'));
@@ -50,33 +50,4 @@ app.listen(PORT, () => {
     })
     
     
-    // const verifyToken = token => {
-        //     return new Promise((resolve, reject) => {
-            //       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-                //         if (err) {
-                    //           reject(err);
-//         } else {
-    //           resolve(decoded);
-    //         }
-    //       });
-    //     });
-    //   };
-    
-    // Middleware
-    // app.use((req, res, next) => {
-        //     req.io = io; 
-        //     next();
-        // })
-        // app.use('/api/reqtest',require('./routes/requestTest'))
-        // io.use(async (socket, next) => {
-            //     try {
-                //       const token = socket.handshake.query.token;
-        //       const decoded = await verifyToken(token);
-        //       socket.userId = decoded.userId;  
-        
-        //       next();
-        //     } catch (err) {
-            //       const error = new Error("Authentication error");
-            //       next(error);
-            //     }
-            //   })
+  

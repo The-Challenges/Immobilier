@@ -87,43 +87,7 @@ const SeeAllHouses = ({ navigation }) => {
     }
   };
 
-  // const fetchFavorites = async (userId) => {
-  //   if (!userId) return;
-  //   try {
-  //     const response = await axios.get(`http://192.168.103.20:4000/api/favorites/${userId}/house`);
-  //     const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
-  //     setFavorites(favoriteHouses);
-  //   } catch (error) {
-  //     console.error('Failed to fetch favorites:', error);
-  //   }
-  // };
-
-  // const toggleFavorite = async (houseId) => {
-  //   if (!userId) {
-  //     Alert.alert('Error', 'User ID not set');
-  //     return;
-  //   }
-  //   setLoading(true);
-  //   try {
-  //     await axios.post(`http://192.168.103.20:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
-  //     setFavorites(prev => {
-  //       const updated = new Set(prev);
-  //       if (updated.has(houseId)) {
-  //         updated.delete(houseId);
-  //       } else {
-  //         updated.add(houseId);
-  //       }
-  //       return updated;
-  //     });
-  //   } catch (error) {
-  //     console.error("Failed to toggle favorite:", error);
-  //     Alert.alert('Error', 'Failed to update favorites');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-
+ 
   const indoorIcons = {
     Broadband: 'wifi',
     Workshop: 'build',

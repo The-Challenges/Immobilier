@@ -56,8 +56,8 @@ function HomeTabs() {
       })}>
       <Tab.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
       <Tab.Screen name="ProfilDetail" component={ProfileDetails} options={{ headerShown: false }} />
-      <Tab.Screen name="Recommended" component={RecommendedScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false }} />
+      {/* <Tab.Screen name="Recommended" component={RecommendedScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false }} /> */}
       {/* <Tab.Screen name="Chat" component={Chat} /> */}
       <Tab.Screen name="GoogleMaps" component={GoogleMaps} options={{ headerShown: false }}  />
 

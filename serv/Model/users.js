@@ -46,6 +46,13 @@ module.exports = (sequelize, DataTypes) => {
     //   defaultValue: 'user'
     // }
   });
+//////////////////////////////
+  User.associate = function(models) {
+    User.hasOne(models.Media, {
+        foreignKey: 'userId',
+        as: 'media' // alias to use in include
+    });
+};
 
   return User;
 };
