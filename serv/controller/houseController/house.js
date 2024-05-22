@@ -16,9 +16,13 @@ module.exports = {
                         attributes: ['options'] 
                     },
                     {
-                        model: db.Climate,
-                        attributes: ['options'] 
-                    },
+                        model: db.User ,
+                        attributes:['firstName','email','phoneNumber']
+                     },
+                      {  model: db.Climate,
+                        attributes: ['options'] }
+                    ,
+
                     {
                         model: db.Outdoor,
                         attributes: ['options'] 

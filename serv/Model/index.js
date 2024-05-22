@@ -1,6 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD } = require("../config/config");
 
+
+
 const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
   dialect: 'mysql',
   host: 'localhost',
@@ -17,14 +19,8 @@ const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSW
 
 // authenticateConnection()
 
-// sequelize.sync()
-//   .then(() => {
-//     console.log('Database synchronized successfully.');
-//   })
-//   .catch((error) => {
-//     console.error('Unable to synchronize database:', error);
-//   });
-// Import models
+
+
 const User = require('./users')(sequelize, DataTypes);
 const Chat = require('./chat')(sequelize, DataTypes);
 const FavouriteHouse = require('./favouriteHouse')(sequelize, DataTypes);
@@ -104,6 +100,14 @@ House.belongsToMany(User, { through: RequestHouse, foreignKey: 'houseId' });
 User.belongsToMany(House, { through: RequestHouse, foreignKey: 'userId' });
 
 /* **********************************************************jointable relationships******************************************** */
+
+Conversation.belongsTo(User, { as: 'User1' });
+Conversation.belongsTo(User, { as: 'User2' });
+Chat.belongsTo(Conversation);
+Conversation.hasMany(Chat);
+
+
+
 
 // Conversation.hasMany(User, { through: 'ConversationUser' });
 // User.belongsToMany(User)

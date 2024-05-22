@@ -47,20 +47,6 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
 
-    // House.associate = function(models) {
-    //     House.hasMany(models.Media, {
-    //         foreignKey: 'HouseId',
-    //         // as: 'images'
-    //     });
-    //     House.hasMany(models.Indoor, {
-    //         foreignKey: 'HouseId',
-    //         // as: 'indoorOption'
-    //     });
-    //     House.hasMany(models.Climate, {
-    //         foreignKey: 'HouseId',
-    //         // as: 'climateOptions'
-    //       });
-    // };
 
     return House;
 

@@ -1,35 +1,28 @@
 const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
+
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const db = require('./Model/index')
+const {API_AD}=require('./config')
+
 require('dotenv').config();
 // require('./faker')()
-
-
+ 
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
-});
-
-const messageHistory = {};
-const usersRooms = {}; 
-
-// Middleware
+app.use(express.json())
 
 app.use(cors({
-    origin: 'http://192.168.103.18:4000',
+    origin: `${API_AD}`,
     methods: ["GET", "POST"]
 }));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + '/../client/dist'));
 
-// Routes
+
+app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.static(__dirname + '/../client/dist'));
+    
+    // Routes
 app.use('/api/user', require('./routes/routerUser'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/house',require('./routes/routerHouse'))
@@ -40,114 +33,44 @@ app.use('/api/payment', require('./routes/paymentRoutes'));
 
 
 
+app.use('/api/reqtest',require('./routes/requestTest'))
+app.use('/api/chat',require('./routes/chatRouter'))
 
 
 
-//walid Routes
-
-app.use('/api/house',require('./routes/walidRoutes/routerHome'))
-app.use('/api/land', require('./routes/walidRoutes/landRou'));
-app.use('/api/indoor', require('./routes/walidRoutes/routerHome'));
-app.use('/api/outdoor', require('./routes/walidRoutes/routerHome'));
-
-
-
-
-
-io.on('connection', (socket) => {
-    console.log('A user connected');
-
-    socket.on('join_room', (roomId, userId) => {
-        socket.join(roomId);
-        console.log(`User ${userId} joined room: ${roomId}`);
-        usersRooms[userId] = usersRooms[userId] || [];
-        if (!usersRooms[userId].includes(roomId)) {
-            usersRooms[userId].push(roomId);
-        }
-        if (messageHistory[roomId]) {
-            socket.emit('message_history', messageHistory[roomId]);
-        }
-    });
-
-    socket.on('chat_message', (data) => {
-        const { roomId, message, senderId } = data;
-        messageHistory[roomId] = messageHistory[roomId] || [];
-        messageHistory[roomId].push({ message, senderId });
-        io.in(roomId).emit('message', { message, senderId });
-        console.log(`Message sent in room ${roomId}: ${message}`);
-    });
-
-    socket.on('send_land_request', async (data) => {
-        const { senderId, receiverId } = data;
-        try {
-            const request = await db.RequestLand.create({ senderId, receiverId, status: 'pending' });
-            io.to(receiverId).emit('land_request_received', { requestId: request.id, senderId });
-        } catch (error) {
-            console.error('Error sending land request:', error);
-            socket.emit('error', { message: 'Failed to send land request' });
-        }
-    });
-
-    socket.on('send_house_request', async (data) => {
-        const { senderId, receiverId } = data;
-        try {
-            const request = await db.RequestHouse.create({ senderId, receiverId, status: 'pending' });
-            io.to(receiverId).emit('house_request_received', { requestId: request.id, senderId });
-        } catch (error) {
-            console.error('Error sending house request:', error);
-            socket.emit('error', { message: 'Failed to send house request' });
-        }
-    });
-
-    socket.on('respond_to_land_request', async (data) => {
-        const { requestId, response, responderId } = data;
-        try {
-            const request = await db.RequestLand.findByPk(requestId);
-            if (!request) {
-                socket.emit('error', { message: 'Land request not found' });
-                return;
-            }
-            if (request.receiverId !== responderId) {
-                socket.emit('error', { message: 'Unauthorized action' });
-                return;
-            }
-            request.status = response;
-            await request.save();
-            io.to(request.senderId).emit('land_request_response', { requestId, response });
-        } catch (error) {
-            console.error('Error responding to land request:', error);
-            socket.emit('error', { message: 'Failed to respond to land request' });
-        }
-    });
-
-    socket.on('respond_to_house_request', async (data) => {
-        const { requestId, response, responderId } = data;
-        try {
-            const request = await db.RequestHouse.findByPk(requestId);
-            if (!request) {
-                socket.emit('error', { message: 'House request not found' });
-                return;
-            }
-            if (request.receiverId !== responderId) {
-                socket.emit('error', { message: 'Unauthorized action' });
-                return;
-            }
-            request.status = response;
-            await request.save();
-            io.to(request.senderId).emit('house_request_response', { requestId, response });
-        } catch (error) {
-            console.error('Error responding to house request:', error);
-            socket.emit('error', { message: 'Failed to respond to house request' });
-        }
-    });
-
-    socket.on('disconnect', () => {
-        console.log('A user disconnected');
-    });
-});
-
-// Start the server
-const PORT = process.env.PORT || 4000;
-server.listen(PORT, () => {
+const PORT = 4000;
+app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-});
+    })
+    
+    
+    // const verifyToken = token => {
+        //     return new Promise((resolve, reject) => {
+            //       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+                //         if (err) {
+                    //           reject(err);
+//         } else {
+    //           resolve(decoded);
+    //         }
+    //       });
+    //     });
+    //   };
+    
+    // Middleware
+    // app.use((req, res, next) => {
+        //     req.io = io; 
+        //     next();
+        // })
+        // app.use('/api/reqtest',require('./routes/requestTest'))
+        // io.use(async (socket, next) => {
+            //     try {
+                //       const token = socket.handshake.query.token;
+        //       const decoded = await verifyToken(token);
+        //       socket.userId = decoded.userId;  
+        
+        //       next();
+        //     } catch (err) {
+            //       const error = new Error("Authentication error");
+            //       next(error);
+            //     }
+            //   })

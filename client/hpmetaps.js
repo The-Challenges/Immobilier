@@ -8,9 +8,10 @@ import Chatroom from './src/components/chat/allrooms'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
+import Icon4 from 'react-native-vector-icons/Feather';
 import ProfileDetails from './src/components/profile/profileDetails';
 import GoogleMaps from './src/screens/googleMaps';
-
+import NotificationsScreen from './src/components/notification';
 
 
 
@@ -39,6 +40,10 @@ function HomeTabs() {
             iconName = 'chatbox-ellipses-outline';
             Component = Icon2;
               break;
+                 case 'Notifications':
+              iconName = 'bell' ? 'bell' : 'bell-outline';
+              Component = Icon4;
+              break
           
             default:
               iconName = 'alert-circle-outline';   

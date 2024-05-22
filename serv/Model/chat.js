@@ -3,20 +3,16 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   const Chat = sequelize.define('Chat', {
     message: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
-    senderId: {
-      type: DataTypes.INTEGER,
+    time: {
+      type: DataTypes.STRING(45),
       allowNull: false,
     },
-    recipientRead: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    
   }, {
-    timestamps: true
+    freezeTableName: true,
+    timestamps: false,
   });
      
   return Chat;

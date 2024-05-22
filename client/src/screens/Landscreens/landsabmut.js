@@ -12,7 +12,7 @@ const Screen8 = ({ formData }) => {
     // Form submission
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('http://192.168.104.3:4000/api/land/AddLand', formData);
+            const response = await axios.post('http://192.168.11.62:4000/api/land/AddLand', formData);
             if (response.status === 200 || response.status === 201) {
                 setModalVisible(true);
             } else {
