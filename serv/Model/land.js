@@ -36,7 +36,18 @@ module.exports = (Sequelize, DataTypes) => {
 
           });
 
+        //   Land.associate = function(models) {
+        //     Land.hasMany(models.Media, {
+        //         foreignKey: 'LandId',
+        //         // as: 'images'
+        //     });
 
+        //     Land.hasMany(models.View, {
+        //         foreignKey: 'LandId',
+        //         // as: 'view'
+        //     });
+        // };
+        
 
     return Land;
 };

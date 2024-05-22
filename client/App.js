@@ -130,7 +130,7 @@
  *
  * @format
  */
-
+import { StripeProvider } from '@stripe/stripe-react-native';
 import React from 'react';
 import ProfileDetails from './src/components/profile/profileDetails';
 import Icon2 from 'react-native-vector-icons/Ionicons';
@@ -174,10 +174,31 @@ import requeststatuslands from "./src/components/profile/requeststatuslands"
 // import Chatroom from "./src/components/chat/allrooms";
 
 import HomeTabs from './hpmetaps';
+import Onboarding from './src/components/Authentification/OnboardingScreen';
+import splach from './src/components/Authentification/SplashScreen'
+import EditProfile from './src/screens/Profile/editProfile';
+import AddLand from './src/components/profile/cratePosts/AddLand'
+import AddHouse from './src/components/profile/cratePosts/AddHouse'
+import Received from "./src/components/profile/requestreceived"
 
-const Stack = createNativeStackNavigator();
+import UserProfile from "./src/components/UserProfile/UserProfile"
 
-// Main stack navigator
+import requestreceivedlands from "./src/components/profile/requestreceivedlands"
+import requeststatus from "./src/components/profile/requeststatus"
+import requeststatuslands from "./src/components/profile/requeststatuslands"
+import Subscription from "./src/components/Subscription/Subscription"
+import FavoritesScreen from "./src/screens/FavoritesScreen"
+import FilterScreenLands from "./src/screens/FilterScreenLand"
+import ResultsScreenLand from './src/screens/ResultsScreenLand';
+import PaymentScreen from './src/components/Subscription/Payment';
+import PaymentConfirmationScreen from './src/components/Subscription/PaymentConfirmationScreen';
+
+
+
+
+
+
+
 function App() {
 
 
@@ -272,6 +293,3 @@ function App() {
 
 
 export default App;
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -8,17 +8,11 @@ module.exports = (sequelize, DataTypes) => {
                 'Dishwasher', 'Built in robe', 'Broadband', 'Gym', 'Workshop', 'Unknown'
             ),
             defaultValue: 'Unknown'
-        },
-        HouseId: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: 'Houses', 
-                key: 'id'
-            }
         }
     });
 
     Indoor.associate = function(models) {
+      
         Indoor.belongsTo(models.House, {
             foreignKey: 'HouseId',
             as: 'house'

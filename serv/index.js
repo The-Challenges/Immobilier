@@ -4,6 +4,8 @@ const socketIo = require('socket.io');
 const cors = require('cors');
 require('dotenv').config();
 // require('./faker')()
+
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -33,6 +35,21 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/house', require('./routes/routerHouse'))
 app.use('/api/land', require('./routes/routerLand'));
 app.use('/api/request', require('./routes/requestRoutes'));
+app.use('/api', require('./routes/favoritesRoutes'));
+app.use('/api/payment', require('./routes/paymentRoutes'));
+
+
+
+
+
+
+//walid Routes
+
+app.use('/api/house',require('./routes/walidRoutes/routerHome'))
+app.use('/api/land', require('./routes/walidRoutes/landRou'));
+app.use('/api/indoor', require('./routes/walidRoutes/routerHome'));
+
+
 
 
 io.on('connection', (socket) => {

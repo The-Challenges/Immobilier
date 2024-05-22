@@ -126,7 +126,25 @@ module.exports = async (sequelize) => {
     })
   );
 
+  // const indoorOption = await Promise.all(
+  //   Array.from({ length: optionCount }).map(async () => {
+  //     const house = houses[Math.floor(Math.random() * houseCount)];
+  //     return await db.Indoor.create({
+  //       options: getRandomElementFromArray(['Ensuite', 'Study', 'Alarm System', 'FloorBoards', 'Rumpus room', 'Dishwasher', 'Built in robe', 'Broadband', 'Gym', 'Workshop', 'Unknown']),
+  //       HouseId: house.id
+  //     });
+  //   })
+  // );
 
+  const outdoorOption = await Promise.all(
+    Array.from({ length: optionCount }).map(async () => {
+      const house = houses[Math.floor(Math.random() * houseCount)];
+      return await db.Outdoor.create({
+        options: getRandomElementFromArray(['Swimming pool', 'Balcony', 'Undercover parking', 'Fully fenced', 'Tennis court', 'Garage', 'Outdoor area', 'Shed', 'Outdoor spa', 'Unknown']),
+        HouseId: house.id
+      });
+    })
+  );
 
   const climate = await Promise.all(
     Array.from({ length: indoo }).map(async () => {
@@ -170,4 +188,47 @@ module.exports = async (sequelize) => {
     })
   )
 
+  const viewLands = await Promise.all(
+    Array.from({ length: optionCount }).map(async () => {
+      const land = lands[Math.floor(Math.random() * landCount)];
+      return await db.View.create({
+        options: getRandomElementFromArray(['Mountain', 'Water views', 'City skyline', 'Unknown']),
+        LandId: land.id
+      });
+    })
+  );
+
+  const viewHouses = await Promise.all(
+    Array.from({ length: optionCount }).map(async () => {
+      const house = houses[Math.floor(Math.random() * houseCount)];
+      return await db.View.create({
+        options: getRandomElementFromArray(['Mountain', 'Water views', 'City skyline', 'Unknown']),
+        HouseId: house.id
+      });
+    })
+  );
+
+  const requestHouses = await Promise.all(
+    Array.from({ length: 25 }).map(async () => {
+      const user = users[Math.floor(Math.random() * userCount)];
+      const house = houses[Math.floor(Math.random() * houseCount)];
+      return await db.RequestHouse.create({
+        status: getRandomElementFromArray(['pending', 'accepted', 'rejected']),
+        houseId: house.id,
+        userId: user.id,
+      });
+    })
+  );
+
+  const requestLands = await Promise.all(
+    Array.from({ length: 25 }).map(async () => {
+      const user = users[Math.floor(Math.random() * userCount)];
+      const land = lands[Math.floor(Math.random() * landCount)];
+      return await db.RequestLand.create({
+        status: getRandomElementFromArray(['pending', 'accepted', 'rejected']),
+        landId: land.id,
+        userId: user.id,
+      });
+    })
+  );
 }
