@@ -157,7 +157,7 @@ import Onboarding from "./src/components/Authentification/OnboardingScreen";
 import splash from "./src/components/Authentification/SplashScreen";
 
 import EditProfile from './src/screens/Profile/editProfile'
-import UserProfile from "./src/components/UserProfile/UserProfile";
+// import UserProfile from "./src/components/UserProfile/UserProfile";
 
 import AddHouse from './src/components/profile/cratePosts/AddHouse'
 import AddLand from './src/components/profile/cratePosts/AddLand'
@@ -210,7 +210,7 @@ function App() {
           <Stack.Screen name='SeeAllLands' component={SeeAllLands} options={{ headerShown: false }}  />
 
           <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }}  />
-          <Stack.Screen name='UserProfile' component={UserProfile} options={{ headerShown: false }}  />
+          {/* <Stack.Screen name='UserProfile' component={UserProfile} options={{ headerShown: false }}  /> */}
           {/* walid */}
 
 
