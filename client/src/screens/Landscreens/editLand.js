@@ -5,25 +5,25 @@ import MapView, { Marker, Polygon } from 'react-native-maps';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
-const Screen8 = ({ formData, navigateToPrevious }) => {
+const Screen8 = ({ formData, landId, navigateToPrevious }) => {
     const [modalVisible, setModalVisible] = React.useState(false);
     const navigation = useNavigation();
 
-    const handleSubmit = async () => {
+    const handleUpdate = async () => {
         try {
-            const response = await axios.post('http://192.168.104.11:4000/api/land/AddLand', formData, {
+            const response = await axios.put(`http://192.168.104.11:4000/api/land/updateLand/${landId}`, formData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
-            if (response.status === 200 || response.status === 201) {
+            if (response.status === 200) {
                 setModalVisible(true);
             } else {
-                throw new Error('Submission failed');
+                throw new Error('Update failed');
             }
         } catch (error) {
-            console.error('Submission Error:', error);
-            Alert.alert('Submission Error', 'Failed to submit the form. Please try again later.');
+            console.error('Update Error:', error);
+            Alert.alert('Update Error', 'Failed to update the land. Please try again later.');
         }
     };
 
@@ -134,9 +134,9 @@ const Screen8 = ({ formData, navigateToPrevious }) => {
                 {renderOptions(accessibilities, formData)}
                 {formData.media && formData.media.length > 0 && renderMedia(formData.media)}
             </View>
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <TouchableOpacity style={styles.button} onPress={handleUpdate}>
                 <Icon name="check" size={24} color="#fff" />
-                <Text style={styles.buttonText}>Confirm and Submit</Text>
+                <Text style={styles.buttonText}>Confirm and Update</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.button, styles.backButton]} onPress={navigateToPrevious}>
                 <Icon name="arrow-left" size={24} color="#fff" />
@@ -152,8 +152,7 @@ const Screen8 = ({ formData, navigateToPrevious }) => {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Your land has been added successfully!</Text>
-                        <Text style={styles.modalText}>Wait for confirmation from admin.</Text>
+                        <Text style={styles.modalText}>Your land has been updated successfully!</Text>
                         <TouchableOpacity
                             style={[styles.button, styles.buttonClose]}
                             onPress={handleModalClose}

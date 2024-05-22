@@ -22,7 +22,6 @@ function FullCreateHouse() {
         numberBathrooms: 0,
         propertyType: "All types",
         garage: false,
-        // other properties initialized as before...
         media: []
     });
     const [screenIndex, setScreenIndex] = useState(1);
@@ -41,7 +40,7 @@ function FullCreateHouse() {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('http://192.168.1.5:4000/api/house/postHouse', formData);
+            const response = await axios.post('http://192.168.104.11:4000/api/house/postHouse', formData);
             if (response.status === 200) {
                 Alert.alert("Success", "House has been listed successfully.");
             } else {

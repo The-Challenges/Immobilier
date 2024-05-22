@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 function Viewoptions({ formData, handleChange, navigateToNext }) {
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.title}>viewo ptions</Text>
+            <Text style={styles.title}>view options</Text>
             {[
                 { field: 'mountain', label:  'mountain', icon: 'pool', iconColor: '#1E90FF' },
                 { field: 'water views', label: 'water views', icon: 'balcony', iconColor: '#3CB371' },

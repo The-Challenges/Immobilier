@@ -5,7 +5,8 @@ import MapView, { Marker } from 'react-native-maps';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import UserProfile from '../../components/profile/profileDetails';
-function Screen6({ formData, handleChange, handleSubmit }) {
+
+function Screen6({ formData, handleChange, handleSubmit, houseId }) {
     const [modalVisible, setModalVisible] = useState(false);
     const navigation = useNavigation();
 
@@ -68,16 +69,20 @@ function Screen6({ formData, handleChange, handleSubmit }) {
         </View>
     );
 
-    const submitForm = async () => {
+    const updateHouse = async () => {
         try {
-            const response = await axios.post('http://192.168.104.11:4000/api/house/postHouse', formData);
-            if (response.status === 200 || response.status === 201) {
+            const response = await axios.put(`http://192.168.104.11:4000/api/house/updateHouse/${houseId}`, formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.status === 200) {
                 setModalVisible(true);
             } else {
-                throw new Error(`Failed to submit data: Status Code ${response.status}`);
+                throw new Error(`Failed to update data: Status Code ${response.status}`);
             }
         } catch (error) {
-            Alert.alert('Error', `Submission failed: ${error.message}`);
+            Alert.alert('Error', `Update failed: ${error.message}`);
         }
     };
 
@@ -126,9 +131,9 @@ function Screen6({ formData, handleChange, handleSubmit }) {
                 style={styles.uploadedFiles}
             />
 
-            <TouchableOpacity style={styles.button} onPress={submitForm}>
+            <TouchableOpacity style={styles.button} onPress={updateHouse}>
                 <Icon name="check" size={24} color="#fff" />
-                <Text style={styles.buttonText}>Confirm and Submit</Text>
+                <Text style={styles.buttonText}>Confirm and Update</Text>
             </TouchableOpacity>
             <Modal
                 animationType="slide"
@@ -140,7 +145,7 @@ function Screen6({ formData, handleChange, handleSubmit }) {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Your house has been added successfully!</Text>
+                        <Text style={styles.modalText}>Your house has been updated successfully!</Text>
                         <Text style={styles.modalText}>Wait for confirmation from admin.</Text>
                         <TouchableOpacity
                             style={[styles.button, styles.buttonClose]}

@@ -12,7 +12,7 @@ const SignupScreen = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
 
-      const response = await axios.post(`${API_AD}:4000/api/auth/signup`, {
+      const response = await axios.post(`${API_AD}/api/auth/signup`, {
 
         firstName,
         email,

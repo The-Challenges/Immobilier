@@ -14,12 +14,12 @@ const io = socketIo(server, {
 });
 
 const messageHistory = {};
-const usersRooms = {}; 
+const usersRooms = {};
 
 // Middleware
 
 app.use(cors({
-    origin: 'http://192.168.104.3:4000',
+    origin: 'http://192.168.104.11:4000',
     methods: ["GET", "POST"]
 }));
 
@@ -30,7 +30,7 @@ app.use(express.static(__dirname + '/../client/dist'));
 // Routes
 app.use('/api/user', require('./routes/routerUser'));
 app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/house',require('./routes/routerHouse'))
+app.use('/api/house', require('./routes/routerHouse'))
 app.use('/api/land', require('./routes/routerLand'));
 app.use('/api/request', require('./routes/requestRoutes'));
 

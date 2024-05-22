@@ -10,7 +10,7 @@ import Icon2 from 'react-native-vector-icons/Ionicons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import ProfileDetails from './src/components/profile/profileDetails';
 // import GoogleMaps from './src/screens/GoogleMaps';
-import GoogleMaps from './src/screens/googleMaps';
+// import GoogleMaps from './src/screens/googleMaps';
 
 
 
@@ -52,10 +52,10 @@ function HomeTabs() {
       })}>
       <Tab.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
       <Tab.Screen name="ProfilDetail" component={ProfileDetails} options={{ headerShown: false }} />
-      <Tab.Screen name="Recommended" component={RecommendedScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false }} />
+      {/* <Tab.Screen name="Recommended" component={RecommendedScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false }} /> */}
       {/* <Tab.Screen name="Chat" component={Chat} /> */}
-      <Tab.Screen name="GoogleMaps" component={GoogleMaps} options={{ headerShown: false }}  />
+      {/* <Tab.Screen name="GoogleMaps" component={GoogleMaps} options={{ headerShown: false }}  /> */}
 
     </Tab.Navigator>
   );

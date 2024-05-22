@@ -34,23 +34,23 @@ const HomeScreen = ({ navigation }) => {
     fetchHouses();
   }, []);
 
-  useEffect(() => {
-    if (!loading) {
-      const interval = setInterval(() => {
-        setCurrentIndex(prevIndex => {
-          const nextIndex = prevIndex + 1;
-          if (nextIndex >= houses.slice(0, 5).length) {
-            flatListRef.current.scrollToIndex({ index: 0, animated: true });
-            return 0;
-          } else {
-            flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
-            return nextIndex;
-          }
-        });
-      }, 2000); 
-      return () => clearInterval(interval);
-    }
-  }, [loading, houses]);
+  // useEffect(() => {
+  //   if (!loading) {
+  //     const interval = setInterval(() => {
+  //       setCurrentIndex(prevIndex => {
+  //         const nextIndex = prevIndex + 1;
+  //         if (nextIndex >= houses.slice(0, 5).length ) {
+  //           flatListRef.current.scrollToIndex({ index: 0, animated: true });
+  //           return 0;
+  //         } else {
+  //           flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
+  //           return nextIndex;
+  //         }
+  //       });
+  //     }, 2000);
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [loading, houses]);
 
   const fetchHouses = async () => {
     try {
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   optionCard: {
-    width: width / 2.3 ,
+    width: width / 2.3,
     backgroundColor: COLORS.white,
     borderRadius: 15,
     marginBottom: 20,
