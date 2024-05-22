@@ -93,7 +93,7 @@ const ViewLandDetails = ({ route, navigation }) => {
                     <Icon name="heart" size={30} color={COLORS.dark} solid />
                     
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
+                <TouchableOpacity onPress={() => navigation.navigate('chat', { roomId: `room_${land.id}`, userId: user.id, userName: user.username })}>
                     <Icon name="comments" size={30} color={COLORS.dark} />
                 </TouchableOpacity>
             </View>
@@ -119,8 +119,8 @@ const ViewLandDetails = ({ route, navigation }) => {
         disabled={hasRequested}
     />
 </View>
-            <PropertyDetail category="Access" details={land.Accesses} />
-            <PropertyDetail category="View" details={land.Views} />
+            {/* <PropertyDetail category="Access" details={land.Accesses} />
+            <PropertyDetail category="View" details={land.Views} /> */}
             <Text style={styles.description}>{land.description}</Text>
             
         </ScrollView>

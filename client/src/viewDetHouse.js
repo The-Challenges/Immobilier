@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useState} from 'react';
 import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/SimpleLineIcons';
@@ -13,7 +13,6 @@ const featureIcons = {
     Fireplace: "fire-alt",
     Unknown: "question-circle"
 };
-
 const energyIcons = {
     A: "battery-full",
     B: "battery-three-quarters",
@@ -68,13 +67,24 @@ const HouseDetail = ({ category, details }) => (
 const ViewHouseDetails = ({ route, navigation }) => {
 
     const { house, user } = route.params;
+    const [hasRequested, setHasRequested] = useState(false);
     console.log(house.UserId,'aaa')
 
-    
+    const checkIfRequested = async () => {
+        try {
+            const response = await axios.get(`${API_AD}/api/reqtest/check`, {
+                params: {
+                    userId: user.id,
+                    landId: land.id
+                }
+            });
+            setHasRequested(response.data.hasRequested);
+        } catch (error) {
+            console.error('Failed to check request status:', error);
+            Alert.alert('Error', 'Failed to check if request has already been sent.');
+        }
+    };
 
-    // Ensure house.Views and house.Indoors are defined and default to empty array if not
-    // const uniqueViews = house.Views ? [...new Set(house.Views.map(view => view.options))] : [];
-    // const uniqueIndoors = house.Indoors ? [...new Set(house.Indoors.map(indoor => indoor.options))] : []
     return (
         
         <ScrollView style={styles.container}>
@@ -85,7 +95,7 @@ const ViewHouseDetails = ({ route, navigation }) => {
                 <TouchableOpacity onPress={() => {}}>
                     <Icon name="heart" size={30} color={COLORS.dark} solid />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
+                <TouchableOpacity onPress={() => navigation.navigate('chat')}>
                     <Icon name="comments" size={30} color={COLORS.dark} />
                 </TouchableOpacity>
             </View>
@@ -105,13 +115,14 @@ const ViewHouseDetails = ({ route, navigation }) => {
                 </Text>
                 <Button
                     icon={<Icon name="arrow-right" size={15} color="white" />}
-                    title={`Contact ${house.User.firstName}`}
+                    title={hasRequested ? 'You have already sent a request' : `Contact ${house.User.firstName}`}
                     buttonStyle={styles.contactButton}
                     onPress={() => navigation.navigate('TermsAndConditions', { user,house })}
+                    disabled={hasRequested}
                 />
             </View>
-            <HouseDetail category="View" details={house.Views} />
-            <HouseDetail category="Indoor" details={house.Indoors} />
+            {/* <HouseDetail category="View" details={house.Views} />
+            <HouseDetail category="Indoor" details={house.Indoors} /> */}
 
             <Text style={styles.description}>{house.description}</Text>
         </ScrollView>

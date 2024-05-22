@@ -32,79 +32,72 @@ module.exports = async (sequelize) => {
           firstName: faker.person.firstName(),
           lastName: faker.person.lastName(),
           email: faker.internet.email(),
-          password: await bcrypt.hash("12345", 10), // Replace with a secure password hashing mechanism
-          phoneNumber: faker.phone.number(), // Uncomment if you want phone numbers
-          age: faker.number.int({ min: 19, max: 65 }), // Uncomment if you want user ages
-        
-        alt:faker.location.latitude({ max: 10, min: -10, precision: 5 }), 
-        long:faker.location.longitude({ max: 10, min: -10 })
+          password: await bcrypt.hash("12345", 10),
+          phoneNumber: faker.phone.number(),
+          age: faker.number.int({ min: 19, max: 65 }),
+          alt: faker.location.latitude({ max: 10, min: -10, precision: 5 }),
+          long: faker.location.longitude({ max: 10, min: -10 })
         });
       })
     );
-    
-
-
-
-
-
+  
     const houses = await Promise.all(
       Array.from({ length: houseCount }).map(async () => {
-          const user = users[Math.floor(Math.random() * userCount)];
-          return await db.House.create({
-              title: faker.location.streetAddress(),
-              price: faker.commerce.price(),
-              numberbathrooms: faker.datatype.number({ min: 1, max: 5 }),
-              numberbedrooms: faker.datatype.number({ min: 1, max: 50 }),
-              garage: faker.datatype.boolean(),
-              parking: faker.datatype.boolean(),
-              alt: faker.location.latitude({ max: 10, min: -10, precision: 1 }),  // No decimals for latitude
-              long: faker.location.longitude({ max: 10, min: -10, precision: 1 }), // No decimals for longitude
-              purchaseoption: getRandomElementFromArray(['Finance', 'cash', 'Unknown']),
-              propretyType: getRandomElementFromArray(['Villa', 'Rural', 'Retirement Living', 'All types']),
-              houseAge: getRandomElementFromArray(['Established', 'New', 'All types']),
-              UserId: user.id,
-          });
+        const user = users[Math.floor(Math.random() * userCount)];
+        return await db.House.create({
+          title: faker.location.streetAddress(),
+          price: faker.commerce.price(),
+          numberbathrooms: faker.number.int({ min: 1, max: 5 }),
+          numberbedrooms: faker.number.int({ min: 1, max: 50 }),
+          garage: faker.datatype.boolean(),
+          parking: faker.datatype.boolean(),
+          alt: faker.location.latitude({ max: 10, min: -10, precision: 1 }),
+          long: faker.location.longitude({ max: 10, min: -10, precision: 1 }),
+          purchaseoption: getRandomElementFromArray(['Finance', 'cash', 'Unknown']),
+          propretyType: getRandomElementFromArray(['Villa', 'Rural', 'Retirement Living', 'All types']),
+          houseAge: getRandomElementFromArray(['Established', 'New', 'All types']),
+          UserId: user.id,
+        });
       })
-  );
-
+    );
   
-
-      const lands =await Promise.all(
-        Array.from({ length: houseCount }).map(async () => {
-          const user = users[Math.floor(Math.random() * userCount)];
-          return await db.Land.create({
-            title: faker.address.streetAddress(),
-            price: faker.commerce.price(),
-            size: faker.number.float({ min: 0.1, max: 100 }),
-            alt:faker.location.latitude({ max: 10, min: -10, precision: 5 }), 
-            long:faker.location.longitude({ max: 10, min: -10 }),
-            purchaseoption: getRandomElementFromArray(['Finance', 'Cash', 'Unknown']),
-            TerrainType: getRandomElementFromArray(['Flat', 'Sloping', 'Hilly', 'Forested', 'Unknown']),
-            Zoning: getRandomElementFromArray(['Residential', 'Commercial', 'Agricultural', 'Industrial', 'Mixed-use', 'Unknown']),
-            isVerifie: faker.datatype.boolean(),
-            UserId: user.id, 
-           
-          });
-        })
-      )
-      const indoorOption =await Promise.all(
-        Array.from({ length: indoo }).map(async () => {
-          const house = houses[Math.floor(Math.random() * houseCount)];
-          return await db.Indoor.create({
-            options:getRandomElementFromArray(['Ensuite','Study','Alarm System','FloorBoards','Rumpus room','Dishwasher','Built in robe','Broadband','Gym','Workshop','Unknown']),
-            HouseId:house.id
-          });
-        })
-      )
-      const outdooroption =await Promise.all(
-        Array.from({ length: indoo }).map(async () => {
-          const house = houses[Math.floor(Math.random() * houseCount)];
-          return await db.Outdoor.create({
-            options:getRandomElementFromArray(['Swimming pool','Balcony','Undercover parking','Fully fenced','Tennis court','Garage','Outdoor area','Shed','Outdoor spa','Unknown']),
-            HouseId:house.id
-          });
-        })
-      )
+    const lands = await Promise.all(
+      Array.from({ length: landCount }).map(async () => {
+        const user = users[Math.floor(Math.random() * userCount)];
+        return await db.Land.create({
+          title: faker.location.streetAddress(),
+          price: faker.commerce.price(),
+          size: faker.number.float({ min: 0.1, max: 100 }),
+          alt: faker.location.latitude({ max: 10, min: -10, precision: 5 }),
+          long: faker.location.longitude({ max: 10, min: -10 }),
+          purchaseoption: getRandomElementFromArray(['Finance', 'Cash', 'Unknown']),
+          TerrainType: getRandomElementFromArray(['Flat', 'Sloping', 'Hilly', 'Forested', 'Unknown']),
+          Zoning: getRandomElementFromArray(['Residential', 'Commercial', 'Agricultural', 'Industrial', 'Mixed-use', 'Unknown']),
+          isVerifie: faker.datatype.boolean(),
+          UserId: user.id,
+        });
+      })
+    );
+  
+    const indoorOptions = await Promise.all(
+      Array.from({ length: indoo }).map(async () => {
+        const house = houses[Math.floor(Math.random() * houseCount)];
+        return await db.Indoor.create({
+          options: getRandomElementFromArray(['Ensuite', 'Study', 'Alarm System', 'FloorBoards', 'Rumpus room', 'Dishwasher', 'Built in robe', 'Broadband', 'Gym', 'Workshop', 'Unknown']),
+          HouseId: house.id
+        });
+      })
+    );
+  
+    const outdoorOptions = await Promise.all(
+      Array.from({ length: indoo }).map(async () => {
+        const house = houses[Math.floor(Math.random() * houseCount)];
+        return await db.Outdoor.create({
+          options: getRandomElementFromArray(['Swimming pool', 'Balcony', 'Undercover parking', 'Fully fenced', 'Tennis court', 'Garage', 'Outdoor area', 'Shed', 'Outdoor spa', 'Unknown']),
+          HouseId: house.id
+        });
+      })
+    )
       const mediasHouse = await Promise.all(
         Array.from({ length: houseCount }).map(async () => {
           const user = houses[Math.floor(Math.random() * houseCount)];

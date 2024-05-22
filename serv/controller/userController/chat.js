@@ -1,12 +1,12 @@
 const { Op, NOW } = require('sequelize');
-const {io} = require("../../index")
+// const {io} = require("../index")
 // const uploadImageToCloudinary = require('./uploadImageToCloudinary');
-const db = require('../../Model/index');
+const  db= require('../../Model/index');
 
 const deleteConversationAndMessages = async (req, res) => {
     try {
         const { conversationId } = req.params;
-ss
+
        
         const conversation = await db.Conversation.findByPk(conversationId);
         if (!conversation) {
@@ -19,7 +19,7 @@ ss
         });
 
     
-        await Conversation.destroy({
+        await db.Conversation.destroy({
             where: {
                 id: conversation.id
             }
@@ -107,6 +107,45 @@ const sendMessage = async (req, res) => {
 
 
 
+// const sendMessage = async (req, res) => {
+//   try {
+//     const { senderId, recipientId, text, image } = req.body;
+//     if (!text.trim() && !image) {
+//       return res.status(400).json({ error: 'Message text or image cannot be empty' });
+//     }
+
+//     let conversation = await Conversation.findOne({
+//       where: {
+//         [Op.or]: [
+//           { user1Id: senderId, user2Id: recipientId },
+//           { user2Id: senderId, user1Id: recipientId }
+//         ]
+//       }
+//     });
+
+//     if (!conversation) {
+//       conversation = await Conversation.create({
+//         user1Id: senderId,
+//         user2Id: recipientId,
+//       });
+//     }
+
+//     const messageData = { text, senderId, conversationId: conversation.id };
+
+//     if (image) {
+//       const imageUrl = await uploadImageToCloudinary(image);
+//       messageData.image = imageUrl;
+//     }
+
+//     const message = await Message.create(messageData);
+
+//     return res.status(200).json(message);
+//   } catch (error) {
+//     console.error('Error sending message:', error);
+//     return res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
+
 
 const getAllConversationsForUser = async (req, res) => {
     try {
@@ -134,7 +173,39 @@ const getAllConversationsForUser = async (req, res) => {
     }
 };
 
+// const getAllMessagesBetweenUsers = async (req, res) => {
+//     try {
+//         const { userId1, userId2, conversationId } = req.params;
 
+        
+//         const conversation = await Conversation.findByPk(conversationId);
+//         if (!conversation) {
+//             return res.status(404).json({ error: 'Conversation not found' });
+//         }
+
+        
+//         const user1 = await User.findByPk(userId1);
+//         const user2 = await User.findByPk(userId2);
+//         if (!user1 || !user2) {
+//             console.log(user1, user2);
+//             return res.status(404).json({ error: 'User(s) not found' });
+//         }
+
+       
+//         const messages = await Message.findAll({ 
+//             where: { 
+//                 conversationId,
+//                 senderId: [userId1, userId2]
+//             }
+//         });
+
+        
+//         return res.status(200).json(messages);
+//     } catch (error) {
+//         console.error('Error getting messages between users in conversation:', error);
+//         return res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
 
 const getAllMessagesBetweenUsers = async (req, res) => {
     try {

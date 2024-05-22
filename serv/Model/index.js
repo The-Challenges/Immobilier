@@ -96,6 +96,14 @@ User.belongsToMany(House, { through: RequestHouse, foreignKey: 'userId' });
 
 /* **********************************************************jointable relationships******************************************** */
 
+Conversation.belongsTo(User, { as: 'User1' });
+Conversation.belongsTo(User, { as: 'User2' });
+Chat.belongsTo(Conversation);
+Conversation.hasMany(Chat);
+
+
+
+
 // Conversation.hasMany(User, { through: 'ConversationUser' });
 // User.belongsToMany(User)
 

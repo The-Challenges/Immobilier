@@ -34,6 +34,11 @@ import Onboarding from './src/components/Authentification/OnboardingScreen';
 import SeeAllHouses from "./src/screens/SeeAllHouses";
 import SeeAllLands from "./src/screens/SeeAllLands";
 import axios from 'axios'
+import requestreceivedlands from "./src/components/profile/requestreceivedlands"
+import requeststatus from "./src/components/profile/requeststatus"
+import requeststatuslands from "./src/components/profile/requeststatuslands"
+
+import chat from './src/components/chat/chat'
 import { API_AD } from './config';
 
 
@@ -120,10 +125,7 @@ function App() {
     });
 
     return () => {
-      // socketserv.off('requestLandCreated');
-      // socketserv.off('requestHouseCreated');
-      // socketserv.off('request_response_house');
-      // socketserv.off('request_response_land');
+    
       socketserv.disconnect("disconnect");
     };
   }, []);
@@ -132,11 +134,9 @@ function App() {
   const Stack = createNativeStackNavigator();
 
   return (
-    <PaperProvider font={them}>
+    <PaperProvider >
       <NavigationContainer>
         <Stack.Navigator initialRouteName="splash">
-          <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} />
-          <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} />
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
           <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
@@ -159,6 +159,11 @@ function App() {
           <Stack.Screen name="EditProfile" component={EditProfile} />
           <Stack.Screen name="AddHouse" component={AddHouse} />
           <Stack.Screen name="AddLand" component={AddLand} />
+          <Stack.Screen name="chat" component={chat} options={{ headerShown: false }}/>
+          <Stack.Screen name='requestreceivedlands' component={requestreceivedlands} options={{ headerShown: false }}  />
+          <Stack.Screen name='requeststatus' component={requeststatus} options={{ headerShown: false }}  />
+          <Stack.Screen name='requeststatuslands' component={requeststatuslands} options={{ headerShown: false }}  />
+          {/* <Stack.Screen name='Subscription' component={Subscription} options={{ headerShown: false }}  /> */}
           <Stack.Screen
             name="RecommendedScreen"
             component={RecommendedScreen}

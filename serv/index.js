@@ -28,8 +28,9 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/house',require('./routes/routerHouse'))
 app.use('/api/land', require('./routes/routerLand'));
 app.use('/api/request', require('./routes/requestRoutes'));
-app.use('/api/chat',require('./routes/chatRouter'))
+
 app.use('/api/reqtest',require('./routes/requestTest'))
+app.use('/api/chat',require('./routes/chatRouter'))
 
 
 
