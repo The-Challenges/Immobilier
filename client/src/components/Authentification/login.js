@@ -15,7 +15,7 @@ const Signin = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
 
-      const response = await axios.post('http://192.168.11.62:4000/api/auth/login', { email, password });
+      const response = await axios.post('http://192.168.103.20:4000/api/auth/login', { email, password });
       if (response.data && response.data.user) {
         const { user, token } = response.data;
         console.log(user.userId); // Make sure this logs the expected value

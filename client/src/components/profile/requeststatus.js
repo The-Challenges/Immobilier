@@ -6,8 +6,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { API_AD } from '../../../config';
-
-
 import storage from '../Authentification/storage';
 
 const RequestStatus = ({ request, image }) => {
@@ -71,7 +69,8 @@ const TestRequestStatus = () => {
       axios.get(`${API_AD}/api/request/${userId}/house`)
         .then(response => {
           if (response.data && Array.isArray(response.data.Houses)) {
-            setHouses(response.data.Houses);
+            const validHouses = response.data.Houses.filter(house => house.RequestHouse);
+            setHouses(validHouses);
           } else {
             console.error("No houses data found:", response.data);
           }
@@ -98,6 +97,7 @@ const TestRequestStatus = () => {
     </ScrollView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

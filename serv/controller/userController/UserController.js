@@ -33,13 +33,19 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-  
+    const jwtSecret = process.env.JWT_SECRET;
+    // Make sure user.id or user.userId exists and is correctly named according to your user model
+    const token = jwt.sign({ id: user.id, role: user.role }, jwtSecret, { expiresIn: "1000h" });
 
-    const jwtSecret = process.env.JWT_SECRET; 
-
-    const token = jwt.sign({ id: user.userId, role: user.role }, jwtSecret, { expiresIn: "1000h" });
-
-    res.status(200).json({ token, user});
+    // Ensure the response includes all necessary user fields
+    res.status(200).json({
+      token,
+      user: {
+        userId: user.id,  // Adjusted to 'id' which is commonly used
+        firstName: user.firstName,
+        email: user.email
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Login failed due to server error' });
@@ -133,6 +139,3 @@ exports.updateUser = async (req, res) => {
     res.status(500).json({ message: 'Failed to update user due to server error' });
   }
 };
-
-
-
