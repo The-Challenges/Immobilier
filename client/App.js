@@ -47,6 +47,7 @@ LogBox.ignoreLogs([
   'Warning: TextElement: Support for defaultProps will be removed from function components in a future major release.'
 ]);
 
+// Main stack navigator
 function App() {
   const [visible, setVisible] = useState(false);
   const [requestData, setRequestData] = useState(null);

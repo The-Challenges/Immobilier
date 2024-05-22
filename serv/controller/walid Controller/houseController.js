@@ -89,6 +89,20 @@ module.exports = {
         }
       },
     
+      getAllOutdoorOptions: async (req, res) => {
+        try {
+          const OutdoorOptions = await db.Outdoor.findAll({
+            attributes: ['options'],
+            group: ['options']
+          });
+          res.json(OutdoorOptions);
+        } catch (error) {
+          console.error(`Error fetching Outdoor options: ${error.message}`);
+          res.status(500).json({ error: `Error fetching Outdoor options: ${error.message}` });
+        }
+      },
+    
+      
     
     
 

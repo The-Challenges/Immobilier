@@ -247,6 +247,7 @@ const GoogleMaps = () => {
               latitude: selectedItem.latitude,
               longitude: selectedItem.longitude,
             }}
+            radius={3000}
             apikey={'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'} // Replace YOUR_API_KEY with your actual Google Maps API key
             strokeWidth={3}
             strokeColor="hotpink"

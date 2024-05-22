@@ -147,6 +147,12 @@ const SeeAllHouses = ({ navigation }) => {
     Garage: 'garage',
   };
 
+
+
+  const climateIcons = {
+    // Add climate icon mappings here
+  };
+
   const renderIconRow = (options, iconMapping) => (
     options.map((option, index) => (
       <View key={index} style={styles.iconRow}>
