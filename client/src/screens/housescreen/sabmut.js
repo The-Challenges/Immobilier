@@ -73,6 +73,7 @@ function Screen6({ formData, handleChange, handleSubmit }) {
             const response = await axios.post('http://192.168.104.11:4000/api/house/postHouse', formData);
             if (response.status === 200 || response.status === 201) {
                 setModalVisible(true);
+                
             } else {
                 throw new Error(`Failed to submit data: Status Code ${response.status}`);
             }
@@ -146,7 +147,7 @@ function Screen6({ formData, handleChange, handleSubmit }) {
                             style={[styles.button, styles.buttonClose]}
                             onPress={() => {
                                 setModalVisible(!modalVisible);
-                                navigation.navigate('UserProfile'); // Navigate back to the user profile
+                                navigation.navigate('HomeTabs'); // Navigate back to the user profile
                             }}
                         >
                             <Text style={styles.textStyle}>OK</Text>

@@ -14,6 +14,7 @@ module.exports = async (sequelize) => {
   const houseCount = 100;
   const landCount = 75;
   const indoo = 1000
+  const  optionCount=1000
 
   // Generate random users
   const users = await Promise.all(

@@ -1,144 +1,240 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, TextInput, TouchableOpacity, FlatList, Text, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import io from 'socket.io-client';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { API_AD } from '../../../config';
+import axios from 'axios';
+import storage from '../Authentification/storage';
 
-const fakeUsers = [
-  { name: "Alex Johnson", userID: "101", email: "alex.johnson@example.com", role: "Admin" },
-  { name: "Maria Garcia", userID: "102", email: "maria.garcia@example.com", role: "Member" }
-];
 
-const ChatDetail = ({ route }) => {
-  const { roomId } = route.params;
-  const [currentUser, setCurrentUser] = useState(fakeUsers[0]);
-  const [message, setMessage] = useState('');
-  const [chatMessages, setChatMessages] = useState([]);
+const COLORS = {
+  primary: '#6200ea',
+  white: '#ffffff',
+  light: '#f0f0f0',
+  lightGrey: '#d3d3d3',
+  black: '#000000',
+  grey: '#808080',
+};
 
-  const socket = io(API_AD);
+const ChatScreen = ({ route }) => {
+  const { roomId, userId, userName } = route.params;
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [socket, setSocket] = useState(null);
+  const flatListRef = useRef(null);
 
+  const getUserId = async () => {
+    try {
+      const userData = await storage.load({ key: 'loginState' });
+      socket.emit('receiver', userData.user.id);
+    } catch (error) {
+      console.error('Failed to retrieve user data:', error);
+    }
+  };
+
+
+  //  const fetchMessages = async () => {
+    //   try {
+    //     const response = await axios.get(`${API_AD}/api/chat/getMessages/${roomId}`);
+    //     setMessages(response.data);
+    //   } catch (error) {
+    //     console.error('Failed to fetch messages:', error);
+    //   }
+    // };
   useEffect(() => {
-    socket.emit('join_room', roomId);
+    getUserId();
+    const socket = io("http://192.168.11.62:4001", {
+      transports: ['websocket'],
+    });
+    setSocket(socket);
 
-    socket.on('message', (message) => {
-        setChatMessages(prevMessages => [...prevMessages, message]);
+    socket.emit('join_room', roomId, userId, userName);
+
+    socket.on('message_history', (history) => {
+      setMessages(history);
     });
 
-    // Receive message history when joining the room
-    socket.on('message_history', (history) => {
-        setChatMessages(history);
+    socket.on('receive_message', (message) => {
+      setMessages((prevMessages) => {
+        if (prevMessages.some(msg => msg.timestamp === message.timestamp)) {
+          return prevMessages;
+        }
+        return [...prevMessages, message];
+      });
     });
 
     return () => {
-        socket.emit('leave_room', roomId);
-        socket.off('message');
+      socket.disconnect();
     };
-}, [roomId]);
+  }, [roomId]);
 
-const sendMessage = () => {
-  if (message.trim() !== '') {
-    const msgData = { roomId, message, senderId: currentUser.userID };
-    socket.emit('chat_message', msgData);
-    setMessage('');
-   
-  }
-}
+  useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({ animated: true });
+    }
+  }, [messages]);
 
-  const switchUser = () => {
-    // Toggle between Alex and Maria
-    setCurrentUser(prevUser => (prevUser.userID === "101" ? fakeUsers[1] : fakeUsers[0]));
+  const sendMessage = async () => {
+    if (newMessage.trim()) {
+      const messageData = {
+        room: roomId,
+        content: newMessage,
+        sender: userName,
+        senderId: userId,
+        timestamp: new Date().toISOString(),
+      };
+
+      try {
+        await axios.post(`${API_AD}/api/chat/saveMessage`, {
+          conversationId: roomId,
+          message: newMessage,
+          time: messageData.timestamp,
+        });
+      } catch (error) {
+        console.error('Error saving message:', error);
+      }
+      socket.emit('send_message', messageData);
+      setMessages((prevMessages) => [...prevMessages, messageData]);
+      setNewMessage('');
+    }
   };
 
+  const renderMessage = ({ item }) => (
+    <View style={[styles.messageContainer, item.senderId === userId ? styles.myMessageContainer : styles.otherMessageContainer]}>
+      <View style={[styles.message, item.senderId === userId ? styles.myMessage : styles.otherMessage]}>
+        <Text style={item.senderId === userId ? styles.myMessageContent : styles.otherMessageContent}>{item.content}</Text>
+        <Text style={item.senderId === userId ? styles.myMessageTimestamp : styles.otherMessageTimestamp}>
+          {new Date(item.timestamp).toLocaleTimeString()}
+        </Text>
+      </View>
+    </View>
+  );
+
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <TouchableOpacity onPress={switchUser} style={styles.switchButton}>
-        <Text>Switch User ({currentUser.name})</Text>
-      </TouchableOpacity>
-      <ScrollView contentContainerStyle={styles.chatContainer}>
-        {chatMessages.map((msg, index) => (
-          <View key={index} style={[styles.messageContainer, msg.senderId === currentUser.userID ? styles.sentMessage : styles.receivedMessage]}>
-            <Text style={styles.messageText}>{msg.senderId === currentUser.userID ? 'Me: ' : `${msg.senderId}: `}{msg.message}</Text>
-          </View>
-        ))}
-      </ScrollView>
-      <View style={styles.inputArea}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={90}
+    >
+      <View style={styles.header}>
+        <Text style={styles.userName}>{userName}</Text>
+        <View style={styles.icons}>
+          <TouchableOpacity>
+            <Icon name="call" size={24} color={COLORS.primary} />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Icon name="videocam" size={24} color={COLORS.primary} />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <FlatList
+        ref={flatListRef}
+        data={messages}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderMessage}
+        onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: true })}
+      />
+      <View style={styles.inputContainer}>
         <TextInput
-          style={styles.inputText}
+          style={styles.input}
           placeholder="Type your message..."
-          value={message}
-          onChangeText={setMessage}
+          value={newMessage}
+          onChangeText={setNewMessage}
         />
-        <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-          <Text style={styles.sendButtonText}>Send</Text>
+        <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
+          <Icon name="send" size={24} color={COLORS.white} />
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
-  )
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: COLORS.white,
   },
-  switchButton: {
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 10,
-    backgroundColor: '#DDDDDD',
-    textAlign: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.lightGrey,
   },
-  chatContainer: {
-    flexGrow: 1,
-    paddingVertical: 16,
+  userName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.black,
   },
-  inputArea: {
+  icons: {
+    flexDirection: 'row',
+  },
+  inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F0F0F0',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    padding: 10,
     borderTopWidth: 1,
-    borderTopColor: '#CCCCCC',
+    borderTopColor: COLORS.lightGrey,
+    backgroundColor: COLORS.white,
   },
-  inputText: {
+  input: {
     flex: 1,
+    borderColor: COLORS.lightGrey,
     borderWidth: 1,
-    borderColor: '#BDBDBD',
     borderRadius: 25,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginRight: 8,
-    backgroundColor: 'white',
+    padding: 10,
+    paddingLeft: 15,
+    marginRight: 10,
+    backgroundColor: COLORS.light,
   },
   sendButton: {
-    padding: 10,
+    backgroundColor: COLORS.primary,
     borderRadius: 25,
-    backgroundColor: '#1976D2',
-  },
-  sendButtonText: {
-    color: 'white',
-    textAlign: 'center',
-  },
-  sentMessage: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#1976D2',
-    borderRadius: 15,
-    margin: 5,
     padding: 10,
-    maxWidth: '80%',
-  },
-  receivedMessage: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#e0e0f0',
-    borderRadius: 15,
-    margin: 5,
-    padding: 10,
-    maxWidth: '80%',
-  },
-  messageText: {
-    color: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   messageContainer: {
-    marginBottom: 10,
+    marginVertical: 5,
+    maxWidth: '75%',
+  },
+  myMessageContainer: {
+    alignSelf: 'flex-end',
+    alignItems: 'flex-end',
+  },
+  otherMessageContainer: {
+    alignSelf: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  message: {
+    padding: 10,
+    borderRadius: 15,
+  },
+  myMessage: {
+    backgroundColor: COLORS.primary,
+  },
+  otherMessage: {
+    backgroundColor: COLORS.lightGrey,
+  },
+  myMessageContent: {
+    color: COLORS.white,
+  },
+  otherMessageContent: {
+    color: COLORS.black,
+  },
+  myMessageTimestamp: {
+    fontSize: 10,
+    color: COLORS.white,
+    marginTop: 5,
+    textAlign: 'right',
+  },
+  otherMessageTimestamp: {
+    fontSize: 10,
+    color: COLORS.grey,
+    marginTop: 5,
+    textAlign: 'right',
   },
 });
 
-export default ChatDetail;
+export default ChatScreen;

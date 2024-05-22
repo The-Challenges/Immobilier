@@ -9,7 +9,7 @@ import Screen5 from '../../../screens/housescreen/images';  // Ensure correct ca
 import Screen6 from '../../../screens/housescreen/sabmut';  // Adjusted to 'Submit' for clarity
 import Screen7 from '../../../screens/housescreen/Climate Control';
 import Viewoptions from "../../../screens/housescreen/viewoptions";  // Ensure correct capitalization if necessary
-
+import { API_AD } from '../../../../config';
 function FullCreateHouse() {
     const [formData, setFormData] = useState({
         title: "",

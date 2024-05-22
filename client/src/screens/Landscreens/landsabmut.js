@@ -106,7 +106,7 @@ const Screen8 = ({ formData, navigateToPrevious }) => {
 
     const handleModalClose = () => {
         setModalVisible(false);
-        navigation.navigate('UserProfile'); // Adjust the route name as necessary
+        navigation.navigate('HomeTabs'); // Adjust the route name as necessary
     };
 
     return (

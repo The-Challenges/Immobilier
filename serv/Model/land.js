@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+// <const { Sequelize, DataTypes } = require('sequelize');>
 
 module.exports = (Sequelize, DataTypes) => {
     const Land = Sequelize.define('Land', {
@@ -36,18 +36,6 @@ module.exports = (Sequelize, DataTypes) => {
 
           });
 
-        //   Land.associate = function(models) {
-        //     Land.hasMany(models.Media, {
-        //         foreignKey: 'LandId',
-        //         // as: 'images'
-        //     });
-
-        //     Land.hasMany(models.View, {
-        //         foreignKey: 'LandId',
-        //         // as: 'view'
-        //     });
-        // };
-        
 
     return Land;
 };

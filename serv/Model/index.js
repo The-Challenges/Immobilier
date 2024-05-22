@@ -1,30 +1,26 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD } = require("../config/config");
 
+
+
 const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
   dialect: 'mysql',
   host: 'localhost',
 });
 
-// async function authenticateConnection() {
-//   try {
-//     await sequelize.authenticate();
-//     console.log('Connection has been established successfully.');
-//   } catch (error) {
-//     console.error('Unable to connect to the database:', error);
-//   }
-// }
+async function authenticateConnection() {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+}
 
-// authenticateConnection()
+authenticateConnection()
 
-// sequelize.sync()
-//   .then(() => {
-//     console.log('Database synchronized successfully.');
-//   })
-//   .catch((error) => {
-//     console.error('Unable to synchronize database:', error);
-//   });
-// Import models
+
+
 const User = require('./users')(sequelize, DataTypes);
 const Chat = require('./chat')(sequelize, DataTypes);
 const FavouriteHouse = require('./favouriteHouse')(sequelize, DataTypes);
@@ -105,21 +101,15 @@ User.belongsToMany(House, { through: RequestHouse, foreignKey: 'userId' });
 
 /* **********************************************************jointable relationships******************************************** */
 
-// Conversation.hasMany(User, { through: 'ConversationUser' });
-// User.belongsToMany(User)
+Conversation.belongsTo(User, { as: 'User1' });
+Conversation.belongsTo(User, { as: 'User2' });
+Chat.belongsTo(Conversation);
+Conversation.hasMany(Chat);
 
-// Favourite.belongsTo(User);
-// Favourite.belongsTo(House);
-// Favourite.belongsTo(Land);
 
-// User.hasMany(Notification);
-// Notification.belongsTo(User);
 
-// User.hasMany(Chat);
-// Chat.belongsTo(User);
 
-// Conversation.hasMany(Chat);
-// Chat.belongsTo(Conversation);
+
 // async function test(params) {
 //   await sequelize.sync({ force: true });
 //   console.log('The table for the User model was just (re)created!');

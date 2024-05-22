@@ -89,7 +89,7 @@ const FilterScreen = ({ navigation }) => {
       const outdoorOptionsSelected = Object.keys(selectedOutdoorOptions).filter(key => selectedOutdoorOptions[key]);
       const params = buildFilterParams(indoorOptionsSelected, outdoorOptionsSelected);
 
-      const response = await axios.get('http://192.168.103.18:4000/api/house/filterhouses', { params });
+      const response = await axios.get('http://192.168.11.62:4000/api/house/filterhouses', { params });
 
       console.log('Response Data:', response.data);
 
