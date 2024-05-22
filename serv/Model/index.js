@@ -8,16 +8,16 @@ const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSW
   host: 'localhost',
 });
 
-// async function authenticateConnection() {
-//   try {
-//     await sequelize.authenticate();
-//     console.log('Connection has been established successfully.');
-//   } catch (error) {
-//     console.error('Unable to connect to the database:', error);
-//   }
-// }
+async function authenticateConnection() {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+}
 
-// authenticateConnection()
+authenticateConnection()
 
 
 
@@ -106,24 +106,6 @@ Conversation.belongsTo(User, { as: 'User2' });
 Chat.belongsTo(Conversation);
 Conversation.hasMany(Chat);
 
-
-
-
-// Conversation.hasMany(User, { through: 'ConversationUser' });
-// User.belongsToMany(User)
-
-// Favourite.belongsTo(User);
-// Favourite.belongsTo(House);
-// Favourite.belongsTo(Land);
-
-// User.hasMany(Notification);
-// Notification.belongsTo(User);
-
-// User.hasMany(Chat);
-// Chat.belongsTo(User);
-
-// Conversation.hasMany(Chat);
-// Chat.belongsTo(Conversation);
 // async function test(params) {
 //   await sequelize.sync({ force: true });
 //   console.log('The table for the User model was just (re)created!');

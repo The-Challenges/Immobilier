@@ -9,8 +9,7 @@ import HomeTabs from './hpmetaps';
 import Login from './src/components/Authentification/login';
 import Signup from './src/components/Authentification/signup';
 import splach from './src/components/Authentification/SplashScreen';
-import FrPage from "./src/components/first/frPage";
-import Two from "./src/components/two/two";
+
 import HomeScreen from "./src/screens/HomeScreen";
 import DetailsScreen from "./src/screens/DetailsScreen";
 import FilterScreen from "./src/screens/FilterScreen";
@@ -37,6 +36,7 @@ import axios from 'axios'
 import requestreceivedlands from "./src/components/profile/requestreceivedlands"
 import requeststatus from "./src/components/profile/requeststatus"
 import requeststatuslands from "./src/components/profile/requeststatuslands"
+import FavoritesScreen from './src/screens/FavoritesScreen';
 
 import chat from './src/components/chat/chat'
 import { API_AD } from './config';
@@ -157,13 +157,15 @@ function App() {
           <Stack.Screen name="Received" component={Received} options={{ headerShown: false }} />
           <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
           <Stack.Screen name="splash" component={splach} options={{ headerShown: false }} />
-          <Stack.Screen name="EditProfile" component={EditProfile} />
-          <Stack.Screen name="AddHouse" component={AddHouse} />
-          <Stack.Screen name="AddLand" component={AddLand} />
+          <Stack.Screen name="EditProfile" component={EditProfile} options={{ headerShown: false }} />
+          <Stack.Screen name="AddHouse" component={AddHouse}options={{ headerShown: false }} />
+          <Stack.Screen name="AddLand" component={AddLand}options={{ headerShown: false }} />
           <Stack.Screen name="chat" component={chat} options={{ headerShown: false }}/>
           <Stack.Screen name='requestreceivedlands' component={requestreceivedlands} options={{ headerShown: false }}  />
           <Stack.Screen name='requeststatus' component={requeststatus} options={{ headerShown: false }}  />
           <Stack.Screen name='requeststatuslands' component={requeststatuslands} options={{ headerShown: false }}  />
+          <Stack.Screen name='FavoritesScreen' component={FavoritesScreen} options={{ headerShown: false }}  />
+
           {/* <Stack.Screen name='Subscription' component={Subscription} options={{ headerShown: false }}  /> */}
           <Stack.Screen
             name="RecommendedScreen"

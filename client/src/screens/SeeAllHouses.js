@@ -5,33 +5,59 @@ import COLORS from '../consts/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Updated import
 import storage from '../components/Authentification/storage'; // Ensure path correctness
 import { Card, Button } from 'react-native-elements';
-import socketserv from '../components/request/socketserv';
-
 
 const { width } = Dimensions.get('window');
 
 const SeeAllHouses = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(null);
-  const [userId, setUserId] = useState(null);
-
   const [favorites, setFavorites] = useState(new Set());
+  const [userId, setUserId] = useState(null);
   const navigateDetails=(house)=>{
     navigation.navigate('ViewDetailsHouse', { house: house ,user ,houseId:house.id,userId:house.UserId } )
     socketserv.emit("receiver",house.UserId)
 }
-
   useEffect(() => {
-    fetchHouses();
-    getUserId()
-  }, []);
+    const initializeData = async () => {
+      try {
+        const userData = await storage.load({ key: 'loginState' });
+        setUserId(userData.user.userId);
+        fetchHouses();
+        fetchFavorites(userData.user.userId);
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        Alert.alert('Error', 'Unable to load user data');
+      }
+    };
 
+    initializeData();
+
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (userId) {
+        fetchFavorites(userId);
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, userId]);
+
+  const fetchHouses = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get('http://192.168.11.62:4000/api/house/allhouses');
+      setHouses(response.data);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to fetch houses');
+      console.error('Failed to fetch houses:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`${API_AD}/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.11.62:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
@@ -46,7 +72,7 @@ const SeeAllHouses = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      await axios.post(`${API_AD}/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`http://192.168.11.62:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {
@@ -63,104 +89,6 @@ const SeeAllHouses = ({ navigation }) => {
       setLoading(false);
     }
   };
-  const getUserId = async () => {
-    try {
-      const userData = await storage.load({ key: 'loginState' });
-      console.log(userData)
-      setUser(userData.user.userId);
-      fetchFavorites(userData.user.userId);
-    } catch (error) {
-      console.error('Failed to retrieve user data:', error);
-    }
-  };
-
-  const fetchHouses = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get('http://192.168.11.62:4000/api/house/allhouses');
-      setHouses(response.data);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to fetch houses');
-      console.error('Failed to fetch houses:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // const fetchFavorites = async (userId) => {
-  //   if (!userId) return;
-  //   try {
-  //     const response = await axios.get(`http://192.168.103.20:4000/api/favorites/${userId}/house`);
-  //     const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
-  //     setFavorites(favoriteHouses);
-  //   } catch (error) {
-  //     console.error('Failed to fetch favorites:', error);
-  //   }
-  // };
-
-  // const toggleFavorite = async (houseId) => {
-  //   if (!userId) {
-  //     Alert.alert('Error', 'User ID not set');
-  //     return;
-  //   }
-  //   setLoading(true);
-  //   try {
-  //     await axios.post(`http://192.168.103.20:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
-  //     setFavorites(prev => {
-  //       const updated = new Set(prev);
-  //       if (updated.has(houseId)) {
-  //         updated.delete(houseId);
-  //       } else {
-  //         updated.add(houseId);
-  //       }
-  //       return updated;
-  //     });
-  //   } catch (error) {
-  //     console.error("Failed to toggle favorite:", error);
-  //     Alert.alert('Error', 'Failed to update favorites');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-
-  const indoorIcons = {
-    Broadband: 'wifi',
-    Workshop: 'build',
-    'Rumpus room': 'room',
-    'Built in robe': 'wardrobe',
-    FloorBoards: 'layers',
-    Ensuite: 'bath',
-    'Alarm System': 'alarm',
-    Study: 'book',
-    Gym: 'fitness-center',
-  };
-
-  const outdoorIcons = {
-    Balcony: 'balcony',
-    'Fully fenced': 'fence',
-    'Swimming pool': 'pool',
-    'Undercover parking': 'local-parking',
-    'Outdoor spa': 'spa',
-    'Outdoor area': 'park',
-    Shed: 'store',
-    Garage: 'garage',
-  };
-
-
-
-  const climateIcons = {
-    // Add climate icon mappings here
-  };
-
-  const renderIconRow = (options, iconMapping) => (
-    options.map((option, index) => (
-      <View key={index} style={styles.iconRow}>
-        <Icon name={iconMapping[option.options] || 'home'} size={20} color="#000" />
-        <Text style={styles.iconText}>{option.options}</Text>
-      </View>
-    ))
-  );
 
   const HouseCard = ({ house }) => {
     const isFavorite = favorites.has(house.id);
@@ -191,7 +119,7 @@ const SeeAllHouses = ({ navigation }) => {
           </View>
         </View>
         <View style={styles.buttonContainer}>
-        <Button
+          <Button
             icon={<Icon name="arrow-right" size={15} color="white" />}
             title="View Details"
             buttonStyle={styles.button}
@@ -204,9 +132,9 @@ const SeeAllHouses = ({ navigation }) => {
       </Card>
     );
   };
+  
 
-
-return (
+  return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
       <StatusBar backgroundColor={COLORS.background} barStyle="dark-content" />
       <FlatList

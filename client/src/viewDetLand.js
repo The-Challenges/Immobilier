@@ -53,7 +53,7 @@ const ViewLandDetails = ({ route, navigation }) => {
     useEffect(() => {
         checkIfRequested();
     }, []);
-
+    
     const checkIfRequested = async () => {
         try {
             const response = await axios.get(`${API_AD}/api/reqtest/check`, {

@@ -70,6 +70,10 @@ const ViewHouseDetails = ({ route, navigation }) => {
     const [hasRequested, setHasRequested] = useState(false);
     console.log(house.UserId,'aaa')
 
+    useEffect(() => {
+        checkIfRequested();
+    }, []);
+
     const checkIfRequested = async () => {
         try {
             const response = await axios.get(`${API_AD}/api/reqtest/check`, {
