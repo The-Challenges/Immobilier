@@ -1,27 +1,29 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { FlatList, View, StyleSheet, Image, Pressable, Text, TouchableOpacity, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 
-const ResultsScreen = ({ route, navigation }) => {
-  const { houses } = route.params;
-  const [pressedCard, setPressedCard] = useState(null);
+const { width } = Dimensions.get('screen');
 
-  const toggleCard = (id) => {
-    setPressedCard(pressedCard === id ? null : id);
-  };
+const FeaturedScroller = ({ houses, navigation, toggleCard, pressedCard }) => {
+  const flatListRef = useRef(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const getIconForOption = (option) => {
-    switch (option) {
-      case 'Rumpus room': return 'room';
-      case 'Study': return 'book';
-      case 'Ensuite': return 'bath';
-      case 'Workshop': return 'build';
-      case 'Pool': return 'pool'; // Example outdoor option icon
-      case 'Garden': return 'nature'; // Example outdoor option icon
-      default: return 'home';
-    }
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => {
+        const nextIndex = prevIndex + 1;
+        if (nextIndex >= houses.slice(0, 5).length) {
+          flatListRef.current.scrollToIndex({ index: 0, animated: true });
+          return 0;
+        } else {
+          flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
+          return nextIndex;
+        }
+      });
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [houses]);
 
   const renderHouseItem = ({ item }) => (
     <Pressable onPress={() => toggleCard(item.id)}>
@@ -33,13 +35,13 @@ const ResultsScreen = ({ route, navigation }) => {
         <View style={styles.cardContent}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardType}>{item.propertyType}</Text>
-            <View style={styles.rating}>
-              <Icon name="star" size={20} color="#FFD700" />
-              <Text style={styles.ratingText}>{item.rating || '4.5'}</Text>
-            </View>
-            <View>
+            <View style={styles.iconContainer}>
+              <View style={styles.rating}>
+                <Icon name="star" size={20} color="#FFD700" />
+                <Text style={styles.ratingText}>{item.rating || '4.5'}</Text>
+              </View>
               <TouchableOpacity style={styles.favoriteButton}>
-                <Icon name="favorite-border" size={24} color="#FFD700" />
+                <Icon name="favorite-border" size={20} color="#FFD700" />
               </TouchableOpacity>
             </View>
           </View>
@@ -65,7 +67,7 @@ const ResultsScreen = ({ route, navigation }) => {
                 <Text style={styles.iconText}>{item.parking ? 'Yes' : 'No'}</Text>
               </View>
               <View style={styles.iconRow}>
-                <Icon name="check-circle" size={20} color={item.isVerified ? "#00FF00" : "#FF0000"} />
+                <Icon name="check-circle" size={20} color={item.isVerified ? '#00FF00' : '#FF0000'} />
                 <Text style={styles.iconText}>{item.isVerified ? 'Verified' : 'Not Verified'}</Text>
               </View>
               <View style={styles.iconRow}>
@@ -76,20 +78,6 @@ const ResultsScreen = ({ route, navigation }) => {
                 <Icon name="home" size={20} color="#000" />
                 <Text style={styles.iconText}>{item.houseAge}</Text>
               </View>
-              {/* Render Indoor Options */}
-              {item.Indoors && item.Indoors.map((indoorOption, index) => (
-                <View style={styles.iconRow} key={index}>
-                  <Icon name={getIconForOption(indoorOption.options)} size={20} color="#000" />
-                  <Text style={styles.iconText}>{indoorOption.options}</Text>
-                </View>
-              ))}
-              {/* Render Outdoor Options */}
-              {item.Outdoors && item.Outdoors.map((outdoorOption, index) => (
-                <View style={styles.iconRow} key={index}>
-                  <Icon name={getIconForOption(outdoorOption.options)} size={20} color="#000" />
-                  <Text style={styles.iconText}>{outdoorOption.options}</Text>
-                </View>
-              ))}
               <TouchableOpacity
                 style={styles.detailsButton}
                 onPress={() => navigation.navigate('DetailsScreen', { house: item })}
@@ -104,41 +92,38 @@ const ResultsScreen = ({ route, navigation }) => {
   );
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={houses}
-        keyExtractor={item => item.id.toString()}
-        renderItem={renderHouseItem}
-        contentContainerStyle={styles.listContainer}
-      />
-    </View>
+    <FlatList
+      ref={flatListRef}
+      data={houses.slice(0, 5)}
+      renderItem={renderHouseItem}
+      keyExtractor={(item) => item.id.toString()}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      snapToInterval={width - 40}
+      snapToAlignment="center"
+      decelerationRate="fast"
+      contentContainerStyle={styles.featuredListContainer}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: '#fff',
-  },
-  listContainer: {
-    paddingBottom: 20,
-  },
   card: {
     elevation: 2,
     backgroundColor: '#fff',
     borderRadius: 10,
     marginBottom: 20,
+    marginHorizontal: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    width: '100%',
+    width: (width / 2) - 20, // Adjust the width of the card for two columns
     overflow: 'hidden',
   },
   cardImage: {
     width: '100%',
-    height: 200,
+    height: 120, // Adjust the height of the card image
   },
   cardContent: {
     padding: 10,
@@ -156,10 +141,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
   },
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   rating: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 240,
+    marginRight: 5,
   },
   ratingText: {
     marginLeft: 5,
@@ -167,27 +156,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   favoriteButton: {
-    position: 'absolute',
-    top: -10,
-    right: -4,
     backgroundColor: '#fff',
     borderRadius: 20,
     padding: 5,
     elevation: 5,
-    marginTop: 37,
   },
   cardPrice: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: COLORS.primary,
     marginVertical: 5,
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   cardLocation: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#888',
     marginVertical: 5,
   },
@@ -218,13 +203,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: COLORS.dark,
-    paddingHorizontal: 20,
-    marginTop: 20,
+  featuredListContainer: {
+    paddingVertical: 10,
+    paddingLeft: 20,
   },
 });
 
-export default ResultsScreen;
+export default FeaturedScroller;

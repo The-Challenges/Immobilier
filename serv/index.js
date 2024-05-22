@@ -48,6 +48,8 @@ app.use('/api/payment', require('./routes/paymentRoutes'));
 app.use('/api/house',require('./routes/walidRoutes/routerHome'))
 app.use('/api/land', require('./routes/walidRoutes/landRou'));
 app.use('/api/indoor', require('./routes/walidRoutes/routerHome'));
+app.use('/api/outdoor', require('./routes/walidRoutes/routerHome'));
+
 
 
 

@@ -87,6 +87,42 @@ const SeeAllHouses = ({ navigation }) => {
     }
   };
 
+  const indoorIcons = {
+    Broadband: 'wifi',
+    Workshop: 'build',
+    'Rumpus room': 'room',
+    'Built in robe': 'wardrobe',
+    FloorBoards: 'layers',
+    Ensuite: 'bath',
+    'Alarm System': 'alarm',
+    Study: 'book',
+    Gym: 'fitness-center',
+  };
+
+  const outdoorIcons = {
+    Balcony: 'balcony',
+    'Fully fenced': 'fence',
+    'Swimming pool': 'pool',
+    'Undercover parking': 'local-parking',
+    'Outdoor spa': 'spa',
+    'Outdoor area': 'park',
+    Shed: 'store',
+    Garage: 'garage',
+  };
+
+  const climateIcons = {
+    // Add climate icon mappings here
+  };
+
+  const renderIconRow = (options, iconMapping) => (
+    options.map((option, index) => (
+      <View key={index} style={styles.iconRow}>
+        <Icon name={iconMapping[option.options] || 'home'} size={20} color="#000" />
+        <Text style={styles.iconText}>{option.options}</Text>
+      </View>
+    ))
+  );
+
   const HouseCard = ({ house }) => {
     const isFavorite = favorites.has(house.id);
     const imageUrl = house.Media && house.Media.length > 0 ? house.Media[0].link : 'https://via.placeholder.com/400x200.png?text=No+Image+Available';

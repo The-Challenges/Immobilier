@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 
-
 const CustomCheckbox = ({ label, checked, onChange }) => {
   return (
     <View style={styles.container}>

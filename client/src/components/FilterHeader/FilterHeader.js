@@ -1,4 +1,3 @@
-// FilterHeader.js
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon1 from 'react-native-vector-icons/AntDesign';
