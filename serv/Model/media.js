@@ -25,16 +25,16 @@ module.exports = (sequelize) => {
         }
     });
 
-    Media.associate = function(models) {
-        Media.belongsTo(models.House, {
-            foreignKey: 'HouseId',
-            as: 'house'  
-        });
+    // Media.associate = function(models) {
+    //     Media.belongsTo(models.House, {
+    //         foreignKey: 'HouseId',
+    //         as: 'house'  
+    //     });
         
-        Media.belongsTo(models.Land, {
-            foreignKey: 'LandId',
-            as: 'land'  
-        });
-    };
+    //     Media.belongsTo(models.Land, {
+    //         foreignKey: 'LandId',
+    //         as: 'land'  
+    //     });
+    // };
     return Media;
 };

@@ -1,23 +1,13 @@
 const { Sequelize } = require('sequelize');
-const db = require('./Model/index')
-const { faker ,Randomizer} = require('@faker-js/faker');
-const bcrypt =require("bcrypt")
+const db = require('./Model/index');
+const { faker } = require('@faker-js/faker');
+const bcrypt = require('bcrypt');
 
-function counter(){
-  let count = 0
-  return function(){
-
-
-      return  count=count+1
-  
-  }
-}
 function getRandomElementFromArray(arr) {
-    // Generate a random index within the bounds of the array
-    const randomIndex = Math.floor(Math.random() * arr.length);
-    // Return the element at the random index
-    return arr[randomIndex];
-  }
+  const randomIndex = Math.floor(Math.random() * arr.length);
+  return arr[randomIndex];
+}
+
 module.exports = async (sequelize) => {
     // Adjust the number of seeds you want for each model
     const userCount = 500;
@@ -135,75 +125,50 @@ module.exports = async (sequelize) => {
         })
       );
 
+  const indoorOption = await Promise.all(
+    Array.from({ length: optionCount }).map(async () => {
+      const house = houses[Math.floor(Math.random() * houseCount)];
+      return await db.Indoor.create({
+        options: getRandomElementFromArray(['Ensuite', 'Study', 'Alarm System', 'FloorBoards', 'Rumpus room', 'Dishwasher', 'Built in robe', 'Broadband', 'Gym', 'Workshop', 'Unknown']),
+        HouseId: house.id
+      });
+    })
+  );
+
+  const outdoorOption = await Promise.all(
+    Array.from({ length: optionCount }).map(async () => {
+      const house = houses[Math.floor(Math.random() * houseCount)];
+      return await db.Outdoor.create({
+        options: getRandomElementFromArray(['Swimming pool', 'Balcony', 'Undercover parking', 'Fully fenced', 'Tennis court', 'Garage', 'Outdoor area', 'Shed', 'Outdoor spa', 'Unknown']),
+        HouseId: house.id
+      });
+    })
+  );
+
+ 
 
 
-  const climate =await Promise.all(
-        Array.from({ length: indoo }).map(async () => {
-          const house = houses[Math.floor(Math.random() * houseCount)];
-          return await db.Climat.create({
-            options:getRandomElementFromArray(['Air conditioning','Heating','Solar panets','High energy effcincy','Unknown']),
-            HouseId:house.id
-            
-          });
-        })
-      )
+  
 
-      const acees =await Promise.all(
-        Array.from({ length: indoo }).map(async () => {
-          const house = lands[Math.floor(Math.random() * landCount)];
-          return await db.Access.create({
-            options:getRandomElementFromArray(['Airport','Public transportation','Highway','road access','Unknown']),
-            LandId:house.id
-            
-          });
-        })
-      )
-      const viewl =await Promise.all(
-        Array.from({ length: indoo }).map(async () => {
-          const land = lands[Math.floor(Math.random() * landCount)];
-          return await db.View.create({
-            options:getRandomElementFromArray(['mountain','water views','city skyline','Unknown']),
-            LandId:land.id
-            
-          });
-        })
-      )
-         const view =await Promise.all(
-           Array.from({ length: indoo }).map(async () => {
-             const house = houses[Math.floor(Math.random() * houseCount)];
-             return await db.View.create({
-               options:getRandomElementFromArray(['mountain','water views','city skyline','Unknown']),
-               HouseId:house.id
-               
-             });
-           })
-         )
+  const climate = await Promise.all(
+    Array.from({ length: optionCount }).map(async () => {
+      const house = houses[Math.floor(Math.random() * houseCount)];
+      return await db.Climate.create({
+        options: getRandomElementFromArray(['Air conditioning', 'Heating', 'Solar panels', 'High energy efficiency', 'Unknown']),
+        HouseId: house.id
+      });
+    })
+  );
 
-         let counterany=counter()
-        const requestLands = await Promise.all(
-          Array.from({ length: 25 }).map(async () => {
-            const house = counterany();
-            const user = users[Math.floor(Math.random() * userCount)];
-
-            return await db.RequestLand.create({
-              landId:house,
-              userId:user.id
-              
-            });
-          })
-        );
-        const requestHouse =await Promise.all(
-          Array.from({ length: 25 }).map(async () => {
-            const house = counterany();
-            const user = users[Math.floor(Math.random() * userCount)];
-
-            return await db.RequestHouse.create({
-              houseId:house,
-              userId:user.id
-              
-            });
-          })
-        )
+  const access = await Promise.all(
+    Array.from({ length: optionCount }).map(async () => {
+      const land = lands[Math.floor(Math.random() * landCount)];
+      return await db.Access.create({
+        options: getRandomElementFromArray(['Airport', 'Public transportation', 'Highway', 'Road access', 'Unknown']),
+        LandId: land.id
+      });
+    })
+  );
 
 }
 

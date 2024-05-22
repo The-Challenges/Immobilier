@@ -13,10 +13,20 @@ module.exports = {
                     {
                         model: db.Indoor,
                         attributes: ['options'] 
+                    },
+                    {
+                        model: db.Climate,
+                        attributes: ['options'] 
+                    },
+                    {
+                        model: db.Outdoor,
+                        attributes: ['options'] 
                     }
                     
                 ]
             });
+            console.log(houses); 
+
             res.json(houses);
         } catch (error) {
             res.status(500).json({ error: `error fetching houses: ${error.message}` });
@@ -64,9 +74,26 @@ module.exports = {
             });
         }
     },
+
+
+    getAllIndoorOptions: async (req, res) => {
+        try {
+          const indoorOptions = await db.Indoor.findAll({
+            attributes: ['options'],
+            group: ['options']
+          });
+          res.json(indoorOptions);
+        } catch (error) {
+          console.error(`Error fetching indoor options: ${error.message}`);
+          res.status(500).json({ error: `Error fetching indoor options: ${error.message}` });
+        }
+      },
+    
+    
     
 
-    filterHouses: async (req, res) => {
+
+      filterHouses: async (req, res) => {
         const {
             priceMin,
             priceMax,
@@ -79,16 +106,35 @@ module.exports = {
             houseAge,
             hasGarage,
             hasParking,
-            isVerified
+            isVerified,
+            indoorOptions,
+            outdoorOptions,
+            climateOptions
         } = req.query;
     
         const queryConditions = {
             where: {},
-            include: [{
-                model: db.Media,
-                // as: 'images',
-                attributes: ['type', 'name', 'link']
-            }]
+            include: [
+                {
+                    model: db.Media,
+                    attributes: ['type', 'name', 'link']
+                },
+                {
+                    model: db.Indoor,
+                    attributes: ['options'],
+                    required: false
+                },
+                {
+                    model: db.Outdoor,
+                    attributes: ['options'],
+                    required: false
+                },
+                {
+                    model: db.Climate,
+                    attributes: ['options'],
+                    required: false
+                }
+            ]
         };
     
         if (priceMin || priceMax) {
@@ -124,17 +170,59 @@ module.exports = {
         }
     
         if (isVerified !== undefined) {
-            queryConditions.where.isVerified = (isVerified === 'true');
+            const verifiedFlag = isVerified === 'true';
+            queryConditions.where.isVerified = verifiedFlag ? 1 : 0;
         }
+    
+        if (indoorOptions) {
+            queryConditions.include.push({
+                model: db.Indoor,
+                where: {
+                    options: {
+                        [Op.in]: indoorOptions.split(',')
+                    }
+                },
+                required: true
+            });
+        }
+    
+        if (outdoorOptions) {
+            queryConditions.include.push({
+                model: db.Outdoor,
+                where: {
+                    options: {
+                        [Op.in]: outdoorOptions.split(',')
+                    }
+                },
+                required: true
+            });
+        }
+    
+        if (climateOptions) {
+            queryConditions.include.push({
+                model: db.Climate,
+                where: {
+                    options: {
+                        [Op.in]: climateOptions.split(',')
+                    }
+                },
+                required: true
+            });
+        }
+    
+        console.log('Query Conditions:', JSON.stringify(queryConditions, null, 2));
     
         try {
             const filteredHouses = await db.House.findAll(queryConditions);
+            console.log('Filtered Houses:', filteredHouses);
             res.json(filteredHouses);
         } catch (error) {
-            console.error(`error fetching filtered houses: ${error.message}`);
-            res.status(500).json({ error: `error fetching filtered houses: ${error.message}` });
+            console.error(`Error fetching filtered houses: ${error.message}`);
+            res.status(500).json({ error: `Error fetching filtered houses: ${error.message}` });
         }
     }
     
-
 };
+
+    
+

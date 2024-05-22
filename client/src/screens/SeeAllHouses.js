@@ -1,27 +1,16 @@
-import React, { useState, useEffect} from 'react';
-import {API_AD} from '../../config';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Dimensions,
-  StatusBar,
-  FlatList,
-  View,
-  Text,
-  Image,
-  Alert,
-  ActivityIndicator,
-  TouchableOpacity
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, StyleSheet, Dimensions, StatusBar, FlatList, View, Text, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import COLORS from '../consts/colors';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Updated import
+import storage from '../components/Authentification/storage'; // Ensure path correctness
 import { Card, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import storage from '../components/Authentification/storage';
 import socketserv from '../components/request/socketserv';
 
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
 
 const SeeAllHouses = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
@@ -90,15 +79,51 @@ const SeeAllHouses = ({ navigation }) => {
   const fetchHouses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_AD}/api/house/allhouses`);
+      const response = await axios.get('http://192.168.103.20:4000/api/house/allhouses');
       setHouses(response.data);
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
       Alert.alert('Error', 'Failed to fetch houses');
-      console.error("Failed to fetch houses:", error);
+      console.error('Failed to fetch houses:', error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  // const fetchFavorites = async (userId) => {
+  //   if (!userId) return;
+  //   try {
+  //     const response = await axios.get(`http://192.168.103.20:4000/api/favorites/${userId}/house`);
+  //     const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
+  //     setFavorites(favoriteHouses);
+  //   } catch (error) {
+  //     console.error('Failed to fetch favorites:', error);
+  //   }
+  // };
+
+  // const toggleFavorite = async (houseId) => {
+  //   if (!userId) {
+  //     Alert.alert('Error', 'User ID not set');
+  //     return;
+  //   }
+  //   setLoading(true);
+  //   try {
+  //     await axios.post(`http://192.168.103.20:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+  //     setFavorites(prev => {
+  //       const updated = new Set(prev);
+  //       if (updated.has(houseId)) {
+  //         updated.delete(houseId);
+  //       } else {
+  //         updated.add(houseId);
+  //       }
+  //       return updated;
+  //     });
+  //   } catch (error) {
+  //     console.error("Failed to toggle favorite:", error);
+  //     Alert.alert('Error', 'Failed to update favorites');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
 
   const indoorIcons = {
@@ -164,7 +189,7 @@ const SeeAllHouses = ({ navigation }) => {
         <View style={styles.buttonContainer}>
         <Button
             icon={<Icon name="arrow-right" size={15} color="white" />}
-            title=" View Details"
+            title="View Details"
             buttonStyle={styles.button}
             onPress={() =>navigateDetails(house) }
           />

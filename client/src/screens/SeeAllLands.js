@@ -29,7 +29,7 @@ const navigateDetails=(item)=>{
         fetchLands();
         getUserId();
      
-    }, []);
+    }, [])
 
     const getUserId = async () => {
       try {
@@ -93,7 +93,8 @@ const navigateDetails=(item)=>{
         } finally {
             setLoading(false);
         }
-    };
+    }
+
 
     const handleFetchError = () => {
         Alert.alert('Error', 'Failed to fetch lands. Please try again later.');
@@ -164,7 +165,7 @@ const navigateDetails=(item)=>{
         </View>
       );
     }
-    
+        
     const styles = StyleSheet.create({
       container: {
         flex: 1,
@@ -272,7 +273,7 @@ const navigateDetails=(item)=>{
         alignItems: 'center',
         backgroundColor: COLORS.white
       }
-    });
+    })
 
     export default SeeAllLands;
     

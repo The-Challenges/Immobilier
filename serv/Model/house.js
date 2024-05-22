@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         isVerified: {
             type: DataTypes.BOOLEAN,
+            
             defaultValue: false
         },
 
@@ -45,7 +46,6 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 'All types'
         }
     });
-
 
 
     return House;
