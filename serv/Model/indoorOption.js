@@ -7,23 +7,17 @@ module.exports = (sequelize, DataTypes) => {
                 'Ensuite', 'Study', 'Alarm System', 'FloorBoards', 'Rumpus room',
                 'Dishwasher', 'Built in robe', 'Broadband', 'Gym', 'Workshop', 'Unknown'
             ),
-            // defaultValue: 'Unknown'
-        },
-        HouseId: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: 'Houses', 
-                key: 'id'
-            }
+            defaultValue: 'Unknown'
         }
     });
 
-    // Indoor.associate = function(models) {
-    //     Indoor.belongsTo(models.House, {
-    //         foreignKey: 'HouseId',
-    //         as: 'house'
-    //     });
-    // };
+    Indoor.associate = function(models) {
+      
+        Indoor.belongsTo(models.House, {
+            foreignKey: 'HouseId',
+            as: 'house'
+        });
+    };
 
     return Indoor;
 };

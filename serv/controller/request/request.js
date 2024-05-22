@@ -94,6 +94,7 @@ module.exports.getAllEstateBySeller = async (req, res) => {
             as: 'Users', // This "as" must match the alias used in belongsToMany if any
             through: {
                 model: db.RequestHouse,
+                as: 'RequestHouse'
                 // attributes: ['status', 'date'] // Attributes you want from the join table
               }
             },
