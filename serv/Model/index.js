@@ -39,7 +39,7 @@ const Media = require('./media')(sequelize, DataTypes);
 const Indoor = require('./indoorOption')(sequelize, DataTypes);
 const Outdoor = require('./outdoorOptions')(sequelize, DataTypes);
 const View = require('./viewOption')(sequelize, DataTypes);
-const Climate = require('./climate')(sequelize, DataTypes);
+const Climate  = require('./climate')(sequelize, DataTypes);
 const Comment = require('./comment')(sequelize, DataTypes);
 const Access = require('./accesOption')(sequelize, DataTypes);
 const RequestHouse = require('./requestHouse')(sequelize, DataTypes);
@@ -84,7 +84,7 @@ User.belongsToMany(Land, { through: RequestLand, foreignKey: 'userId' });
 House.hasMany(Comment);
 Comment.belongsTo(House);
 
-House.hasMany(Climate);
+House.hasMany(Climate );
 Climate.belongsTo(House);
 
 House.hasMany(Indoor);
