@@ -34,7 +34,7 @@ const FilterScreen = ({ navigation }) => {
   useEffect(() => {
     const fetchIndoorOptions = async () => {
       try {
-        const response = await axios.get('http://192.168.103.18:4000/api/indoor/allindoor');
+        const response = await axios.get('http://192.168.11.62:4000/api/indoor/allindoor');
         const options = response.data.map(option => ({
           label: option.options,
           icon: getIconForOption(option.options),
@@ -88,7 +88,7 @@ const FilterScreen = ({ navigation }) => {
       if (houseAge !== 'All types') params.houseAge = houseAge;
       if (indoorOptionsSelected.length > 0) params.indoorOptions = indoorOptionsSelected.join(',');
 
-      const response = await axios.get('http://192.168.103.18:4000/api/house/filterhouses', { params });
+      const response = await axios.get('http://192.168.11.62:4000/api/house/filterhouses', { params });
 
       console.log('Response Data:', response.data);
 

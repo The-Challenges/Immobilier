@@ -51,7 +51,7 @@ function Screen6({ formData }) {
 
     const handleConfirm = async () => {
         try {
-            const response = await axios.post('http://192.168.104.3:4000/api/house/postHouse', formData);
+            const response = await axios.post('http://192.168.11.62:4000/api/house/postHouse', formData);
             if (response.status === 200 || response.status === 201) {
                 setModalVisible(true);
             } else {

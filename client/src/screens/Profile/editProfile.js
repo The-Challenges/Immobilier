@@ -29,7 +29,7 @@ const EditProfile = ({ userId }) => {
 
     // Assume a base URL and correct endpoint for updating user data
     try {
-      const response = await axios.put(`http://192.168.1.10:4000/api/user/${userId}`, {
+      const response = await axios.put(`http://192.168.11.62:4000/api/user/${userId}`, {
         firstName,
         oldPassword,
         newPassword,

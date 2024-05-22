@@ -5,8 +5,6 @@ import COLORS from '../consts/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Updated import
 import storage from '../components/Authentification/storage'; // Ensure path correctness
 import { Card, Button } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import storage from '../components/Authentification/storage';
 import socketserv from '../components/request/socketserv';
 
 
@@ -79,7 +77,7 @@ const SeeAllHouses = ({ navigation }) => {
   const fetchHouses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://192.168.103.20:4000/api/house/allhouses');
+      const response = await axios.get('http://192.168.11.62:4000/api/house/allhouses');
       setHouses(response.data);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch houses');
