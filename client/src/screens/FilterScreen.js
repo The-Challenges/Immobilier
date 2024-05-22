@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView, Animated } from 'react-native';
 import axios from 'axios';
 import COLORS from '../consts/colors';
@@ -35,36 +35,8 @@ const FilterScreen = ({ navigation }) => {
   const fadeAnim = new Animated.Value(0);
 
   useEffect(() => {
-    const fetchIndoorOptions = async () => {
-      try {
-        const response = await axios.get('http://192.168.103.18:4000/api/indoor/allindoor');
-        const options = response.data.map(option => ({
-          label: option.options,
-          icon: getIconForOption(option.options),
-          color: getColorForOption(option.options)
-        }));
-        setIndoorOptions(options);
-      } catch (error) {
-        Alert.alert('Error', 'Failed to fetch indoor options');
-      }
-    };
-
-    const fetchOutdoorOptions = async () => {
-      try {
-        const response = await axios.get('http://192.168.103.18:4000/api/outdoor/alloutdoor');
-        const options = response.data.map(option => ({
-          label: option.options,
-          icon: getIconForOption(option.options),
-          color: getColorForOption(option.options)
-        }));
-        setOutdoorOptions(options);
-      } catch (error) {
-        Alert.alert('Error', 'Failed to fetch outdoor options');
-      }
-    };
-
-    fetchIndoorOptions();
-    fetchOutdoorOptions();
+    fetchOptions('indoor', setIndoorOptions);
+    fetchOptions('outdoor', setOutdoorOptions);
 
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -72,6 +44,20 @@ const FilterScreen = ({ navigation }) => {
       useNativeDriver: true,
     }).start();
   }, []);
+
+  const fetchOptions = async (type, setOptions) => {
+    try {
+      const response = await axios.get(`http://192.168.103.18:4000/api/${type}/all${type}`);
+      const options = response.data.map(option => ({
+        label: option.options,
+        icon: getIconForOption(option.options),
+        color: getColorForOption(option.options)
+      }));
+      setOptions(options);
+    } catch (error) {
+      Alert.alert('Error', `Failed to fetch ${type} options`);
+    }
+  };
 
   const getIconForOption = (option) => {
     switch (option) {
@@ -101,22 +87,7 @@ const FilterScreen = ({ navigation }) => {
     try {
       const indoorOptionsSelected = Object.keys(selectedIndoorOptions).filter(key => selectedIndoorOptions[key]);
       const outdoorOptionsSelected = Object.keys(selectedOutdoorOptions).filter(key => selectedOutdoorOptions[key]);
-      const params = {};
-
-      if (priceMin !== 100) params.priceMin = priceMin;
-      if (priceMax !== 1000) params.priceMax = priceMax;
-      if (areaMin !== 100) params.areaMin = areaMin;
-      if (areaMax !== 900) params.areaMax = areaMax;
-      if (bedrooms !== '1 BR') params.bedrooms = bedrooms;
-      if (bathrooms !== '1 BA') params.bathrooms = bathrooms;
-      if (hasGarage) params.hasGarage = hasGarage;
-      if (hasParking) params.hasParking = hasParking;
-      if (isVerified) params.isVerified = isVerified;
-      if (purchaseOption !== 'Choose Option') params.purchaseOption = purchaseOption;
-      if (propertyType !== 'All types') params.propertyType = propertyType;
-      if (houseAge !== 'All types') params.houseAge = houseAge;
-      if (indoorOptionsSelected.length > 0) params.indoorOptions = indoorOptionsSelected.join(',');
-      if (outdoorOptionsSelected.length > 0) params.outdoorOptions = outdoorOptionsSelected.join(',');
+      const params = buildFilterParams(indoorOptionsSelected, outdoorOptionsSelected);
 
       const response = await axios.get('http://192.168.103.18:4000/api/house/filterhouses', { params });
 
@@ -129,9 +100,29 @@ const FilterScreen = ({ navigation }) => {
     }
   };
 
-  const applyFilters = async () => {
-    await fetchFilteredHouses();
+  const buildFilterParams = (indoorOptionsSelected, outdoorOptionsSelected) => {
+    const params = {};
+    if (priceMin !== 100) params.priceMin = priceMin;
+    if (priceMax !== 1000) params.priceMax = priceMax;
+    if (areaMin !== 100) params.areaMin = areaMin;
+    if (areaMax !== 900) params.areaMax = areaMax;
+    if (bedrooms !== '1 BR') params.bedrooms = bedrooms;
+    if (bathrooms !== '1 BA') params.bathrooms = bathrooms;
+    if (hasGarage) params.hasGarage = hasGarage;
+    if (hasParking) params.hasParking = hasParking;
+    if (isVerified) params.isVerified = isVerified;
+    if (purchaseOption !== 'Choose Option') params.purchaseOption = purchaseOption;
+    if (propertyType !== 'All types') params.propertyType = propertyType;
+    if (houseAge !== 'All types') params.houseAge = houseAge;
+    if (indoorOptionsSelected.length > 0) params.indoorOptions = indoorOptionsSelected.join(',');
+    if (outdoorOptionsSelected.length > 0) params.outdoorOptions = outdoorOptionsSelected.join(',');
+
+    return params;
   };
+
+  const applyFilters = useCallback(async () => {
+    await fetchFilteredHouses();
+  }, [priceMin, priceMax, areaMin, areaMax, bedrooms, bathrooms, hasGarage, hasParking, isVerified, purchaseOption, propertyType, houseAge, selectedIndoorOptions, selectedOutdoorOptions]);
 
   const resetFilters = () => {
     setPropertyType('All types');
@@ -150,17 +141,10 @@ const FilterScreen = ({ navigation }) => {
     setSelectedOutdoorOptions({});
   };
 
-  const handleIndoorOptionChange = (option, value) => {
-    setSelectedIndoorOptions(prevState => ({
+  const handleOptionChange = (setSelectedOptions) => (option) => {
+    setSelectedOptions(prevState => ({
       ...prevState,
-      [option]: value
-    }));
-  };
-
-  const handleOutdoorOptionChange = (option, value) => {
-    setSelectedOutdoorOptions(prevState => ({
-      ...prevState,
-      [option]: value
+      [option]: !prevState[option]
     }));
   };
 
@@ -225,24 +209,18 @@ const FilterScreen = ({ navigation }) => {
       <View style={styles.checkboxContainer}>
         <CustomCheckbox
           label="Garage"
-          icon="garage"
-          color="#1e90ff"
           checked={hasGarage}
-          onChange={setHasGarage}
+          onChange={(newValue) => setHasGarage(newValue)}
         />
         <CustomCheckbox
           label="Parking"
-          icon="local-parking"
-          color="#32cd32"
           checked={hasParking}
-          onChange={setHasParking}
+          onChange={(newValue) => setHasParking(newValue)}
         />
         <CustomCheckbox
           label="Verified"
-          icon="verified"
-          color="#ff6347"
           checked={isVerified}
-          onChange={setIsVerified}
+          onChange={(newValue) => setIsVerified(newValue)}
         />
       </View>
     </>
@@ -258,10 +236,8 @@ const FilterScreen = ({ navigation }) => {
             <CustomCheckbox
               key={option.label}
               label={option.label}
-              icon={option.icon}
-              color={option.color}
               checked={!!selectedIndoorOptions[option.label]}
-              onChange={value => handleIndoorOptionChange(option.label, value)}
+              onChange={() => handleOptionChange(setSelectedIndoorOptions)(option.label)}
               style={styles.optionItem}
             />
           ))}
@@ -272,10 +248,8 @@ const FilterScreen = ({ navigation }) => {
             <CustomCheckbox
               key={option.label}
               label={option.label}
-              icon={option.icon}
-              color={option.color}
               checked={!!selectedOutdoorOptions[option.label]}
-              onChange={value => handleOutdoorOptionChange(option.label, value)}
+              onChange={() => handleOptionChange(setSelectedOutdoorOptions)(option.label)}
               style={styles.optionItem}
             />
           ))}

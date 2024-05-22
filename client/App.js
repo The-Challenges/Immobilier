@@ -149,9 +149,7 @@ import FrPage from "./src/components/first/frPage";
 import Two from "./src/components/two/two";
 import Login from "./src/components/Authentification/login";
 import Signup from "./src/components/Authentification/signup";
-import HomeScreen from "./src/screens/HomeScreen";
 import DetailsScreen from "./src/screens/DetailsScreen";
-import FilterScreen from "./src/screens/FilterScreen";
 import RecommendedScreen from "./src/screens/RecommendedScreen";
 import ResultsScreen from "./src/screens/ResultsScreen"
 import Chat from "./src/components/chat/chat";
@@ -161,16 +159,19 @@ import splash from "./src/components/Authentification/SplashScreen";
 import EditProfile from './src/screens/Profile/editProfile'
 import UserProfile from "./src/components/UserProfile/UserProfile";
 
-import AddHouse from './src/components/profile/cratePosts/AddHouse'
 import AddLand from './src/components/profile/cratePosts/AddLand'
+import AddHouse from './src/components/profile/cratePosts/AddHouse'
+
+import HomeScreen from "./src/screens/HomeScreen";
 import FilterScreenLands from "./src/screens/FilterScreenLand";
 import ResultsScreenLands from "./src/screens/ResultsScreenLand"
-
-
-
-
+import FilterScreen from "./src/screens/FilterScreen";
 import SeeAllHouses from "./src/screens/SeeAllHouses";
 import SeeAllLands from "./src/screens/SeeAllLands";
+
+
+
+
 
 
 // import Chatroom from "./src/components/chat/allrooms";
@@ -194,8 +195,8 @@ function App() {
         <Stack.Navigator initialRouteName="splash">
           {/* <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} /> */}
           {/* <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} /> */}
-          {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} /> */}
-          {/* <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />  */}
+          {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />  */}
           <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
           <Stack.Screen name='chat' component={Chat} options={{ headerShown: false }} />
 

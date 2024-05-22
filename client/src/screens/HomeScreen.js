@@ -51,6 +51,7 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
@@ -105,13 +106,7 @@ const HomeScreen = ({ navigation }) => {
     
 
 
-
-
-
-
-
-    
-    return (
+return (
       <View style={styles.optionListContainer}>
         {optionsList.map((option, index) => (
           <TouchableOpacity
