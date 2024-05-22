@@ -161,9 +161,9 @@ module.exports = {
                 // Create media associated with the house
                 if (media && media.length > 0) {
                     const mediaItems = media.map(item => ({
-                        type: item.type,
-                        name: item.name,
-                        link: item.link,
+                        type: "jpg",
+                        name: "photo",
+                        link: item,
                         HouseId: newHouse.id
                     }));
                     await db.Media.bulkCreate(mediaItems, { transaction: t });

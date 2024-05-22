@@ -2,13 +2,12 @@ import React from 'react';
 import { ScrollView, View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-function AccessScreen({ formData, handleChange, navigateToNext }) {
+function AccessScreen({ formData, handleChange, navigateToNext, navigateToPrevious }) {
     const accessOptions = [
         { field: 'Airport', label: 'Airport', icon: 'airplane-takeoff', iconColor: '#1E90FF' },
         { field: 'Public transportation', label: 'Public transportation', icon: 'bus', iconColor: '#3CB371' },
         { field: 'Highway', label: 'Highway', icon: 'road-variant', iconColor: '#6a5acd' },
         { field: 'road access', label: 'Road Access', icon: 'road', iconColor: '#FF4500' },
-       
     ];
 
     return (
@@ -26,9 +25,12 @@ function AccessScreen({ formData, handleChange, navigateToNext }) {
                     />
                 </View>
             ))}
-             <TouchableOpacity onPress={navigateToNext} style={styles.button}>
-        <Text style={styles.buttonText}>Next</Text>
-      </TouchableOpacity>
+            <TouchableOpacity onPress={navigateToNext} style={styles.button}>
+                <Text style={styles.buttonText}>Next</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={navigateToPrevious} style={styles.button}>
+                <Text style={styles.buttonText}>Previous</Text>
+            </TouchableOpacity>
         </ScrollView>
     );
 }
