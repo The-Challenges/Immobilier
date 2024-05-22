@@ -8,6 +8,10 @@ import {name as appName} from './app.json';
 import { Provider, PaperProvider } from 'react-native-paper';
 import { MD3LightTheme as DefaultTheme} from 'react-native-paper';
 
+
+
+
+
 const theme = {
     ...DefaultTheme,
     colors: {

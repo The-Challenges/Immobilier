@@ -24,6 +24,19 @@ module.exports = {
             res.status(500).json({ error: `Error fetching lands: ${error.message}` });
         }
     },
+
+    getAllViews: async (req, res) => {
+        try {
+            const allViews = await db.View.findAll({
+                attributes: ['options']
+            });
+            res.json(allViews);
+        } catch (error) {
+            console.error(`Error fetching all views: ${error.message}`);
+            res.status(500).json({ error: `Error fetching all views: ${error.message}` });
+        }
+    },
+    
     
    
     

@@ -32,7 +32,7 @@ export default function SeeAllLands({ navigation }) {
   const fetchLands = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://192.168.103.20:4000/api/land/all');
+      const response = await axios.get('http://192.168.103.18:4000/api/land/alllands');
       setLands(response.data);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch lands');
@@ -45,7 +45,7 @@ export default function SeeAllLands({ navigation }) {
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.103.20:4000/api/favorites/${userId}/land`);
+      const response = await axios.get(`http://192.168.103.18:4000/api/favorites/${userId}/land`);
       const favoriteLands = new Set(response.data.map(fav => fav.landId));
       setFavorites(favoriteLands);
     } catch (error) {
@@ -60,7 +60,7 @@ export default function SeeAllLands({ navigation }) {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.103.20:4000/api/favorite/toggle`, { userId, estateId: landId, type: 'land' });
+      await axios.post(`http://192.168.103.18:4000/api/favorite/toggle`, { userId, estateId: landId, type: 'land' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(landId)) {

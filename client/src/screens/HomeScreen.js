@@ -7,6 +7,8 @@ import storage from '../components/Authentification/storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import axios from 'axios';
+import FeaturedScroller from '../components/featuredScroller'; // Adjust the import path as needed
+// import PushNotification from 'react-native-push-notification';
 
 const { width } = Dimensions.get('screen');
 
@@ -17,6 +19,9 @@ const HomeScreen = ({ navigation }) => {
   const [favorites, setFavorites] = useState(new Set());
   const [userId, setUserId] = useState(null);
   const flatListRef = useRef(null);
+
+
+
 
   useEffect(() => {
     const initializeData = async () => {
@@ -36,7 +41,7 @@ const HomeScreen = ({ navigation }) => {
 
   const fetchHouses = async () => {
     try {
-      const response = await axios.get(`http://192.168.103.20:4000/api/house/allhouses`);
+      const response = await axios.get(`http://192.168.103.18:4000/api/house/allhouses`);
       setHouses(response.data);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch houses');
@@ -46,16 +51,18 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.103.20:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.103.18:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
       console.error('Failed to fetch favorites:', error);
     }
   };
+  
 
   const toggleFavorite = async (houseId) => {
     if (!userId) {
@@ -64,7 +71,7 @@ const HomeScreen = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.103.20:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`http://192.168.103.18:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {
@@ -95,7 +102,11 @@ const HomeScreen = ({ navigation }) => {
         action: () => navigation.navigate('SeeAllLands'),
       },
     ];
-    return (
+
+    
+
+
+return (
       <View style={styles.optionListContainer}>
         {optionsList.map((option, index) => (
           <TouchableOpacity
@@ -138,6 +149,7 @@ const HomeScreen = ({ navigation }) => {
                 <TouchableOpacity
                   style={[styles.favoriteButton, isFavorite && styles.favoriteButtonActive]}
                   onPress={() => toggleFavorite(item.id)}
+
                 >
                   <Icon name={isFavorite ? "favorite" : "favorite-border"} size={20} color={isFavorite ? COLORS.red : COLORS.yellow} />
                 </TouchableOpacity>
@@ -179,6 +191,7 @@ const HomeScreen = ({ navigation }) => {
                 <TouchableOpacity
                   style={styles.detailsButton}
                   onPress={() => navigation.navigate('DetailsScreen', { house: item })}
+                  
                 >
                   <Text style={styles.detailsButtonText}>View Details</Text>
                 </TouchableOpacity>
@@ -206,12 +219,8 @@ const HomeScreen = ({ navigation }) => {
           <TouchableOpacity style={styles.sortBtn} onPress={() => navigation.navigate('FilterScreen')}>
             <Icon name="tune" color={COLORS.white} size={28} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.notificationBtn} onPress={() => Alert.alert('Notifications', 'No new notifications')}>
-            <Icon name="notifications" color={COLORS.white} size={28} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.profileBtn} onPress={() => navigation.navigate('ProfileScreen')}>
-            <Icon name="person" color={COLORS.white} size={28} />
-          </TouchableOpacity>
+          
+          
           <TouchableOpacity style={styles.favoriteBtn} onPress={() => navigation.navigate('FavoritesScreen')}>
             <Icon name="favorite" color={COLORS.white} size={28} />
           </TouchableOpacity>
@@ -220,17 +229,11 @@ const HomeScreen = ({ navigation }) => {
         {loading ? (
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : (
-          <FlatList
-            ref={flatListRef}
-            data={houses.slice(0, 5)}
-            renderItem={renderHouseItem}
-            keyExtractor={(item) => item.id.toString()}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            snapToInterval={width - 40}
-            snapToAlignment="center"
-            decelerationRate="fast"
-            contentContainerStyle={styles.featuredListContainer}
+          <FeaturedScroller
+            houses={houses}
+            navigation={navigation}
+            toggleCard={toggleCard}
+            pressedCard={pressedCard}
           />
         )}
         <ListOptions />
@@ -287,18 +290,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     borderRadius: 25,
   },
-  notificationBtn: {
-    padding: 10,
-    backgroundColor: COLORS.primary,
-    borderRadius: 25,
-    marginLeft: 10,
-  },
-  profileBtn: {
-    padding: 10,
-    backgroundColor: COLORS.primary,
-    borderRadius: 25,
-    marginLeft: 10,
-  },
+  
   optionListContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',

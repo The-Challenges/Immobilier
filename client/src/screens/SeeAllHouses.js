@@ -41,7 +41,7 @@ const SeeAllHouses = ({ navigation }) => {
   const fetchHouses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://192.168.103.20:4000/api/house/allhouses');
+      const response = await axios.get('http://192.168.103.18:4000/api/house/allhouses');
       setHouses(response.data);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch houses');
@@ -54,7 +54,7 @@ const SeeAllHouses = ({ navigation }) => {
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.103.20:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.103.18:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
@@ -69,7 +69,7 @@ const SeeAllHouses = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.103.20:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`http://192.168.103.18:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {
@@ -86,6 +86,42 @@ const SeeAllHouses = ({ navigation }) => {
       setLoading(false);
     }
   };
+
+  const indoorIcons = {
+    Broadband: 'wifi',
+    Workshop: 'build',
+    'Rumpus room': 'room',
+    'Built in robe': 'wardrobe',
+    FloorBoards: 'layers',
+    Ensuite: 'bath',
+    'Alarm System': 'alarm',
+    Study: 'book',
+    Gym: 'fitness-center',
+  };
+
+  const outdoorIcons = {
+    Balcony: 'balcony',
+    'Fully fenced': 'fence',
+    'Swimming pool': 'pool',
+    'Undercover parking': 'local-parking',
+    'Outdoor spa': 'spa',
+    'Outdoor area': 'park',
+    Shed: 'store',
+    Garage: 'garage',
+  };
+
+  const climateIcons = {
+    // Add climate icon mappings here
+  };
+
+  const renderIconRow = (options, iconMapping) => (
+    options.map((option, index) => (
+      <View key={index} style={styles.iconRow}>
+        <Icon name={iconMapping[option.options] || 'home'} size={20} color="#000" />
+        <Text style={styles.iconText}>{option.options}</Text>
+      </View>
+    ))
+  );
 
   const HouseCard = ({ house }) => {
     const isFavorite = favorites.has(house.id);
