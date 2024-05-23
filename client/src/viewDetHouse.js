@@ -5,6 +5,7 @@ import Icon2 from 'react-native-vector-icons/SimpleLineIcons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import COLORS from './consts/colors';
 import { Button } from 'react-native-elements';
+import { API_AD } from '../config';
 
 const featureIcons = {
     Garage: "garage",
@@ -125,8 +126,8 @@ const ViewHouseDetails = ({ route, navigation }) => {
                     disabled={hasRequested}
                 />
             </View>
-            {/* <HouseDetail category="View" details={house.Views} />
-            <HouseDetail category="Indoor" details={house.Indoors} /> */}
+            <HouseDetail category="View" details={house.Views} />
+            <HouseDetail category="Indoor" details={house.Indoors} />
 
             <Text style={styles.description}>{house.description}</Text>
         </ScrollView>

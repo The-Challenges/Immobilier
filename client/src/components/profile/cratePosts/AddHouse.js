@@ -22,7 +22,6 @@ function FullCreateHouse() {
         numberBathrooms: 0,
         propertyType: "All types",
         garage: false,
-        // other properties initialized as before...
         media: []
     });
     const [screenIndex, setScreenIndex] = useState(1);

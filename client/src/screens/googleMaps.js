@@ -18,6 +18,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import GetLocation from 'react-native-get-location';
 import mapStyle from '../components/mapStyle/mapStyle';
 import { debounce } from 'lodash';
+import { API_AD } from '../../config';
 
 const GoogleMaps = () => {
   const [houses, setHouses] = useState([]);
@@ -99,7 +100,7 @@ const GoogleMaps = () => {
 
   async function fetchHouses() {
     try {
-      const response = await fetch('http://192.168.11.62:4000/api/house/allhouses');
+      const response = await fetch(`${API_AD}/api/house/allhouses`);
       const json = await response.json();
       setHouses(
         json.map((house) => ({
@@ -118,7 +119,7 @@ const GoogleMaps = () => {
 
   async function fetchLands() {
     try {
-      const response = await fetch('http://192.168.11.62:4000/api/land/alllands');
+      const response = await fetch(`${API_AD}/api/land/alllands`);
       const json = await response.json();
       setLands(
         json.map((land) => ({

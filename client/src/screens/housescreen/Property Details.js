@@ -25,12 +25,13 @@ function Screen1({ formData, handleChange, navigateToNext }) {
                 <Icon name="cash-100" size={24} color="#4CAF50" />
                 <Text style={styles.label}>Price:</Text>
                 <TextInput
-                    style={styles.input}
-                    onChangeText={(text) => handleChange('price', text)}
-                    keyboardType="numeric"
-                    value={formData.price}
-                    placeholder="Enter price"
-                />
+                 style={styles.input}
+                 onChangeText={(text) => handleChange('price', Number(text))}
+                 keyboardType="numeric"
+                 value={String(formData.price)}
+                 placeholder="Enter price"
+/>
+
             </View>
 
             {/* Number of Bedrooms */}

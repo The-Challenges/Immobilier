@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import { API_AD } from '../../../config';
 
 const PaymentScreen = () => {
   const [name, setName] = useState('');
@@ -55,7 +56,7 @@ const PaymentScreen = () => {
     }
 
     try {
-      const response = await fetch('http://192.168.103.20:4000/api/payment/create-payment-intent', {
+      const response = await fetch(`${API_AD}/api/payment/create-payment-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 const db = require('../../Model/index');
-
+const media = require('../../Model/media');
 module.exports = {
     getAllLands: async (req, res) => {
         try {
@@ -44,32 +44,52 @@ module.exports = {
         }
     },
 
-    addLand: async (req, res) => {
+     addLand : async (req, res) => {
         try {
-            const { title, price, size, alt, long, purchaseoption, TerrainType, Zoning, isVerifie, viewOptions, accessOptions } = req.body;
-            const newLand = await db.Land.create({
-                title,
-                price,
-                size,
-                alt,
-                long,
-                purchaseoption,
-                TerrainType,
-                Zoning,
-                isVerifie
-            });
-                const newView = await db.View.create({
-                options: viewOptions || 'Unknown'
+            const {
+                title, price, size, alt, long, purchaseoption, TerrainType, Zoning, isVerifie,
+                viewOptions, accessOptions, media
+            } = req.body;
+    
+            const result = await db.sequelize.transaction(async (t) => {
+                // Create the land
+                const newLand = await db.Land.create({
+                    title,
+                    price: price !== '' ? price : null,
+                    size: size !== '' ? size : null,
+                    alt: alt !== '' ? alt : null,
+                    long: long !== '' ? long : null,
+                    purchaseoption,
+                    TerrainType,
+                    Zoning,
+                    isVerifie
+                }, { transaction: t });
+    
+                // Additional data relations
+                if (viewOptions && viewOptions.length > 0) {
+                    const views = viewOptions.map(option => ({ options: option, LandId: newLand.id }));
+                    await db.View.bulkCreate(views, { transaction: t });
+                }
+                if (accessOptions && accessOptions.length > 0) {
+                    const accesses = accessOptions.map(option => ({ options: option, LandId: newLand.id }));
+                    await db.Access.bulkCreate(accesses, { transaction: t });
+                }
+    
+                // Create media associated with the land
+                if (media && media.length > 0) {
+                    const mediaItems = media.map(item => ({
+                        type: "jpg",
+                        name: "photo",
+                        link: item,
+                        LandId: newLand.id
+                    }));
+                    await db.Media.bulkCreate(mediaItems, { transaction: t });
+                }
+    
+                return newLand;
             });
     
-            // Create an access entry
-            const newAccess = await db.Access.create({
-                options: accessOptions || 'Unknown'
-            });
-            await newLand.addView(newView);
-            await newLand.addAccess(newAccess);
-    
-            res.status(201).json({ success: true, message: "Land, view, and access added successfully", data: { newLand, newView, newAccess } });
+            res.status(201).json({ success: true, message: "Land, view, access, and media added successfully", data: result });
         } catch (error) {
             console.error(error);
             res.status(500).json({ success: false, message: "Failed to add land", error: error.message });
@@ -80,7 +100,7 @@ module.exports = {
         try {
             const { landId } = req.params;
             const {
-                title, price, size, alt, long, purchaseoption, TerrainType, Zoning, isVerifie, viewOptions, accessOptions
+                title, price, size, alt, long, purchaseoption, TerrainType, Zoning, isVerifie, viewOptions, accessOptions,media
             } = req.body;
 
             // Check if the land exists

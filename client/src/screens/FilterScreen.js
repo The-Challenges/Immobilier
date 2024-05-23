@@ -7,6 +7,7 @@ import PropertySelector from '../components/PropertySelector/PropertySelector';
 import CustomDropdown from '../components/dropDown/dropDown';
 import CustomCheckbox from '../components/checkBoxFilterScreen/customCheckBox';
 import AdvancedSlider from '../components/AdvancedSlider/AdvancedSlider';
+import { API_AD } from '../../config';
 
 const bedroomOptions = ['1 BR', '2 BR', '3 BR ', '4 BR', '5 BR', '6 BR', '7 BR', '8 BR'];
 const bathroomOptions = ['1 BA', '2 BA', '3 BA', '4 BA', '5 BA', '6 BA', '7 BA', '8 BA'];
@@ -47,7 +48,7 @@ const FilterScreen = ({ navigation }) => {
 
   const fetchOptions = async (type, setOptions) => {
     try {
-      const response = await axios.get(`http://192.168.103.18:4000/api/${type}/all${type}`);
+      const response = await axios.get(`${API_AD}/api/${type}/all${type}`);
       const options = response.data.map(option => ({
         label: option.options,
         icon: getIconForOption(option.options),
@@ -89,7 +90,7 @@ const FilterScreen = ({ navigation }) => {
       const outdoorOptionsSelected = Object.keys(selectedOutdoorOptions).filter(key => selectedOutdoorOptions[key]);
       const params = buildFilterParams(indoorOptionsSelected, outdoorOptionsSelected);
 
-      const response = await axios.get('http://192.168.11.62:4000/api/house/filterhouses', { params });
+      const response = await axios.get(`${API_AD}/api/house/filterhouses`, { params });
 
       console.log('Response Data:', response.data);
 

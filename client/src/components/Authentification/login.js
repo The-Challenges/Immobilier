@@ -15,7 +15,7 @@ const Signin = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
 
-      const response = await axios.post('http://192.168.11.62:4000/api/auth/login', { email, password });
+      const response = await axios.post(`${API_AD}/api/auth/login`, { email, password });
       if (response.data && response.data.user) {
         const { user, token } = response.data;
         console.log(user.userId); // Make sure this logs the expected value
@@ -48,18 +48,18 @@ const Signin = ({ navigation }) => {
         <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} />
         <TextInput style={styles.input} placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
       </View>
-      <Button style={[styles.button, { backgroundColor: '#F5F7C4' }]} mode="contained" onPress={handleSubmit} labelStyle={{ color: '#000' }}>
+      <Button style={[styles.button, { backgroundColor: '#4a90e2' }]} mode="contained" onPress={handleSubmit} labelStyle={{ color: '#000' }}>
         Login
       </Button>
       <TouchableOpacity>
         <Text style={[styles.forgotPassword, { color: '#000' }]}>Forgot Password?</Text>
       </TouchableOpacity>
       <Text style={styles.or}>Or</Text>
-      <TouchableOpacity style={[styles.socialButton, { backgroundColor: '#F5F7C4' }]}>
+      <TouchableOpacity style={[styles.socialButton, { backgroundColor: '#4a90e2' }]}>
         <IconButton icon="google" color="#000" style={styles.icon} />
         <Text style={[styles.socialButtonText, { color: '#000' }]}>Sign in with Google</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.socialButton, { backgroundColor: '#F5F7C4' }]}>
+      <TouchableOpacity style={[styles.socialButton, { backgroundColor: '#4a90e2' }]}>
         <IconButton icon="facebook" color="#000" style={styles.icon} />
         <Text style={[styles.socialButtonText, { color: '#000' }]}>Sign in with Facebook</Text>
       </TouchableOpacity>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
   button: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#4a90e2',
     width: '80%',
     height: 50,
     justifyContent: 'center',

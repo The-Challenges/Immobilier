@@ -9,4 +9,5 @@ router.post('/AddAccess/:landId', LandController.addAccessToLand);
 router.post('/AddView/:landId', LandController.addViewToLand); // New route for adding view to land
 router.put('/updateLand/:landId', LandController.updateLand); // Route for updating land
 
+
 module.exports = router;
