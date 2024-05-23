@@ -115,7 +115,7 @@ const ViewLandDetails = ({ route, navigation }) => {
         icon={<Icon name="arrow-right" size={15} color="white" />}
         title={hasRequested ? 'You have already sent a request' : `Contact ${land.User.firstName}`}
         buttonStyle={styles.contactButton}
-        onPress={() => navigation.navigate('TermsAndConditions', { user,land })}
+        onPress={() => navigation.navigate('TermeCondition', { user,land })}
         disabled={hasRequested}
     />
 </View>

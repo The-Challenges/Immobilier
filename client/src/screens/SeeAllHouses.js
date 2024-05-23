@@ -13,6 +13,10 @@ const SeeAllHouses = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [favorites, setFavorites] = useState(new Set());
   const [userId, setUserId] = useState(null);
+  const navigateDetails=(item)=>{
+    navigation.navigate('ViewDetailshouse', { land: item ,user ,landId:item.id,userId:item.UserId } )
+    socketserv.emit("receiver",item.UserId)
+}
 
   useEffect(() => {
     const initializeData = async () => {
@@ -41,7 +45,7 @@ const SeeAllHouses = ({ navigation }) => {
   const fetchHouses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://192.168.103.20:4000/api/house/allhouses');
+      const response = await axios.get('http://192.168.103.2:4000/api/house/allhouses');
       setHouses(response.data);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch houses');
@@ -54,7 +58,7 @@ const SeeAllHouses = ({ navigation }) => {
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.103.20:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.103.2:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
@@ -69,7 +73,7 @@ const SeeAllHouses = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.103.20:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`http://192.168.103.2:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {
@@ -90,6 +94,7 @@ const SeeAllHouses = ({ navigation }) => {
   const HouseCard = ({ house }) => {
     const isFavorite = favorites.has(house.id);
     const imageUrl = house.Media && house.Media.length > 0 ? house.Media[0].link : 'https://via.placeholder.com/400x200.png?text=No+Image+Available';
+  
     return (
       <Card containerStyle={styles.card}>
         <Card.Title style={styles.cardTitle}>{house.title}</Card.Title>
@@ -117,20 +122,15 @@ const SeeAllHouses = ({ navigation }) => {
         </View>
         <View style={styles.buttonContainer}>
           <Button
-            icon={<Icon name="arrow-right" size={15} color="white" />}
             title="View Details"
             buttonStyle={styles.button}
-            onPress={() => navigation.navigate('DetailsScreen', { house })}
+            onPress={() =>navigateDetails(house)}
           />
-          <TouchableOpacity style={styles.allRequestsButton} onPress={() => navigation.navigate('Received')}>
-            <Text style={styles.allRequestsText}>All Requests</Text>
-          </TouchableOpacity>
         </View>
       </Card>
     );
   };
   
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
       <StatusBar backgroundColor={COLORS.background} barStyle="dark-content" />
@@ -218,7 +218,8 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    margin: 15
+    margin: 15,
+    marginLeft:80
   },
   button: {
     backgroundColor: COLORS.primary,

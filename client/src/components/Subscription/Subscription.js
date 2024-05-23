@@ -3,18 +3,18 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const plans = [
-  { plan: 'Premium', price: '29,99$', features: ['Service', 'Add-ons', 'Advantages', 'Bonuses'], icon: require('../../images/king.png')},
+  { plan: 'Premium', price: '29,99$', features: ['Service', 'Add-ons', 'Advantages', 'Bonuses'], icon: require('../../images/kingss.webp') },
 ];
 
 const SubscriptionScreen = () => {
   const navigation = useNavigation();
-  const { plan, price, features, icon } = plans[0];  // Since only one plan, we can directly access the first index
+  const { plan, price, features, icon } = plans[0]; 
   const buttonTextGetStarted = 'GET STARTED';
-  const buttonTextSkip = 'SKIP';
+  const buttonTextSkip = 'NOT NOW';
 
   return (
     <View style={styles.fullScreen}>
-      <TouchableOpacity style={styles.skipButton} onPress={() => {}}>
+      <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('HomeScreen')}>
         <Text style={styles.skipButtonText}>{buttonTextSkip}</Text>
       </TouchableOpacity>
       <Image source={icon} style={styles.iconStyle} resizeMode="contain" />
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 40,
     right: 20,
-    backgroundColor: '#F4BB18',
+    backgroundColor: '#4a90e2',
     paddingVertical: 8,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -61,14 +61,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   planType: {
-    color: '#F4BB18',
+    color: '#4a90e2',
     fontSize: 26,
     fontWeight: 'bold',
     marginVertical: 10,
     textAlign: 'center',
   },
   price: {
-    color: '#F4BB18',
+    color: '#4a90e2',
     fontSize: 50,
     fontWeight: 'bold',
     marginBottom: 15,
@@ -76,22 +76,22 @@ const styles = StyleSheet.create({
   },
   featuresContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',  // Added to wrap the features if there are many
+    flexWrap: 'wrap', 
     justifyContent: 'center',
   },
   feature: {
-    color: '#F4BB18',
+    color: '#4a90e2',
     fontSize: 20,
     marginBottom: 12,
     textAlign: 'center',
-    flexBasis: '50%'  // Assumes two columns for features; adjust as necessary
+    flexBasis: '50%' 
   },
   button: {
-    backgroundColor: '#F4BB18',
+    backgroundColor: '#4a90e2',
     paddingVertical: 12,
     paddingHorizontal: 40,
     borderRadius: 20,
-    marginTop: 20,  // Added some margin on top for better spacing
+    marginTop: 20,  
   },
   buttonText: {
     color: 'white',
