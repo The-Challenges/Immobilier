@@ -55,7 +55,7 @@ const PaymentScreen = () => {
     }
 
     try {
-      const response = await fetch('http://192.168.103.20:4000/api/payment/create-payment-intent', {
+      const response = await fetch('http://192.168.103.2:4000/api/payment/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ const PaymentScreen = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.inputContainer}>
-        <Icon name="user" size={20} color="orange" style={styles.icon} />
+        <Icon name="user" size={20} color="#4a90e2" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Name on card"
@@ -121,7 +121,7 @@ const PaymentScreen = () => {
       </View>
       {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
       <View style={styles.inputContainer}>
-        <Icon name="credit-card" size={20} color="orange" style={styles.icon} />
+        <Icon name="credit-card" size={20} color="#4a90e2" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Card number"
@@ -133,7 +133,7 @@ const PaymentScreen = () => {
       {errors.cardNumber && <Text style={styles.errorText}>{errors.cardNumber}</Text>}
       <View style={styles.row}>
         <View style={[styles.inputContainer, styles.flex2]}>
-          <Icon name="calendar" size={20} color="orange" style={styles.icon} />
+          <Icon name="calendar" size={20} color="#4a90e2" style={styles.icon} />
           <TextInput
             style={styles.input}
             placeholder="Expiry date (MM/YY)"
@@ -143,7 +143,7 @@ const PaymentScreen = () => {
           />
         </View>
         <View style={[styles.inputContainer, styles.flex1]}>
-          <Icon name="lock" size={20} color="orange" style={styles.icon} />
+          <Icon name="lock" size={20} color="#4a90e2" style={styles.icon} />
           <TextInput
             style={styles.input}
             placeholder="CVV"
@@ -156,7 +156,7 @@ const PaymentScreen = () => {
       {errors.expiryDate && <Text style={styles.errorText}>{errors.expiryDate}</Text>}
       {errors.securityCode && <Text style={styles.errorText}>{errors.securityCode}</Text>}
       <View style={styles.inputContainer}>
-        <Icon name="map-marker" size={20} color="orange" style={styles.icon} />
+        <Icon name="map-marker" size={20} color="#4a90e2" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="ZIP/Postal code"
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   payButton: {
-    backgroundColor: 'orange',
+    backgroundColor: '#4a90e2',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 15,

@@ -102,48 +102,44 @@ const navigateDetails=(item)=>{
     };
 
     const LandCard = ({ land }) => {
-        const isFavorite = favorites.has(land.id);
-        const imageUrl = land.Media && land.Media.length > 0 ? land.Media[0].link : 'https://via.placeholder.com/400x200.png?text=No+Image+Available';
-        return (
-          <Card containerStyle={styles.card}>
-            <Card.Title style={styles.cardTitle}>{land.title}</Card.Title>
-            <Card.Image source={{ uri: imageUrl }} style={styles.cardImage} />
-            <View style={styles.detailContainer}>
-              <View style={styles.priceContainer}>
-                <Icon name="attach-money" size={24} color={COLORS.green} style={styles.iconStyle}/>
-                <Text style={[styles.detailText, { color: COLORS.green }]}>{land.price}</Text>
-              </View>
-              <Text style={styles.cardType}>{land.TerrainType}</Text>
-              <View style={styles.favoriteAndRatingContainer}>
-                <TouchableOpacity onPress={() => toggleFavorite(land.id)}>
-                  <View style={isFavorite ? styles.favoriteIconSelected : styles.favoriteIcon}>
-                    <Icon
-                      name={isFavorite ? "favorite" : "favorite-border"}
-                      size={24}
-                      color={isFavorite ? COLORS.red : COLORS.yellow}
-                    />
-                  </View>
-                </TouchableOpacity>
-                <View style={styles.rating}>
-                  <Icon name="star" size={16} color="#FFD700" />
-                  <Text style={styles.ratingText}>{land.rating || '4.5'}</Text>
-                </View>
-              </View>
+      const isFavorite = favorites.has(land.id);
+      const imageUrl = land.Media && land.Media.length > 0 ? land.Media[0].link : 'https://via.placeholder.com/400x200.png?text=No+Image+Available';
+      return (
+        <Card containerStyle={styles.card}>
+          <Card.Title style={styles.cardTitle}>{land.title}</Card.Title>
+          <Card.Image source={{ uri: imageUrl }} style={styles.cardImage} />
+          <View style={styles.detailContainer}>
+            <View style={styles.priceContainer}>
+              <Icon name="attach-money" size={24} color={COLORS.green} style={styles.iconStyle}/>
+              <Text style={[styles.detailText, { color: COLORS.green }]}>{land.price}</Text>
             </View>
-            <View style={styles.buttonContainer}>
-            <Button
-                        icon={<Icon name="arrow-right" size={15} color="white" />}
-                        title=" View Details"
-                        buttonStyle={styles.button}
-                        onPress={() =>navigateDetails(land) }
-                    />
-              <TouchableOpacity style={styles.allRequestsButton} onPress={() => navigation.navigate('requestreceivedlands')}>
-                <Text style={styles.allRequestsText}>All Requests</Text>
+            <Text style={styles.cardType}>{land.TerrainType}</Text>
+            <View style={styles.favoriteAndRatingContainer}>
+              <TouchableOpacity onPress={() => toggleFavorite(land.id)}>
+                <Icon
+                  name={isFavorite ? "favorite" : "favorite-border"}
+                  size={24}
+                  color={isFavorite ? COLORS.red : COLORS.yellow}
+                  style={styles.favoriteIcon}
+                />
               </TouchableOpacity>
+              <View style={styles.rating}>
+                <Icon name="star" size={16} color="#FFD700" />
+                <Text style={styles.ratingText}>{land.rating || '4.5'}</Text>
+              </View>
             </View>
-          </Card>
-        );
-      };
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              title="View Details"
+              buttonStyle={styles.button}
+              onPress={() => navigateDetails(land)}
+            />
+          </View>
+        </Card>
+      );
+  };
+  
       
     
       if (loading) {
@@ -244,7 +240,8 @@ const navigateDetails=(item)=>{
       buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        margin: 15
+        margin: 15,
+        marginLeft:80
       },
       button: {
         backgroundColor: COLORS.primary,

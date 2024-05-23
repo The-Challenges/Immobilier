@@ -36,7 +36,7 @@ const fetchUserProfile = async (userId) => {
       throw new Error('User ID is missing');
     }
 
-    const response = await fetch(`http://192.168.104.11:4000/api/user/${userId}`, {
+    const response = await fetch(`http://192.168.103.2:4000/api/user/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -178,8 +178,8 @@ const UserProfile = () => {
           <Action title={'Invite Friends'} icon={'user-plus'} onPress={() => { }} />
           <Action title={'Listings'} icon={'list'} onPress={() => navigation.navigate('apartement')} />
           <Action title={'Contact'} icon={'phone'} onPress={() => navigation.navigate('Contact')} />
-          <Action title={'My House Requests'} icon={'home'} onPress={() => navigation.navigate('requeststatus')} />
-          <Action title={'My Lands Requests'} icon={'map'} onPress={() => navigation.navigate('requeststatuslands')} />
+          <Action title={'My House Requests'} icon={'home'} onPress={() => navigation.navigate('Received')} />
+          <Action title={'My Lands Requests'} icon={'map'} onPress={() => navigation.navigate('requestreceivedlands')} />
         </View>
 
         <View style={styles.logoutContainer}>
