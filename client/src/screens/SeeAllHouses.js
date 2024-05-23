@@ -1,32 +1,21 @@
-//
-
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet,Image, Dimensions, StatusBar, FlatList, View, Text, Alert, ActivityIndicator } from 'react-native';
+import { SafeAreaView, StyleSheet, Image, Dimensions, StatusBar, FlatList, View, Text, Alert, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { Card, Button, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
-import LinearGradient from 'react-native-linear-gradient';
-
-
+import COLORS from '../consts/colors';
 import Carousel from 'react-native-snap-carousel';
 import storage from '../components/Authentification/storage';
 import socketserv from '../components/request/socketserv';
-import COLORS from '../consts/colors';
 
 const { width } = Dimensions.get('window');
 
 const SeeAllHouses = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
-
-  const navigateDetails = (house) => {
-    navigation.navigate('ViewDetailsHouse', { house, user, houseId: house.id, userId: house.UserId });
-    socketserv.emit("receiver", house.UserId);
-  };
 
   useEffect(() => {
     fetchHouses();
@@ -36,7 +25,7 @@ const SeeAllHouses = ({ navigation }) => {
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.1.3:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.103.11:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
@@ -51,7 +40,7 @@ const SeeAllHouses = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.1.3:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`http://192.168.103.11:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {
@@ -72,7 +61,7 @@ const SeeAllHouses = ({ navigation }) => {
   const getUserId = async () => {
     try {
       const userData = await storage.load({ key: 'loginState' });
-      setUser(userData.user.userId);
+      setUserId(userData.user.userId);
       fetchFavorites(userData.user.userId);
     } catch (error) {
       console.error('Failed to retrieve user data:', error);
@@ -82,7 +71,7 @@ const SeeAllHouses = ({ navigation }) => {
   const fetchHouses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://192.168.1.3:4000/api/house/allhouses');
+      const response = await axios.get('http://192.168.103.11:4000/api/house/allhouses');
       setHouses(response.data);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch houses');
@@ -115,10 +104,10 @@ const SeeAllHouses = ({ navigation }) => {
         <Card.Content>
           <View style={styles.detailContainer}>
             <View style={styles.priceContainer}>
-            <Icon1 name="dollar" size={21} color={COLORS.green} />
+              <Icon1 name="dollar" size={21} color={COLORS.green} />
               <Text style={styles.priceText}>{house.price}</Text>
             </View>
-            <Text style={styles.cardType}>{house.TerrainType}</Text>
+            <Text style={styles.cardType}>{house.propertyType}</Text>
             <View style={styles.favoriteAndRatingContainer}>
               <IconButton
                 icon={isFavorite ? "heart" : "heart-outline"}
@@ -143,17 +132,14 @@ const SeeAllHouses = ({ navigation }) => {
           >
             View Details
           </Button>
-          <Button
-            mode="contained"
-            onPress={() => navigation.navigate('Received')}
-            style={styles.button}
-            labelStyle={styles.buttonLabel}
-          >
-            All Requests
-          </Button>
         </Card.Actions>
       </Card>
     );
+  };
+
+  const navigateDetails = (house) => {
+    navigation.navigate('viewDetHouse', { house });
+    socketserv.emit("receiver", house.UserId);
   };
 
   return (

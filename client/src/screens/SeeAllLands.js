@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, View, FlatList, Text, Alert, ActivityIndicator, TouchableOpacity, Dimensions, Image
+  StyleSheet, View, FlatList, Text, Alert, ActivityIndicator, Dimensions, Image
 } from 'react-native';
 import axios from 'axios';
 import { Card, Button, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
-
 import Carousel from 'react-native-snap-carousel';
 import COLORS from '../consts/colors';
 import storage from '../components/Authentification/storage';
@@ -23,7 +22,7 @@ const SeeAllLands = ({ navigation }) => {
   const [userId, setUserId] = useState(null);
 
   const navigateDetails = (item) => {
-    navigation.navigate('ViewDetailsLand', { land: item, user, landId: item.id, userId: item.UserId });
+    navigation.navigate('viewDetLand', { land: item, user, landId: item.id, userId: item.UserId });
     socketserv.emit("receiver", item.UserId);
   };
 
@@ -140,19 +139,11 @@ const SeeAllLands = ({ navigation }) => {
           <Button
             mode="contained"
             icon="eye"
-            onPress={() => navigateDetails(house)}
+            onPress={() => navigateDetails(land)}
             style={styles.button}
             labelStyle={styles.buttonLabel}
           >
             View Details
-          </Button>
-          <Button
-            mode="contained"
-            onPress={() => navigation.navigate('Received')}
-            style={styles.button}
-            labelStyle={styles.buttonLabel}
-          >
-            All Requests
           </Button>
         </Card.Actions>
       </Card>
@@ -177,15 +168,15 @@ const SeeAllLands = ({ navigation }) => {
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background
+    backgroundColor: COLORS.background,
   },
   listContainer: {
-    padding: 10
+    padding: 10,
   },
   card: {
     margin: 10,
