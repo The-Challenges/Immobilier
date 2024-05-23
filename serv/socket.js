@@ -80,7 +80,7 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-const {Chat}=require('./Model')
+// const {Chat}=require('./Model')
 
 const PORT = 4001;
 
@@ -99,15 +99,15 @@ io.on('connection', (socket) => {
     socket.join(room);
     console.log(`User ${userName} (${userId}) joined room: ${room}`);
 
-    try {
-      const messages = await Chat.findAll({
-        where: { conversationId: room },
-        order: [['time', 'ASC']],
-      });
+    // try {
+    //   const messages = await Chat.findAll({
+    //     where: { conversationId: room },
+    //     order: [['time', 'ASC']],
+    //   });
       socket.emit('message_history', messages);
-    } catch (error) {
-      console.error('Failed to fetch message history:', error);
-    }
+    // } catch (error) {
+    //   console.error('Failed to fetch message history:', error);
+    // }
     io.to(room).emit('user_joined', { userId, userName });
   });
 

@@ -284,13 +284,11 @@
 
 
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Button, Dialog, Portal, Text, PaperProvider } from 'react-native-paper';
 import ProfileDetails from './src/components/profile/profileDetails';
 import Icon2 from 'react-native-vector-icons/Ionicons';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { PaperProvider } from 'react-native-paper';
 import Listings from './src/screens/Profile/Listings';
 import Contact from './src/screens/Profile/Contact';
 import Search from './src/screens/Profile/SearchBar';
@@ -301,6 +299,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import them from './src/font/font'
 import FrPage from "./src/components/first/frPage";
 import Two from "./src/components/two/two";
+import Login from "./src/components/Authentification/login";
+import Signup from "./src/components/Authentification/signup";
 import HomeScreen from "./src/screens/HomeScreen";
 // import DetailsScreen from "./src/screens/DetailsScreen";
 import FilterScreen from "./src/screens/FilterScreen";
@@ -313,6 +313,20 @@ import AddHouse from './src/components/profile/cratePosts/AddHouse'
 import AddLand from './src/components/profile/cratePosts/AddLand'
 import SeeAllHouses from "./src/screens/SeeAllHouses";
 import SeeAllLands from "./src/screens/SeeAllLands";
+
+
+// import Chatroom from "./src/components/chat/allrooms";
+
+import HomeTabs from './hpmetaps';
+import Onboarding from './src/components/Authentification/OnboardingScreen';
+import splach from './src/components/Authentification/SplashScreen'
+import EditProfile from './src/screens/Profile/editProfile';
+import AddLand from './src/components/profile/cratePosts/AddLand'
+import AddHouse from './src/components/profile/cratePosts/AddHouse'
+import Received from "./src/components/profile/requestreceived"
+
+
+import requestreceivedlands from "./src/components/profile/requestreceivedlands"
 import requeststatus from "./src/components/profile/requeststatus"
 import requeststatuslands from "./src/components/profile/requeststatuslands"
 import HomeTabs from './hpmetaps';
@@ -325,8 +339,10 @@ import FilterScreenLands from "./src/screens/FilterScreenLand"
 import ResultsScreenLand from './src/screens/ResultsScreenLand';
 import PaymentScreen from './src/components/Subscription/Payment';
 import PaymentConfirmationScreen from './src/components/Subscription/PaymentConfirmationScreen';
-import Login from './src/components/Authentification/login'
-import Signup from './src/components/Authentification/signup'
+import viewDetHouse from './src/viewDetHouse';
+import TermeAndCondition from './src/components/request/sendRe/TermsAndConditions'
+import { View ,StyleSheet} from 'react-native';
+import { Button, Dialog, Portal, Text} from 'react-native-paper';
 import socketserv from './src/components/request/socketserv';
 import viewDetHouse from './src/viewDetHouse'
 import viewDetLand from './src/viewDetLand'
@@ -335,12 +351,8 @@ import viewDetLand from './src/viewDetLand'
 
 
 
-
-
-const Stack = createNativeStackNavigator();
-
-// Main stack navigator
 function App() {
+
   const [visible, setVisible] = useState(false);
   const [requestData, setRequestData] = useState(null);
   const [responseVisible, setResponseVisible] = useState(false);
@@ -364,7 +376,7 @@ function App() {
       } catch (error) {
         console.error("Error updating request status:", error.response ? error.response.data : error.message);
       }
-
+    
     }
     hideDialog();
   }
@@ -381,10 +393,10 @@ function App() {
       } catch (error) {
         console.error("Error updating request status:", error.response ? error.response.data : error.message);
       }
-    }
+    }  
     hideDialog();
-    ;
-  }
+  ;
+}
 
   useEffect(() => {
     socketserv.on('connect', () => {
@@ -418,17 +430,19 @@ function App() {
     });
 
     return () => {
-
+    
       socketserv.disconnect("disconnect");
     };
   }, []);
 
 
+
   const Stack = createNativeStackNavigator();
 
   return (
-    <PaperProvider font={them}   >
+    <PaperProvider  font={them}   >
       <NavigationContainer>
+
         <Stack.Navigator initialRouteName="splash">
           {/* <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} />
           <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} /> */}
@@ -500,7 +514,8 @@ function App() {
             })}
           /> */}
 
-
+         
+           
 
         </Stack.Navigator>
       </NavigationContainer>
@@ -530,11 +545,11 @@ function App() {
           </Dialog>
         </Portal>
       </View>
-
     </PaperProvider>
-  );
-}
 
+  )
+
+}
 const styles = StyleSheet.create({
   accepted: {
     backgroundColor: 'green',

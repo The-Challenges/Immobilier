@@ -178,8 +178,8 @@ const UserProfile = () => {
           <Action title={'Invite Friends'} icon={'user-plus'} onPress={() => { }} />
           <Action title={'Listings'} icon={'list'} onPress={() => navigation.navigate('apartement')} />
           <Action title={'Contact'} icon={'phone'} onPress={() => navigation.navigate('Contact')} />
-          <Action title={'My House Requests'} icon={'home'} onPress={() => navigation.navigate('requeststatus')} />
-          <Action title={'My Lands Requests'} icon={'map'} onPress={() => navigation.navigate('requeststatuslands')} />
+          <Action title={'My House Requests'} icon={'home'} onPress={() => navigation.navigate('Received')} />
+          <Action title={'My Lands Requests'} icon={'map'} onPress={() => navigation.navigate('requestreceivedlands')} />
         </View>
 
         <View style={styles.logoutContainer}>
