@@ -233,7 +233,7 @@ return (
                 </View>
                 <TouchableOpacity
                   style={styles.detailsButton}
-                  onPress={() => navigation.navigate('viewDetHouse', { house: item })}
+                  onPress={() => navigation.navigate('DetailsScreen', { house: item })}
                   
                 >
                   <Text style={styles.detailsButtonText}>View Details</Text>
