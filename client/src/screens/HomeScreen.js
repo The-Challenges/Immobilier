@@ -181,6 +181,7 @@ const HomeScreen = ({ navigation }) => {
                 </View>
                 <TouchableOpacity
                   style={styles.detailsButton}
+
                   onPress={() => navigation.navigate('viewDetHouse', { house: item })}
                 >
                   <Text style={styles.detailsButtonText}>View Details</Text>
