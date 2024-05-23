@@ -40,7 +40,7 @@ function FullCreateHouse() {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('http://192.168.103.2:4000/api/house/postHouse', formData);
+            const response = await axios.post('http://192.168.103.11:4000/api/house/postHouse', formData);
             if (response.status === 200) {
                 Alert.alert("Success", "House has been listed successfully.");
             } else {

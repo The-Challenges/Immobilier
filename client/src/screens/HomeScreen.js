@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { API_AD } from '../../config';
-import {SafeAreaView,StyleSheet,Dimensions,StatusBar,FlatList,ScrollView,Pressable,TextInput,TouchableOpacity,Image,View,Text,Alert,ActivityIndicator,
-} from 'react-native';
+import { SafeAreaView, StyleSheet, Dimensions, StatusBar, FlatList, ScrollView, Pressable, TextInput, TouchableOpacity, Image, View, Text, Alert, ActivityIndicator } from 'react-native';
 import storage from '../components/Authentification/storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
@@ -11,9 +10,7 @@ import FeaturedScroller from '../components/featuredScroller'; // Adjust the imp
 
 // import socket from '../components/request/socketserv'
 
-
 const { width } = Dimensions.get('screen');
-
 
 const HomeScreen = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
@@ -23,68 +20,25 @@ const HomeScreen = ({ navigation }) => {
   const [userId, setUserId] = useState(null);
   const flatListRef = useRef(null);
 
-
-
-
-  
-    useEffect(() => {
-        fetchHouses();
-        getUserId()
-    }, []);
-  
-    const getUserId = async () => {
-        try {
-          const userData = await storage.load({ key: 'loginState' });
-          console.log(userData)
-          socket.emit('receiver', userData.user.id)
-
-        } catch (error) {
-          console.error('Failed to retrieve user data:', error);
-        }
-      };
-
-
-    
-
-
-
-  // useEffect(() => {
-  //   // if (!loading) {
-  //   //   const interval = setInterval(() => {
-  //   //     setCurrentIndex(prevIndex => {
-  //   //       const nextIndex = prevIndex + 1;
-  //   //       if (nextIndex >= houses.slice(0, 5).length) {
-  //   //         flatListRef.current.scrollToIndex({ index: 0, animated: true });
-  //   //         return 0;
-  //   //       } else {
-  //   //         flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
-  //   //         return nextIndex;
-  //   //       }
-  //   //     });
-  //   //   }, 3000); // Change slide every 3 seconds
-  //   //   return () => clearInterval(interval);
-  //   // }
-  // }, [loading, houses]);
-
   useEffect(() => {
-    const initializeData = async () => {
-      try {
-        const userData = await storage.load({ key: 'loginState' });
-        setUserId(userData.user.userId);
-        fetchHouses();
-        fetchFavorites(userData.user.userId);
-      } catch (error) {
-        console.error('Error loading user data:', error);
-        Alert.alert('Error', 'Unable to load user data');
-      }
-    };
-
-    initializeData();
+    fetchHouses();
+    getUserId();
   }, []);
+
+  const getUserId = async () => {
+    try {
+      const userData = await storage.load({ key: 'loginState' });
+      console.log(userData);
+      // socket.emit('receiver', userData.user.id); // Ensure socket is defined
+      setUserId(userData.user.id);
+    } catch (error) {
+      console.error('Failed to retrieve user data:', error);
+    }
+  };
 
   const fetchHouses = async () => {
     try {
-      const response = await axios.get(`http://192.168.103.2:4000/api/house/allhouses`);
+      const response = await axios.get(`http://192.168.103.11:4000/api/house/allhouses`);
       setHouses(response.data);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch houses');
@@ -94,18 +48,16 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.103.2:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.103.11:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
       console.error('Failed to fetch favorites:', error);
     }
   };
-  
 
   const toggleFavorite = async (houseId) => {
     if (!userId) {
@@ -114,7 +66,7 @@ const HomeScreen = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.103.2:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`http://192.168.103.11:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {
@@ -146,10 +98,7 @@ const HomeScreen = ({ navigation }) => {
       },
     ];
 
-    
-
-
-return (
+    return (
       <View style={styles.optionListContainer}>
         {optionsList.map((option, index) => (
           <TouchableOpacity
@@ -192,7 +141,6 @@ return (
                 <TouchableOpacity
                   style={[styles.favoriteButton, isFavorite && styles.favoriteButtonActive]}
                   onPress={() => toggleFavorite(item.id)}
-
                 >
                   <Icon name={isFavorite ? "favorite" : "favorite-border"} size={20} color={isFavorite ? COLORS.red : COLORS.yellow} />
                 </TouchableOpacity>
@@ -233,8 +181,8 @@ return (
                 </View>
                 <TouchableOpacity
                   style={styles.detailsButton}
-                  onPress={() => navigation.navigate('DetailsScreen', { house: item })}
-                  
+
+                  onPress={() => navigation.navigate('viewDetHouse', { house: item })}
                 >
                   <Text style={styles.detailsButtonText}>View Details</Text>
                 </TouchableOpacity>
@@ -262,8 +210,6 @@ return (
           <TouchableOpacity style={styles.sortBtn} onPress={() => navigation.navigate('FilterScreen')}>
             <Icon name="tune" color={COLORS.white} size={28} />
           </TouchableOpacity>
-          
-          
           <TouchableOpacity style={styles.favoriteBtn} onPress={() => navigation.navigate('FavoritesScreen')}>
             <Icon name="favorite" color={COLORS.white} size={28} />
           </TouchableOpacity>
@@ -333,7 +279,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     borderRadius: 25,
   },
-  
   optionListContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -480,4 +425,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen
+export default HomeScreen;
