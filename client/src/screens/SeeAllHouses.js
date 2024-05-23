@@ -93,6 +93,7 @@ const SeeAllHouses = ({ navigation }) => {
   const HouseCard = ({ house }) => {
     const isFavorite = favorites.has(house.id);
     const imageUrl = house.Media && house.Media.length > 0 ? house.Media[0].link : 'https://via.placeholder.com/400x200.png?text=No+Image+Available';
+  
     return (
       <Card containerStyle={styles.card}>
         <Card.Title style={styles.cardTitle}>{house.title}</Card.Title>
@@ -123,17 +124,13 @@ const SeeAllHouses = ({ navigation }) => {
             icon={<Icon name="arrow-right" size={15} color="white" />}
             title="View Details"
             buttonStyle={styles.button}
-            onPress={() =>navigateDetails(house) }
+            onPress={() =>navigateDetails(house)}
           />
-          <TouchableOpacity style={styles.allRequestsButton} onPress={() => navigation.navigate('Received')}>
-            <Text style={styles.allRequestsText}>All Requests</Text>
-          </TouchableOpacity>
         </View>
       </Card>
     );
   };
   
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
       <StatusBar backgroundColor={COLORS.background} barStyle="dark-content" />
@@ -221,7 +218,8 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    margin: 15
+    margin: 15,
+    marginLeft:80
   },
   button: {
     backgroundColor: COLORS.primary,

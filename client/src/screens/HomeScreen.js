@@ -5,7 +5,9 @@ import storage from '../components/Authentification/storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import axios from 'axios';
-import FeaturedScroller from '../components/featuredScroller'; // Adjust the import path as needed
+import FeaturedScroller from '../components/featuredScroller'; 
+import socketserv from '../components/request/socketserv';
+// Adjust the import path as needed
 
 const { width } = Dimensions.get('screen');
 
@@ -17,6 +19,8 @@ const HomeScreen = ({ navigation }) => {
   const [userId, setUserId] = useState(null);
   const flatListRef = useRef(null);
 
+
+
   useEffect(() => {
     fetchHouses();
     getUserId()
@@ -25,8 +29,9 @@ const HomeScreen = ({ navigation }) => {
   const getUserId = async () => {
     try {
       const userData = await storage.load({ key: 'loginState' });
-      console.log(userData);
-      setUserId(userData.user.id);
+      console.log("userddfyhgjklmlùkjhgjhklm",userData);
+      setUserId(userData.user.userId);
+      socketserv.emit('receiver',userData.user.userId)
     } catch (error) {
       console.error('Failed to retrieve user data:', error);
     }
@@ -177,7 +182,8 @@ const HomeScreen = ({ navigation }) => {
                 </View>
                 <TouchableOpacity
                   style={styles.detailsButton}
-                  onPress={() => navigation.navigate('DetailsScreen', { house: item })}
+                  onPress={() => navigation.navigate('viewDetHouse', { house: item })}
+                  
                 >
                   <Text style={styles.detailsButtonText}>View Details</Text>
                 </TouchableOpacity>

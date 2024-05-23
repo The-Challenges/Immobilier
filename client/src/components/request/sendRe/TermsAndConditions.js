@@ -14,8 +14,8 @@ const TermsAndConditionsScreen = ({ route,navigation }) => {
     const handleSendRequest = () => {
         if (land) {
             socketserv.emit('send_land_request', { user, land });
-
-            const url = `http://192.168.11.62:4000/api/reqtest/${user.id}/${land.id}`;
+console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa',user)
+            const url = `http://192.168.11.62:4000/api/reqtest/${user.userId}/${land.id}`;
             axios.post(url)
                 .then(() => {
                     console.log('Land request sent successfully');
@@ -29,7 +29,7 @@ const TermsAndConditionsScreen = ({ route,navigation }) => {
         } else {
             socketserv.emit('send_house_request', { user, house });
 
-            const url = `http://192.168.11.62:4000/api/reqtest/request/${user.id}/${house.id}`;
+            const url = `http://192.168.11.62:4000/api/reqtest/request/${user.userId}/${house.id}`;
             axios.post(url)
                 .then(() => {
                     console.log('House request sent successfully');

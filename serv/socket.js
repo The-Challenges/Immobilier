@@ -80,7 +80,7 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-const {Chat}=require('./Model')
+// const {Chat}=require('./Model')
 
 const PORT = 4001;
 
@@ -95,32 +95,32 @@ const io = socketIo(server, {
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  socket.on('join_room',async (room, userId, userName) => {
-    socket.join(room);
-    console.log(`User ${userName} (${userId}) joined room: ${room}`);
+  // socket.on('join_room',async (room, userId, userName) => {
+  //   socket.join(room);
+  //   console.log(`User ${userName} (${userId}) joined room: ${room}`);
 
-    // try {
-    //   const messages = await Chat.findAll({
-    //     where: { conversationId: room },
-    //     order: [['time', 'ASC']],
-    //   });
-      // socket.emit('message_history', messages);
-    // } catch (error) {
-    //   console.error('Failed to fetch message history:', error);
-    // }
-    io.to(room).emit('user_joined', { userId, userName });
-  });
+  //   // try {
+  //   //   const messages = await Chat.findAll({
+  //   //     where: { conversationId: room },
+  //   //     order: [['time', 'ASC']],
+  //   //   });
+  //     // socket.emit('message_history', messages);
+  //   // } catch (error) {
+  //   //   console.error('Failed to fetch message history:', error);
+  //   // }
+  //   io.to(room).emit('user_joined', { userId, userName });
+  // });
 
-  socket.on('leave_room', (room) => {
-    socket.leave(room);
-    console.log(`User left room: ${room}`);
-  });
+  // socket.on('leave_room', (room) => {
+  //   socket.leave(room);
+  //   console.log(`User left room: ${room}`);
+  // });
 
-  socket.on('send_message', (message) => {
-    const { room, content, sender, timestamp } = message;
-    io.to(room).emit('receive_message', { content, sender, timestamp });
-    console.log(`Message sent to room ${room}: ${content}`);
-  });
+  // socket.on('send_message', (message) => {
+  //   const { room, content, sender, timestamp } = message;
+  //   io.to(room).emit('receive_message', { content, sender, timestamp });
+  //   console.log(`Message sent to room ${room}: ${content}`);
+  // });
 
   socket.on('receiver', (ownerId) => {
     socket.join(ownerId);
@@ -143,14 +143,14 @@ io.on('connection', (socket) => {
     const { house, status } = data;
     console.log(`Sending request to update house request: UserId=${house.UserId}, id=${data.id}, status=${status}`);
     console.log("House request response:", data);
-    io.to(data.user.id).emit('request_response_house', data);
+    io.to(data.user.userId).emit('request_response_house', data);
   });
 
   socket.on('respond_to_request_land', async (data) => {
     const { land, status } = data;
     console.log(`Sending request to update land request: UserId=${land.UserId}, id=${data.id}, status=${status}`);
     console.log("Land request response:", data);
-    io.to(data.user.id).emit('request_response_land', data);
+    io.to(data.user.userId).emit('request_response_land', data);
   });
 
   socket.on('disconnect', () => {

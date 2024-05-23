@@ -79,6 +79,20 @@ const UserProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+
+const logout= async ()=>{
+  try {
+    console.log('Logging out...');
+    const userData = await storage.remove({ key: 'loginState' })
+    navigation.navigate('Login')
+ 
+   
+  } catch (error) {
+    console.error('Failed to retrieve user data:', error);
+  
+}
+}
+  
   const loadUserData = async () => {
     try {
       console.log('Starting user data fetch...');
@@ -179,12 +193,12 @@ const UserProfile = () => {
           <Action title={'Invite Friends'} icon={'user-plus'} onPress={() => { }} />
           <Action title={'Listings'} icon={'list'} onPress={() => navigation.navigate('apartement')} />
           <Action title={'Contact'} icon={'phone'} onPress={() => navigation.navigate('Contact')} />
-          <Action title={'My House Requests'} icon={'home'} onPress={() => navigation.navigate('requeststatus')} />
-          <Action title={'My Lands Requests'} icon={'map'} onPress={() => navigation.navigate('requeststatuslands')} />
+          <Action title={'My House Requests'} icon={'home'} onPress={() => navigation.navigate('Received')} />
+          <Action title={'My Lands Requests'} icon={'map'} onPress={() => navigation.navigate('requestreceivedlands')} />
         </View>
 
         <View style={styles.logoutContainer}>
-          <Action title={'Logout'} icon={'log-out'} onPress={() => navigation.navigate('Login')} iconColor={'#FF0000'} />
+          <Action title={'Logout'} icon={'log-out'} onPress={() => logout()} iconColor={'#FF0000'} />
         </View>
       </ScrollView>
 
