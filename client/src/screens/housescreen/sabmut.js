@@ -70,7 +70,7 @@ function Screen6({ formData, handleChange, handleSubmit }) {
 
     const submitForm = async () => {
         try {
-            const response = await axios.post('http://192.168.103.2:4000/api/house/postHouse', formData);
+            const response = await axios.post('http://192.168.103.11:4000/api/house/postHouse', formData);
             if (response.status === 200 || response.status === 201) {
                 setModalVisible(true);
                 
