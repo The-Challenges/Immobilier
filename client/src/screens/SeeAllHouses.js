@@ -138,7 +138,7 @@ const SeeAllHouses = ({ navigation }) => {
   };
 
   const navigateDetails = (house) => {
-    navigation.navigate('viewDetHouse', { house });
+    navigation.navigate('ViewDetailsHouse', { house });
     socketserv.emit("receiver", house.UserId);
   };
 

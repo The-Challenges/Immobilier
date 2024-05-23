@@ -3,10 +3,11 @@ import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, Alert } fr
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/SimpleLineIcons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
-import { Button } from 'react-native-elements';
 import axios from 'axios';
+import { LinearGradient } from 'expo-linear-gradient';
 import COLORS from './consts/colors';
-import { API_AD } from '../config';
+import { Button } from 'react-native-elements';
+import { Skeleton } from 'react-native-skeleton';
 
 // Define icons for different categories
 const featureIcons = {
@@ -88,6 +89,7 @@ const PropertyDetail = ({ category, details }) => (
 const ViewLandDetails = ({ route, navigation }) => {
   const { land, user } = route.params;
   const [hasRequested, setHasRequested] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     checkIfRequested();
@@ -102,66 +104,74 @@ const ViewLandDetails = ({ route, navigation }) => {
         }
       });
       setHasRequested(response.data.hasRequested);
+      setLoading(false);
     } catch (error) {
       console.error('Failed to check request status:', error);
       Alert.alert('Error', 'Failed to check if request has already been sent.');
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <Skeleton height={300} width={300} />;
+  }
 
   const uniqueViews = [...new Set(land.Views.map(view => view.options))];
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.imageContainer}>
-        {land.Media.length > 0 ? (
-          <Image source={{ uri: land.Media[0].link }} style={styles.image} />
-        ) : (
-          <Text style={styles.noImageText}>No image available</Text>
-        )}
-      </View>
-      <Text style={styles.title}>{land.title}</Text>
+      <LinearGradient colors={[COLORS.primary, COLORS.secondary]} style={styles.gradient}>
+        <View style={styles.imageContainer}>
+          {land.Media.length > 0 ? (
+            <Image source={{ uri: land.Media[0].link }} style={styles.image} />
+          ) : (
+            <Text style={styles.noImageText}>No image available</Text>
+          )}
+        </View>
+        <Text style={styles.title}>{land.title}</Text>
 
-      <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={() => {}}>
-          <Icon name="heart" size={30} color={COLORS.dark} solid />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('chat', { roomId: `room_${land.id}`, userId: user.id, userName: user.username })}>
-          <Icon name="comments" size={30} color={COLORS.dark} />
-        </TouchableOpacity>
-      </View>
+        <View style={styles.iconContainer}>
+          <TouchableOpacity onPress={() => {}}>
+            <Icon name="heart" size={30} color={COLORS.dark} solid />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('chat', { roomId: `room_${land.id}`, userId: user.id, userName: user.username })}>
+            <Icon name="comments" size={30} color={COLORS.dark} />
+          </TouchableOpacity>
+        </View>
 
-      <View style={styles.contactDetails}>
-        <Text style={styles.contactDetail}><Icon name="envelope" size={15} color="#FF9800" /> {land.User.email}</Text>
-        <Text style={styles.contactDetail}><Icon2 name="phone" size={15} color="#2196F3" /> {land.User.phoneNumber}</Text>
-        <Text style={styles.contactDetail}><Icon2 name="location-pin" size={15} color="#F44336" /> {land.User.location}</Text>
-      </View>
+        <View style={styles.contactDetails}>
+          <Text style={styles.contactDetail}><Icon name="envelope" size={15} color="#FF9800" /> {land.User.email}</Text>
+          <Text style={styles.contactDetail}><Icon2 name="phone" size={15} color="#2196F3" /> {land.User.phoneNumber}</Text>
+          <Text style={styles.contactDetail}><Icon2 name="location-pin" size={15} color="#F44336" /> {land.User.location}</Text>
+        </View>
 
-      <View style={styles.detailContainer}>
-        <Text style={styles.price}>${land.price}</Text>
-        <Text style={styles.type}>{land.TerrainType}</Text>
-      </View>
+        <View style={styles.detailContainer}>
+          <Text style={styles.price}>${land.price}</Text>
+          <Text style={styles.type}>{land.TerrainType}</Text>
+        </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>General Information</Text>
-        <Text style={styles.text}><Icon1 name="aspect-ratio" size={18} /> Size: {land.size} acres</Text>
-        <Text style={styles.text}><Icon1 name="alt-route" size={18} /> Altitude: {land.alt}</Text>
-        <Text style={styles.text}><Icon1 name="my-location" size={18} /> Longitude: {land.long}</Text>
-        <Text style={styles.text}><Icon name="money-check-alt" size={18} /> Purchase Option: {land.purchaseoption}</Text>
-        <Text style={styles.text}><Icon name="building" size={18} /> Zoning: {land.Zoning}</Text>
-        <Text style={styles.text}><Icon name="calendar-alt" size={18} /> Verified: {land.isVerifie ? 'Yes' : 'No'}</Text>
-      </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>General Information</Text>
+          <Text style={styles.text}><Icon1 name="aspect-ratio" size={18} /> Size: {land.size} acres</Text>
+          <Text style={styles.text}><Icon1 name="alt-route" size={18} /> Altitude: {land.alt}</Text>
+          <Text style={styles.text}><Icon1 name="my-location" size={18} /> Longitude: {land.long}</Text>
+          <Text style={styles.text}><Icon name="money-check-alt" size={18} /> Purchase Option: {land.purchaseoption}</Text>
+          <Text style={styles.text}><Icon name="building" size={18} /> Zoning: {land.Zoning}</Text>
+          <Text style={styles.text}><Icon name="calendar-alt" size={18} /> Verified: {land.isVerifie ? 'Yes' : 'No'}</Text>
+        </View>
 
-      <PropertyDetail category="View" details={uniqueViews} />
+        <PropertyDetail category="View" details={uniqueViews} />
 
-      <Button
-        icon={<Icon name="arrow-right" size={15} color="white" />}
-        title={hasRequested ? 'You have already sent a request' : `Contact ${land.User.firstName}`}
-        buttonStyle={styles.contactButton}
-        onPress={() => navigation.navigate('TermsAndConditions', { user, land })}
-        disabled={hasRequested}
-      />
+        <Button
+          icon={<Icon name="arrow-right" size={15} color="white" />}
+          title={hasRequested ? 'You have already sent a request' : `Contact ${land.User.firstName}`}
+          buttonStyle={styles.contactButton}
+          onPress={() => navigation.navigate('TermsAndConditions', { user, land })}
+          disabled={hasRequested}
+        />
 
-      <Text style={styles.description}>{land.description}</Text>
+        <Text style={styles.description}>{land.description}</Text>
+      </LinearGradient>
     </ScrollView>
   );
 };
@@ -170,22 +180,30 @@ const ViewLandDetails = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: COLORS.white,
+  },
+  gradient: {
+    flex: 1,
+    padding: 20,
+    borderRadius: 15,
   },
   imageContainer: {
     width: '100%',
     height: 250,
     marginBottom: 20,
-    borderRadius: 10,
+    borderRadius: 15,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: COLORS.light,
+    shadowColor: COLORS.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   image: {
     width: '100%',
     height: '100%',
-    borderRadius: 10,
   },
   noImageText: {
     fontSize: 16,
@@ -196,7 +214,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: COLORS.white,
     marginVertical: 10,
     textAlign: 'center',
   },
@@ -209,6 +227,15 @@ const styles = StyleSheet.create({
   contactDetails: {
     marginHorizontal: 20,
     marginVertical: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 10,
+    backgroundColor: COLORS.white,
+    shadowColor: COLORS.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   contactDetail: {
     fontSize: 18,
@@ -231,7 +258,7 @@ const styles = StyleSheet.create({
   type: {
     fontSize: 20,
     fontWeight: '600',
-    color: COLORS.primary,
+    color: COLORS.white,
   },
   section: {
     marginVertical: 20,
@@ -239,13 +266,13 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: COLORS.dark,
+    color: COLORS.white,
     marginBottom: 10,
     textAlign: 'center',
   },
   text: {
     fontSize: 18,
-    color: COLORS.dark,
+    color: COLORS.white,
     marginBottom: 5,
   },
   detailRow: {
@@ -271,12 +298,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.dark,
   },
-  categoryTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: 10,
-  },
   contactButton: {
     backgroundColor: COLORS.primary,
     borderRadius: 20,
@@ -284,13 +305,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginVertical: 10,
     marginHorizontal: 20,
+    shadowColor: COLORS.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   description: {
     fontSize: 18,
-    color: COLORS.dark,
+    color: COLORS.white,
     marginVertical: 10,
     marginHorizontal: 20,
     textAlign: 'justify',
+    backgroundColor: COLORS.light,
+    padding: 15,
+    borderRadius: 10,
+    shadowColor: COLORS.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  categoryTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.white,
+    marginBottom: 10,
+    textAlign: 'center',
   },
 });
 
