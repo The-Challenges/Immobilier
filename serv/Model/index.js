@@ -1,8 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD } = require("../config/config");
 
-
-
 const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
   dialect: 'mysql',
   host: 'localhost',
@@ -17,15 +15,12 @@ async function authenticateConnection() {
   }
 }
 
-authenticateConnection()
-
-
+authenticateConnection();
 
 const User = require('./users')(sequelize, DataTypes);
 const Chat = require('./chat')(sequelize, DataTypes);
 const FavouriteHouse = require('./favouriteHouse')(sequelize, DataTypes);
 const FavouriteLand = require('./favouriteLand')(sequelize, DataTypes);
-
 const Payment = require('./payment')(sequelize, DataTypes);
 const House = require('./house')(sequelize, DataTypes);
 const Land = require('./land')(sequelize, DataTypes);
@@ -40,9 +35,7 @@ const Comment = require('./comment')(sequelize, DataTypes);
 const Access = require('./accesOption')(sequelize, DataTypes);
 const RequestHouse = require('./requestHouse')(sequelize, DataTypes);
 const RequestLand = require('./requestLand')(sequelize, DataTypes);
-
-
-
+const ShapeCoordinate = require('./shapeCoordinates')(sequelize, DataTypes);
 
 /* **********************************************************user relationships******************************************** */
 User.hasMany(House);
@@ -53,8 +46,6 @@ Land.belongsTo(User);
 
 User.hasMany(Media);
 Media.belongsTo(User);
-
-
 
 User.hasMany(Comment);
 Comment.belongsTo(User);
@@ -72,6 +63,8 @@ Media.belongsTo(Land);
 Land.hasMany(Comment);
 Comment.belongsTo(Land);
 
+Land.hasMany(ShapeCoordinate, { as: 'shapeCoordinates' });
+ShapeCoordinate.belongsTo(Land, { foreignKey: 'LandId' });
 
 Land.belongsToMany(User, { through: RequestLand, foreignKey: 'landId' });
 User.belongsToMany(Land, { through: RequestLand, foreignKey: 'userId' });
@@ -80,7 +73,7 @@ User.belongsToMany(Land, { through: RequestLand, foreignKey: 'userId' });
 House.hasMany(Comment);
 Comment.belongsTo(House);
 
-House.hasMany(Climate );
+House.hasMany(Climate);
 Climate.belongsTo(House);
 
 House.hasMany(Indoor);
@@ -95,18 +88,31 @@ View.belongsTo(House);
 House.hasMany(Media);
 Media.belongsTo(House);
 
-
 House.belongsToMany(User, { through: RequestHouse, foreignKey: 'houseId' });
 User.belongsToMany(House, { through: RequestHouse, foreignKey: 'userId' });
 
 /* **********************************************************jointable relationships******************************************** */
-
 Conversation.belongsTo(User, { as: 'User1' });
 Conversation.belongsTo(User, { as: 'User2' });
 Chat.belongsTo(Conversation);
 Conversation.hasMany(Chat);
 
+House.belongsToMany(User, { through: FavouriteHouse, foreignKey: 'houseId' });
+User.belongsToMany(House, { through: FavouriteHouse, foreignKey: 'userId' });
+Land.belongsToMany(User, { through: FavouriteLand, foreignKey: 'landId' });
+User.belongsToMany(Land, { through: FavouriteLand, foreignKey: 'userId' });
 
+FavouriteLand.belongsTo(Land, { foreignKey: 'landId' });
+Land.hasMany(FavouriteLand, { foreignKey: 'landId', as: 'Favorites' });
+
+FavouriteLand.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(FavouriteLand, { foreignKey: 'userId' });
+
+FavouriteHouse.belongsTo(House, { foreignKey: 'houseId' });
+House.hasMany(FavouriteHouse, { foreignKey: 'houseId', as: 'Favorites' });
+
+FavouriteHouse.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(FavouriteHouse, { foreignKey: 'userId' });
 
 
 
@@ -115,25 +121,6 @@ Conversation.hasMany(Chat);
 //   console.log('The table for the User model was just (re)created!');
 // }
 // test()
-
-House.belongsToMany(User, { through: FavouriteHouse, foreignKey: 'houseId' });
-User.belongsToMany(House, { through: FavouriteHouse, foreignKey: 'userId' });
-Land.belongsToMany(User, { through: FavouriteLand, foreignKey: 'landId' });
-User.belongsToMany(Land, { through: FavouriteLand, foreignKey: 'userId' });
-// Inside your index.js after defining models
-FavouriteLand.belongsTo(Land, { foreignKey: 'landId' });
-Land.hasMany(FavouriteLand, { foreignKey: 'landId', as: 'Favorites' });
-
-FavouriteLand.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(FavouriteLand, { foreignKey: 'userId' });
-
-// Inside index.js or where you define Sequelize relationships
-FavouriteHouse.belongsTo(House, { foreignKey: 'houseId' });
-House.hasMany(FavouriteHouse, { foreignKey: 'houseId', as: 'Favorites' });
-
-FavouriteHouse.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(FavouriteHouse, { foreignKey: 'userId' });
-
 
 module.exports = {
   sequelize,
@@ -154,5 +141,6 @@ module.exports = {
   Conversation,
   Access,
   FavouriteHouse,
-  FavouriteLand
+  FavouriteLand,
+  ShapeCoordinate
 };

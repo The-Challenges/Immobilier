@@ -5,17 +5,25 @@ const { Op } = require('sequelize');
 
 
 module.exports = {
+
+
+    
     getAllLands: async (req, res) => {
         try {
             const lands = await db.Land.findAll({
                 include: [
                     {
-                        model: db.Media, 
+                        model: db.Media,
                         attributes: ['type', 'name', 'link'],
                     },
                     {
-                        model: db.View, 
-                        attributes: ['options'], 
+                        model: db.View,
+                        attributes: ['options'],
+                    },
+                    {
+                        model: db.ShapeCoordinate,
+                        as: 'shapeCoordinates', 
+                        attributes: ['latitude', 'longitude'],  
                     }
                 ]
             });
@@ -24,6 +32,8 @@ module.exports = {
             res.status(500).json({ error: `Error fetching lands: ${error.message}` });
         }
     },
+
+
 
     getAllViews: async (req, res) => {
         try {
@@ -40,16 +50,67 @@ module.exports = {
     
    
     
-    createlands : async(req,res)=>{
-        try{
-            const land = await db.Land.bulkCreate(dummyLand)
-            res.status(200).json(land);            }
-           catch (error){
-              console.log(error);
-              console.error(error)
-        
-           }
-    },
+    createlands: async (req, res) => {
+        const { title, price, size, alt, long, purchaseoption, TerrainType, Zoning, isVerifie, UserId, Media, Views, shapeCoordinates } = req.body;
+    
+        try {
+          
+          const newLand = await db.Land.create({
+            title,
+            price,
+            size,
+            alt,
+            long,
+            purchaseoption,
+            TerrainType,
+            Zoning,
+            isVerifie,
+            UserId,
+          });
+    
+          // Create associated media
+          if (Media && Media.length > 0) {
+            await Promise.all(
+              Media.map(async (mediaItem) => {
+                await db.Media.create({
+                  ...mediaItem,
+                  LandId: newLand.id,
+                });
+              })
+            );
+          }
+    
+          // Create associated views
+          if (Views && Views.length > 0) {
+            await Promise.all(
+              Views.map(async (viewItem) => {
+                await db.View.create({
+                  ...viewItem,
+                  LandId: newLand.id,
+                });
+              })
+            );
+          }
+    
+          // Create shape coordinates
+          if (shapeCoordinates && shapeCoordinates.length > 0) {
+            await Promise.all(
+              shapeCoordinates.map(async (coord) => {
+                await db.ShapeCoordinate.create({
+                  latitude: coord.latitude,
+                  longitude: coord.longitude,
+                  LandId: newLand.id,
+                });
+              })
+            );
+          }
+    
+          res.status(201).json(newLand);
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: 'An error occurred while creating the land.' });
+        }
+      },
 
 
     filterLands: async (req, res) => {

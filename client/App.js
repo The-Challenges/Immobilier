@@ -150,20 +150,20 @@ console.log(data,'aaaamles,k,gpd,lpsg,psqg,lpl,mqlfk');
       <NavigationContainer>
 
         <Stack.Navigator initialRouteName="splash">
-          {/* <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} />
+           {/* <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} />
           <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} />
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-          <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />  */}
+          <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />   */}
           <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
-          <Stack.Screen name='chat' component={Chat} options={{ headerShown: false }} />
-          {/* <Stack.Screen name='DetailsScreen' component={DetailsScreen} options={{ headerShown: false }} /> */}
+         <Stack.Screen name='chat' component={Chat} options={{ headerShown: false }} />
+         {/* <Stack.Screen name='DetailsScreen' component={DetailsScreen} options={{ headerShown: false }} />  */}
           <Stack.Screen name='HomeScreen' component={HomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name='FilterScreen' component={FilterScreen} options={{ headerShown: false }} />
           <Stack.Screen name='ResultsScreen' component={ResultsScreen} options={{ headerShown: false }} />
           <Stack.Screen name='SeeAllHouses' component={SeeAllHouses} options={{ headerShown: false }} />
           <Stack.Screen name='SeeAllLands' component={SeeAllLands} options={{ headerShown: false }} />
           <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }} />
-          <Stack.Screen name='Received' component={Received} options={{ headerShown: false }} />
+          {/* <Stack.Screen name='Received' component={Received} options={{ headerShown: false }} />
           <Stack.Screen name='requestreceivedlands' component={requestreceivedlands} options={{ headerShown: false }} />
           <Stack.Screen name='requeststatus' component={requeststatus} options={{ headerShown: false }} />
           <Stack.Screen name='requeststatuslands' component={requeststatuslands} options={{ headerShown: false }} />
@@ -171,10 +171,10 @@ console.log(data,'aaaamles,k,gpd,lpsg,psqg,lpl,mqlfk');
           <Stack.Screen name='PaymentScreen' component={PaymentScreen} options={{ headerShown: false }} />
           <Stack.Screen name='FavoritesScreen' component={FavoritesScreen} options={{ headerShown: false }} />
           <Stack.Screen name="PaymentConfirmation" component={PaymentConfirmationScreen} options={{ headerShown: false }} />
-          {/* <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }} />
-          <Stack.Screen name='splash' component={splach} options={{ headerShown: false }} /> */}
-          <Stack.Screen name='apartement' component={Apartment} options={{ headerShown: false }} />
-          <Stack.Screen name='Land' component={Lands} options={{ headerShown: false }} />
+           <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }} />
+          <Stack.Screen name='splash' component={splach} options={{ headerShown: false }} /> 
+           <Stack.Screen name='apartement' component={Apartment} options={{ headerShown: false }} />
+          <Stack.Screen name='Land' component={Lands} options={{ headerShown: false }} /> */}
           <Stack.Screen name='FilterScreenLands' component={FilterScreenLands} options={{ headerShown: false }} />
           <Stack.Screen name='ResultsScreenLand' component={ResultsScreenLand} options={{ headerShown: false }} />
           <Stack.Screen name='ProfileDetails' component={ProfileDetails} options={{ headerShown: false }} />
@@ -184,7 +184,7 @@ console.log(data,'aaaamles,k,gpd,lpsg,psqg,lpl,mqlfk');
           <Stack.Screen name='ViewDetailsLand' component={ViewLandDetails} options={{ headerShown: false }} />
           <Stack.Screen name='TermsAndConditions' component={TermsAndConditionsScreen} options={{ headerShown: false }} />
           <Stack.Screen name='ViewDetailsHouse' component={ViewHouseDetails} options={{ headerShown: false }} />
-          <Stack.Screen name='ViewLandDetails' component={ViewLandDetails} options={{ headerShown: false }} />
+          <Stack.Screen name='ViewLandDetails' component={ViewLandDetails} options={{ headerShown: false }} /> 
 
           
           {/* <Stack.Screen

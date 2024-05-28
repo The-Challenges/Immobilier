@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, Image, Dimensions, StatusBar, FlatList, View, Text, Alert, ActivityIndicator } from 'react-native';
+import { SafeAreaView, StyleSheet, Image, Dimensions, StatusBar, FlatList, View, Text, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { Card, Button, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -14,18 +14,21 @@ const { width } = Dimensions.get('window');
 const SeeAllHouses = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [userId, setUserId] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    fetchHouses();
+    fetchHouses(1);
     getUserId();
   }, []);
 
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.103.11:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.1.3:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
@@ -40,7 +43,7 @@ const SeeAllHouses = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.103.11:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`http://192.168.1.3:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {
@@ -68,16 +71,22 @@ const SeeAllHouses = ({ navigation }) => {
     }
   };
 
-  const fetchHouses = async () => {
-    setLoading(true);
+  const fetchHouses = async (page) => {
+    if (!hasMore && page !== 1) return;
+    setLoadingMore(true);
     try {
-      const response = await axios.get('http://192.168.103.11:4000/api/house/allhouses');
-      setHouses(response.data);
+      const response = await axios.get(`http://192.168.1.3:4000/api/house/allhouses?page=${page}&limit=20`);
+      const fetchedHouses = response.data;
+      if (fetchedHouses.length < 20) {
+        setHasMore(false);
+      }
+      setHouses((prevHouses) => [...prevHouses, ...fetchedHouses]);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch houses');
       console.error('Failed to fetch houses:', error);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
@@ -142,10 +151,31 @@ const SeeAllHouses = ({ navigation }) => {
     socketserv.emit("receiver", house.UserId);
   };
 
+  const handleLoadMore = () => {
+    if (hasMore && !loadingMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchHouses(nextPage);
+    }
+  };
+
+  const renderFooter = () => {
+    if (!hasMore) return null;
+    return (
+      <TouchableOpacity style={styles.loadMoreButton} onPress={handleLoadMore}>
+        {loadingMore ? (
+          <ActivityIndicator size="small" color={COLORS.white} />
+        ) : (
+          <Text style={styles.loadMoreButtonText}>Load More</Text>
+        )}
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={COLORS.background} barStyle="dark-content" />
-      {loading ? (
+      {loading && page === 1 ? (
         <ActivityIndicator size="large" color={COLORS.primary} style={styles.loader} />
       ) : (
         <FlatList
@@ -153,6 +183,7 @@ const SeeAllHouses = ({ navigation }) => {
           keyExtractor={(item) => `${item.id}`}
           renderItem={({ item }) => <HouseCard house={item} />}
           contentContainerStyle={styles.listContainer}
+          ListFooterComponent={renderFooter}
         />
       )}
     </SafeAreaView>
@@ -240,8 +271,19 @@ const styles = StyleSheet.create({
   carouselImage: {
     width: '100%',
     height: '100%',
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    borderRadius: 15,
+  },
+  loadMoreButton: {
+    padding: 10,
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  loadMoreButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.white,
   },
 });
 

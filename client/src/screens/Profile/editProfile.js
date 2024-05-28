@@ -82,7 +82,7 @@ const EditProfile = ({ route }) => {
 
     try {
       console.log('Updating profile with userId:', userId);
-      const response = await fetch(`http://192.168.103.2:4000/api/user/${userId}`, {
+      const response = await fetch(`http://192.168.1.3:4000/api/user/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -26,6 +26,7 @@
     "android": "^0.0.8",
     "axios": "^1.6.8",
     "expo-image-picker": "^15.0.4",
+    "expo-linear-gradient": "^13.0.2",
     "fbjs": "^3.0.5",
     "lodash": "^4.17.21",
     "lottie-react-native": "^6.7.2",

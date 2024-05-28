@@ -2,6 +2,35 @@ const { Sequelize, DataTypes, Op } = require('sequelize');
 const db = require('../../Model/index');
 
 module.exports = {
+
+    // getNearbyHouses: async (req, res) => {
+    //     const { latitude, longitude } = req.query;
+    //     console.log('Received Latitude:', latitude);
+    //     console.log('Received Longitude:', longitude);
+      
+    //     if (!latitude || !longitude) {
+    //       return res.status(400).json({ error: 'Latitude and longitude are required' });
+    //     }
+      
+    //     try {
+    //       const houses = await db.House.findAll({
+    //         where: {
+    //           alt: {
+    //             [Op.between]: [parseFloat(latitude) - 0.1, parseFloat(latitude) + 0.1],
+    //           },
+    //           long: {
+    //             [Op.between]: [parseFloat(longitude) - 0.1, parseFloat(longitude) + 0.1],
+    //           },
+    //         },
+    //       });
+    //       res.json(houses);
+    //     } catch (error) {
+    //       console.error('Error fetching nearby houses:', error);
+    //       res.status(500).json({ error: 'Error fetching nearby houses' });
+    //     }
+    //   },
+    
+
     getAllHouses: async (req, res) => {
         try {
             const houses = await db.House.findAll({

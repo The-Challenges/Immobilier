@@ -38,8 +38,8 @@ const FavoritesScreen = ({ navigation }) => {
     setLoading(true);
     try {
       const [houseResponse, landResponse] = await Promise.all([
-        axios.get(`http://192.168.103.11:4000/api/favorites/${userId}/house`),
-        axios.get(`http://192.168.103.11:4000/api/favorites/${userId}/land`)
+        axios.get(`http://192.168.1.3:4000/api/favorites/${userId}/house`),
+        axios.get(`http://192.168.1.3:4000/api/favorites/${userId}/land`)
       ]);
       setFavorites([...houseResponse.data, ...landResponse.data]); // Combine house and land favorites
     } catch (error) {

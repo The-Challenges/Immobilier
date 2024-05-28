@@ -32,9 +32,21 @@ module.exports = (Sequelize, DataTypes) => {
               isVerifie:{
                 type: DataTypes.BOOLEAN,
                 defaultValue: false
-              }
+              },
+            
 
           });
+
+        
+
+
+          Land.associate = function(models) {
+      
+            Land.hasMany(models.ShapeCoordinate, {
+                foreignKey: 'LandId',
+                as: 'shapeCoordinates'
+            });
+        };
 
 
     return Land;
