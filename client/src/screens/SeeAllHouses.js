@@ -69,7 +69,7 @@ const getUserId = async () => {
   const fetchHouses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://192.168.11.225:4000/api/house/allhouses');
+      const response = await axios.get('http://192.168.104.29:4000/api/house/allhouses');
       setHouses(response.data);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch houses');
@@ -82,7 +82,7 @@ const getUserId = async () => {
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.1.19:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.104.29:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
@@ -97,7 +97,7 @@ const getUserId = async () => {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.1.19:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`http://192.168.104.29:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {

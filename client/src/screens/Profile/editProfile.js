@@ -11,7 +11,7 @@ const EditPostScreen = ({ route, navigation }) => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`http://192.168.1.19:4000/api/posts/${postId}`);
+        const response = await fetch(`http://192.168.104.29:4000/api/posts/${postId}`);
         const data = await response.json();
         if (response.ok) {
           setTitle(data.title);

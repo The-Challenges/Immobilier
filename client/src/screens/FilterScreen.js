@@ -47,7 +47,7 @@ const FilterScreen = ({ navigation }) => {
 
   const fetchOptions = async (type, setOptions) => {
     try {
-      const response = await axios.get(`http://192.168.104.7:4000/api/${type}/all${type}`);
+      const response = await axios.get(`http://192.168.104.29:4000/api/${type}/all${type}`);
       const options = response.data.map(option => ({
         label: option.options,
         icon: getIconForOption(option.options),

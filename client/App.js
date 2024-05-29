@@ -51,9 +51,8 @@ import socketserv from './src/components/request/socketserv';
 import FullCreateHouse from './src/components/profile/cratePosts/AddHouse'; 
 import EditPostScreen from './src/screens/Profile/EditPostScreen';
 import UserPostsScreen from './src/screens/Profile/UserPostsScreen';
-
-
-
+import ViewLandDetails from './src/viewDetLand'
+import ViewHouseDetails from './src/viewDetHouse'
 const Stack = createNativeStackNavigator();
 
 // Main stack navigator
@@ -181,7 +180,7 @@ console.log(data,'aaaamles,k,gpd,lpsg,psqg,lpl,mqlfk');
           <Stack.Screen name='AddHouse' component={AddHouse} options={{ headerShown: false }} />
           <Stack.Screen name='AddLand' component={AddLand} options={{ headerShown: false }} />
           <Stack.Screen name='ViewDetailsLand' component={ViewLandDetails} options={{ headerShown: false }} />
-          <Stack.Screen name='TermsAndConditions' component={TermsAndConditionsScreen} options={{ headerShown: false }} />
+          {/* <Stack.Screen name='TermsAndConditions' component={TermsAndConditionsScreen} options={{ headerShown: false }} /> */}
           <Stack.Screen name='ViewDetailsHouse' component={ViewHouseDetails} options={{ headerShown: false }} />
 
 
