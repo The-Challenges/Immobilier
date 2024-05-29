@@ -69,7 +69,7 @@ const ViewLandDetails = ({ route, navigation }) => {
 
   const checkIfRequested = async () => {
     try {
-      const response = await axios.get(`http://192.168.11.225:4000/api/reqtest/check`, {
+      const response = await axios.get(`http://192.168.104.29:4000/api/reqtest/check`, {
         params: {
           userId: parseInt(user.userId),
           landId: parseInt(land.id)

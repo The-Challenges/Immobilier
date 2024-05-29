@@ -25,15 +25,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         isVerified: {
             type: DataTypes.BOOLEAN,
-            
             defaultValue: false
         },
-
         alt: DataTypes.DECIMAL(9, 6),
-
         long: DataTypes.DECIMAL(9, 6),
-
-        purchaseoption: {
+        purchaseOption: {
             type: DataTypes.ENUM('Finance', 'cash', 'Unknown'),
             defaultValue: "Unknown"
         },
@@ -44,10 +40,26 @@ module.exports = (sequelize, DataTypes) => {
         houseAge: {
             type: DataTypes.ENUM('Established', 'New', 'All types'),
             defaultValue: 'All types'
+        },
+        userId: { // Add userId field
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'Users', // Name of the Users table
+                key: 'id'
+            }
         }
+
     });
 
+    House.associate = function(models) {
+        House.hasMany(models.Indoor, { foreignKey: 'HouseId', as: 'indoorOptions' });
+        House.hasMany(models.Outdoor, { foreignKey: 'HouseId', as: 'outdoorOptions' });
+        House.hasMany(models.Climate, { foreignKey: 'HouseId', as: 'climateOptions' });
+        House.hasMany(models.View, { foreignKey: 'HouseId', as: 'viewOptions' });
+        House.hasMany(models.Media, { foreignKey: 'HouseId', as: 'media' });
+        House.belongsTo(models.User, { foreignKey: 'userId', as: 'user' })
+    };
 
     return House;
-
 };

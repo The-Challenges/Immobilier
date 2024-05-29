@@ -15,7 +15,9 @@ module.exports = (sequelize) => {
     });
 
 
-
+    Media.associate = function(models) {
+        Media.belongsTo(models.House, { foreignKey: 'HouseId', as: 'house' });
+    };
 
     return Media;
 };

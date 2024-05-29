@@ -69,6 +69,16 @@ module.exports = {
           res.status(500).json({ error: 'Failed to get user' });
       }
   },
+  
+   getUserId : async () => {
+    try {
+        const userData = await storage.load({ key: 'loginState' });
+        return userData.user.userId;
+    } catch (error) {
+        console.error('Failed to retrieve user data:', error);
+        return null;
+    }
+},
     getAllUsers: async (req, res) => {
         try {
             const users = await db.User.findAll();
@@ -141,6 +151,23 @@ module.exports = {
           console.error(error);
           res.status(500).json({ message: 'Failed to update user due to server error' });
       }
-  }
+  },
+  getUserPosts: async (req, res) => {
+    const userId = req.params.userId;
+    try {
+        const houses = await db.House.findAll({ 
+            where: { userId },
+            include: [db.Media, db.Indoor, db.Climate, db.Outdoor, db.View] 
+        });
+        const lands = await db.Land.findAll({ 
+            where: { userId },
+            include: [db.Media] 
+        });
 
+        res.status(200).json({ houses, lands });
+    } catch (error) {
+        console.error('Error fetching user posts:', error);
+        res.status(500).json({ error: 'Failed to fetch user posts' });
+    }
+}
 };

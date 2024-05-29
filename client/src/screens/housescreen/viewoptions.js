@@ -2,40 +2,55 @@ import React from 'react';
 import { ScrollView, View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+function ViewOptions({ formData, handleChange, navigateToNext }) {
+    const options = [
+        { field: 'mountain', label: 'Mountain', icon: 'terrain', iconColor: '#1E90FF' },
+        { field: 'water views', label: 'Water Views', icon: 'water', iconColor: '#3CB371' },
+        { field: 'city skyline', label: 'City Skyline', icon: 'city', iconColor: '#6a5acd' },
+        { field: 'Unknown', label: 'Unknown', icon: 'alert-circle-outline', iconColor: '#ccc' }
+    ];
 
-function Viewoptions({ formData, handleChange, navigateToNext }) {
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.title}>view options</Text>
-            {[
-                { field: 'mountain', label:  'mountain', icon: 'pool', iconColor: '#1E90FF' },
-                { field: 'water views', label: 'water views', icon: 'balcony', iconColor: '#3CB371' },
-                { field:'city skyline', label: 'city skyline', icon: 'garage', iconColor: '#6a5acd' },
-
-            ].map(({ field, label, icon, iconColor }) => (
-                <View style={styles.switchContainer} key={field}>
-                    <Icon name={icon} size={24} color={iconColor} />
-                    <Text style={styles.switchLabel}>{label}</Text>
-                    <Switch
-                        onValueChange={(value) => handleChange(field, value)}
-                        value={formData[field]}
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={formData[field] ? "#f5dd4b" : "#f4f3f4"}
-                    />
-                </View>
-            ))}
-            {/* Navigation Button */}
-            <TouchableOpacity onPress={navigateToNext} style={styles.button}>
-                <Text style={styles.buttonText}>Next</Text>
-            </TouchableOpacity>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.innerContainer}>
+                <Text style={styles.title}>View Options</Text>
+                {options.map(({ field, label, icon, iconColor }) => (
+                    <View style={styles.switchContainer} key={field}>
+                        <Icon name={icon} size={24} color={iconColor} />
+                        <Text style={styles.switchLabel}>{label}</Text>
+                        <Switch
+                            onValueChange={(value) => {
+                                const updatedOptions = value
+                                    ? [...formData.viewOptions, field]
+                                    : formData.viewOptions.filter(opt => opt !== field);
+                                handleChange('viewOptions', updatedOptions);
+                            }}
+                            value={formData.viewOptions.includes(field)}
+                            trackColor={{ false: "#767577", true: "#81b0ff" }}
+                            thumbColor={formData.viewOptions.includes(field) ? "#f5dd4b" : "#f4f3f4"}
+                        />
+                    </View>
+                ))}
+                <TouchableOpacity onPress={navigateToNext} style={styles.button}>
+                    <Text style={styles.buttonText}>Next</Text>
+                </TouchableOpacity>
+            </View>
         </ScrollView>
     );
 }
+
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: '#f0f4f7',
+        paddingVertical: 20, // Added to prevent the contents from being too close to the top/bottom edges
+    },
+    innerContainer: {
+        width: '100%',
+        maxWidth: 400,
+        paddingHorizontal: 20,
     },
     title: {
         fontSize: 24,
@@ -79,4 +94,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Viewoptions;
+export default ViewOptions;

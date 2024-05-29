@@ -10,6 +10,8 @@ module.exports = (Sequelize, DataTypes) => {
     },
  
   });
-
+  Climate.associate = function(models) {
+    Climate.belongsTo(models.House, { foreignKey: 'HouseId', as: 'house' });
+};
   return Climate;
 };

@@ -50,7 +50,7 @@ module.exports = {
         try {
             const {
                 title, price, size, alt, long, purchaseoption, TerrainType, Zoning, isVerifie,
-                viewOptions, accessOptions, media
+                viewOptions, accessOptions, media, userId
             } = req.body;
     
             const result = await db.sequelize.transaction(async (t) => {
@@ -64,7 +64,8 @@ module.exports = {
                     purchaseoption,
                     TerrainType,
                     Zoning,
-                    isVerifie
+                    isVerifie,
+                    userId  // Ensure userId is saved
                 }, { transaction: t });
     
                 // Additional data relations
@@ -95,6 +96,44 @@ module.exports = {
         } catch (error) {
             console.error(error);
             res.status(500).json({ success: false, message: "Failed to add land", error: error.message });
+        }
+    },
+    
+    
+    getLandsByUser: async (req, res) => {
+        try {
+            const { userId } = req.params;
+            const lands = await db.Land.findAll({
+                where: { userId },
+                include: [
+                    {
+                        model: db.Media,
+                        attributes: ['type', 'name', 'link']
+                    },
+                    {
+                        model: db.Access
+                    },
+                    {
+                        model: db.View
+                    }
+                ]
+            });
+            res.json(lands);
+        } catch (error) {
+            res.status(500).json({ error: `Error fetching lands: ${error.message}` });
+        }
+    },
+    getLandById: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const land = await db.Land.findByPk(id);
+            if (land) {
+                res.status(200).json(land);
+            } else {
+                res.status(404).json({ error: 'Land not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to fetch land' });
         }
     },
     

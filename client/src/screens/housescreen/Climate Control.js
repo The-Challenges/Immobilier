@@ -3,39 +3,55 @@ import { ScrollView, View, Text, Switch, TouchableOpacity, StyleSheet } from 're
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function Screen7({ formData, handleChange, navigateToNext }) {
+    const options = [
+        { field: 'Air conditioning', label: 'Air Conditioning', icon: 'air-conditioner', iconColor: '#00ced1' },
+        { field: 'Heating', label: 'Heating', icon: 'radiator', iconColor: '#db7093' },
+        { field: 'Solar panets', label: 'Solar Panels', icon: 'solar-power', iconColor: '#ffd700' },
+        { field: 'High energy effcincy', label: 'High Energy Efficiency', icon: 'leaf', iconColor: '#228b22' },
+        { field: 'Unknown', label: 'Unknown', icon: 'alert-circle-outline', iconColor: '#ccc' }
+    ];
+
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.title}>Climate Control</Text>
-            {[
-                { field: 'Air conditioning', label: 'Air Conditioning', icon: 'air-conditioner', iconColor: '#00ced1' },
-                { field: 'Heating', label: 'Heating', icon: 'radiator', iconColor: '#db7093' },
-                { field: 'Solar panels', label: 'Solar Panels', icon: 'solar-power', iconColor: '#ffd700' },
-                { field: 'High energy efficiency', label: 'High Energy Efficiency', icon: 'leaf', iconColor: '#228b22' }
-            ].map(({ field, label, icon, iconColor }) => (
-                <View style={styles.switchContainer} key={field}>
-                    <Icon name={icon} size={24} color={iconColor} />
-                    <Text style={styles.switchLabel}>{label}</Text>
-                    <Switch
-                        onValueChange={(value) => handleChange(field, value)}
-                        value={formData[field]}
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={formData[field] ? "#f5dd4b" : "#f4f3f4"}
-                    />
-                </View>
-            ))}
-            {/* Navigation Button */}
-            <TouchableOpacity onPress={navigateToNext} style={styles.button}>
-                <Text style={styles.buttonText}>Next</Text>
-            </TouchableOpacity>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.innerContainer}>
+                <Text style={styles.title}>Climate Control</Text>
+                {options.map(({ field, label, icon, iconColor }) => (
+                    <View style={styles.switchContainer} key={field}>
+                        <Icon name={icon} size={24} color={iconColor} />
+                        <Text style={styles.switchLabel}>{label}</Text>
+                        <Switch
+                            onValueChange={(value) => {
+                                const updatedOptions = value
+                                    ? [...formData.climateOptions, field]
+                                    : formData.climateOptions.filter(opt => opt !== field);
+                                handleChange('climateOptions', updatedOptions);
+                            }}
+                            value={formData.climateOptions.includes(field)}
+                            trackColor={{ false: "#767577", true: "#81b0ff" }}
+                            thumbColor={formData.climateOptions.includes(field) ? "#f5dd4b" : "#f4f3f4"}
+                        />
+                    </View>
+                ))}
+                <TouchableOpacity onPress={navigateToNext} style={styles.button}>
+                    <Text style={styles.buttonText}>Next</Text>
+                </TouchableOpacity>
+            </View>
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: '#f0f4f7',
+        paddingVertical: 20,  // Added to prevent the contents from being too close to the top/bottom edges
+    },
+    innerContainer: {
+        width: '100%',
+        maxWidth: 400,
+        paddingHorizontal: 20,
     },
     title: {
         fontSize: 24,
