@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import { Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal, FlatList, Image, Alert } from 'react-native';
+import axios from 'axios';
+import { getUserId } from '../../../utils/authUtils'; // Correct path to the authUtils.js
+import { useNavigation } from '@react-navigation/native';
+import MapView, { Marker, Polygon } from 'react-native-maps';
 
 import Screen1 from '../../../screens/Landscreens/landDetails';
 import Screen2 from '../../../screens/Landscreens/landmaps';
 import Screen3 from '../../../screens/Landscreens/landimages';
-import Screen5 from '../../../screens/Landscreens/landsabmut'; // Ensure correct spelling if there's a typo ('landsabout'?)
+import Screen5 from '../../../screens/Landscreens/landsabmut';
 import Viewoptions from '../../../screens/Landscreens/landview';
 import AccessScreen from '../../../screens/Landscreens/landaccess';
 import Screen8 from '../../../screens/Landscreens/landsabmut';
@@ -12,8 +16,8 @@ import Screen8 from '../../../screens/Landscreens/landsabmut';
 function FullAddLand() {
     const [formData, setFormData] = useState({
         title: '',
-        price: null,  // Initialize as null for better type handling
-        size: null,   // Initialize as null for better type handling
+        price: null,
+        size: null,
         alt: '',
         long: '',
         purchaseoption: 'Unknown',
@@ -23,10 +27,20 @@ function FullAddLand() {
         media: [],
         location: null,
         polygon: [],
+        viewOptions: [],
+        accessOptions: []
     });
-    
-
+    const [userId, setUserId] = useState(null);
     const [screenIndex, setScreenIndex] = useState(1);
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        const fetchUserId = async () => {
+            const id = await getUserId();
+            setUserId(id);
+        };
+        fetchUserId();
+    }, []);
 
     const handleChange = (name, value) => {
         setFormData(prevFormData => ({
@@ -50,6 +64,36 @@ function FullAddLand() {
         }
     };
 
+    const handleSubmit = async () => {
+        if (!userId) {
+            Alert.alert('Error', 'User ID is missing.');
+            return;
+        }
+
+        try {
+            const payload = {
+                ...formData,
+                userId, // Include userId in the payload
+                viewOptions: formData.viewOptions,
+                accessOptions: formData.accessOptions,
+            };
+
+            console.log('Payload being sent:', JSON.stringify(payload, null, 2));
+
+            const response = await axios.post('http://192.168.104.29:4000/api/land/AddLand', payload);
+
+            if (response.status === 200 || response.status === 201) {
+                Alert.alert("Success", "Land has been listed successfully.");
+                navigation.navigate('HomeTabs'); // Adjust the route name as necessary
+            } else {
+                throw new Error(`Failed to submit data: Status Code ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error.response ? error.response.data : error.message);
+            Alert.alert('Error', `Submission failed: ${error.message}`);
+        }
+    };
+
     return (
         <>
             {screenIndex === 1 && <Screen1 formData={formData} handleChange={handleChange} navigateToNext={navigateToNext} />}
@@ -58,7 +102,7 @@ function FullAddLand() {
             {screenIndex === 4 && <Screen2 formData={formData} handleChange={handleChange} navigateToNext={navigateToNext} navigateToPrevious={navigateToPrevious} />}
             {screenIndex === 5 && <Screen3 formData={formData} handleChange={handleChange} navigateToNext={navigateToNext} navigateToPrevious={navigateToPrevious} />}
             {screenIndex === 6 && <Screen5 formData={formData} handleChange={handleChange} navigateToPrevious={navigateToPrevious} navigateToNext={navigateToNext} />}
-            {screenIndex === 7 && <Screen8 formData={formData} navigateToPrevious={navigateToPrevious} />}
+            {screenIndex === 7 && <Screen8 formData={formData} navigateToPrevious={navigateToPrevious} handleSubmit={handleSubmit} />}
         </>
     );
 }

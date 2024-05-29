@@ -23,7 +23,6 @@ import RecommendedScreen from "./src/screens/RecommendedScreen";
 import ResultsScreen from "./src/screens/ResultsScreen";
 import Chat from "./src/components/chat/chat";
 import Onboarding from "./src/components/Authentification/OnboardingScreen";
-import splash from "./src/components/Authentification/SplashScreen";
 import EditProfile from './src/screens/Profile/editProfile'
 import AddHouse from './src/components/profile/cratePosts/AddHouse'
 import AddLand from './src/components/profile/cratePosts/AddLand'
@@ -31,7 +30,6 @@ import SeeAllHouses from "./src/screens/SeeAllHouses";
 import SeeAllLands from "./src/screens/SeeAllLands";
 import requeststatus from "./src/components/profile/requeststatus"
 import requeststatuslands from "./src/components/profile/requeststatuslands"
-// import Chatroom from "./src/components/chat/allrooms";
 import HomeTabs from './hpmetaps';
 import splach from './src/components/Authentification/SplashScreen'
 import Received from "./src/components/profile/requestreceived"
@@ -45,9 +43,9 @@ import PaymentConfirmationScreen from './src/components/Subscription/PaymentConf
 import Login from './src/components/Authentification/login'
 import Signup from './src/components/Authentification/signup'
 import socketserv from './src/components/request/socketserv';
-
-
-
+import FullCreateHouse from './src/components/profile/cratePosts/AddHouse'; 
+import EditPostScreen from './src/screens/Profile/EditPostScreen';
+import UserPostsScreen from './src/screens/Profile/UserPostsScreen';
 
 
 
@@ -156,7 +154,6 @@ function App() {
           <Stack.Screen name='ResultsScreen' component={ResultsScreen} options={{ headerShown: false }} />
           <Stack.Screen name='SeeAllHouses' component={SeeAllHouses} options={{ headerShown: false }} />
           <Stack.Screen name='SeeAllLands' component={SeeAllLands} options={{ headerShown: false }} />
-          <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }} />
           <Stack.Screen name='Received' component={Received} options={{ headerShown: false }} />
           <Stack.Screen name='requestreceivedlands' component={requestreceivedlands} options={{ headerShown: false }} />
           <Stack.Screen name='requeststatus' component={requeststatus} options={{ headerShown: false }} />
@@ -177,39 +174,40 @@ function App() {
           <Stack.Screen name='AddLand' component={AddLand} options={{ headerShown: false }} />
           <Stack.Screen
 
-            name='RecommendedScreen'
-            component={RecommendedScreen}
-            options={({ navigation }) => ({
-              headerShown: true,
-              title: 'Recommended Houses',
-              headerStyle: {
-                backgroundColor: '#faebd7',
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 3,
-                elevation: 5,
-              },
-              headerTitleStyle: {
-                fontWeight: 'bold',
-                fontSize: 22,
-                fontFamily: 'Roboto, "Helvetica Neue", sans-serif',
-              },
-              headerTintColor: 'black',
-              headerLeft: () => (
-                <Icon2
-                  name="arrow-back-sharp"
-                  size={24}
-                  color="black"
-                  onPress={() => navigation.goBack()}
-                  style={{ marginLeft: 15 }}
-                />
-              ),
-            })}
-          />
+name='RecommendedScreen'
+component={RecommendedScreen}
+options={({ navigation }) => ({
+  headerShown: true,
+  title: 'Recommended Houses',
+  headerStyle: {
+    backgroundColor: '#faebd7',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  headerTitleStyle: {
+    fontWeight: 'bold',
+    fontSize: 22,
+    fontFamily: 'Roboto, "Helvetica Neue", sans-serif',
+  },
+  headerTintColor: 'black',
+  headerLeft: () => (
+    <Icon2
+      name="arrow-back-sharp"
+      size={24}
+      color="black"
+      onPress={() => navigation.goBack()}
+      style={{ marginLeft: 15 }}
+    />
+  ),
+})}
+/>
 
-
-
+<Stack.Screen name='FullCreateHouse' component={FullCreateHouse} options={{ headerShown: false }} />
+<Stack.Screen name='UserPostsScreen' component={UserPostsScreen} options={{ title: 'My Posts' }} />
+<Stack.Screen name='EditPostScreen' component={EditPostScreen} options={{ title: 'Edit Post' }} />
         </Stack.Navigator>
       </NavigationContainer>
       <View>

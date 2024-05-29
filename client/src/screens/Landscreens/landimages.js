@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert, Dimensions, ActivityIndicator } from 'react-native';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import DocumentPicker from 'react-native-document-picker';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/Ionicons'; // Using Ionicons for better icons
+import Carousel from 'react-native-snap-carousel';
 
 const uploadImage = async (image) => {
     const formData = new FormData();
@@ -160,7 +161,7 @@ const Screen4 = ({ formData, handleChange, navigateToNext }) => {
     const renderFileItem = ({ item }) => (
         <View style={styles.fileContainer}>
             {item.endsWith('.pdf') ? (
-                <Icon name="picture-as-pdf" size={100} color="#FF0000" />
+                <Icon name="document-text-outline" size={150} color="#FF0000" />
             ) : (
                 <Image source={{ uri: item }} style={styles.image} />
             )}
@@ -171,38 +172,38 @@ const Screen4 = ({ formData, handleChange, navigateToNext }) => {
         navigateToNext();
     };
 
+    const { width } = Dimensions.get('window');
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Image and PDF Upload</Text>
-            <FlatList
-                data={selectedFiles}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderFileItem}
-                ListEmptyComponent={
-                    <View style={styles.placeholderContainer}>
-                        <Icon name="photo-library" size={100} color="#ccc" />
-                        <Text style={styles.placeholderText}>No files selected</Text>
-                    </View>
-                }
-            />
+            <TouchableOpacity style={styles.nextButtonTop} onPress={handleNext}>
+                <Text style={styles.nextButtonText}>&gt;</Text>
+            </TouchableOpacity>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.selectButton} onPress={pickImage} disabled={uploading}>
-                    <Icon name="add-a-photo" size={24} color="#fff" />
-                    {uploading && <Text>Uploading...</Text>}
+                    <Icon name="image-outline" size={32} color="#fff" />
+                    {uploading && <ActivityIndicator size="small" color="#fff" />}
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.selectButton} onPress={openCamera} disabled={uploading}>
-                    <Icon name="camera-alt" size={24} color="#fff" />
-                    {uploading && <Text>Uploading...</Text>}
+                    <Icon name="camera-outline" size={32} color="#fff" />
+                    {uploading && <ActivityIndicator size="small" color="#fff" />}
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.selectButton} onPress={pickPDF} disabled={uploading}>
-                    <Icon name="picture-as-pdf" size={24} color="#fff" />
-                    {uploading && <Text>Uploading...</Text>}
+                    <Icon name="document-text-outline" size={32} color="#fff" />
+                    {uploading && <ActivityIndicator size="small" color="#fff" />}
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-                <Icon name="navigate-next" size={24} color="#fff" />
-                <Text style={styles.buttonText}>Next</Text>
-            </TouchableOpacity>
+            {selectedFiles.length > 0 && (
+                <View style={styles.carouselContainer}>
+                    <Carousel
+                        data={selectedFiles}
+                        renderItem={renderFileItem}
+                        sliderWidth={width}
+                        itemWidth={width - 60}
+                        loop={true}
+                    />
+                </View>
+            )}
         </View>
     );
 };
@@ -214,27 +215,34 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 20,
     },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    placeholderContainer: {
+    nextButtonTop: {
+        position: 'absolute',
+        top: 40,
+        right: 20,
+        backgroundColor: '#5A67D8',
+        padding: 10,
+        borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        marginRight: 10,
+        zIndex: 1,
     },
-    placeholderText: {
-        fontSize: 16,
-        color: '#ccc',
+    nextButtonText: {
+        color: '#fff',
+        fontSize: 24,
+    },
+    uploadingContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 300,
     },
     fileContainer: {
-        marginBottom: 10,
         alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 10,
     },
     image: {
-        width: 100,
-        height: 100,
+        width: 300,
+        height: 300,
         borderRadius: 10,
     },
     buttonContainer: {
@@ -250,20 +258,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: 20,
     },
-    nextButton: {
-        backgroundColor: '#5A67D8',
-        padding: 12,
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
+    carouselContainer: {
         marginTop: 20,
-        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'center',
     },
-    buttonText: {
-        color: '#fff',
-        fontSize: 18,
-        marginLeft: 10,
-    }
 });
 
 export default Screen4;

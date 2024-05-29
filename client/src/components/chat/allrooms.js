@@ -15,7 +15,7 @@ const ChatList = ({ navigation }) => {
   const socket = useRef(null); 
   useEffect(() => {
   
-     socket.current = io("http://192.168.11.34:4001");
+     socket.current = io("http://192.168.104.7:4001");
      fetchChats();
      scrollToBottom();
   

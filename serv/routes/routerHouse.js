@@ -22,5 +22,7 @@ router.post('/addClimate/:houseId', HouseController.addClimateFeatureToHouse);
 
 // Route to update a specific house
 router.put('/updateHouse/:id', HouseController.updateHouse);
+router.get('/user/:userId', HouseController.getHousesByUser);
 
+router.get('/:id', HouseController.getHouseById)
 module.exports = router;

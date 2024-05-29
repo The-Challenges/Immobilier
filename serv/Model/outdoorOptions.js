@@ -11,7 +11,9 @@ module.exports = (Sequelize, DataTypes) => {
  
   });
 
-  
+  Outdoor.associate = function(models) {
+    Outdoor.belongsTo(models.House, { foreignKey: 'HouseId', as: 'house' });
+};
 
   return Outdoor;
 };

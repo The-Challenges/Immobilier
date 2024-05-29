@@ -43,7 +43,7 @@ const ChatScreen = ({ route }) => {
     // };
   useEffect(() => {
     getUserId();
-    const socket = io("http://192.168.11.62:4001", {
+    const socket = io("http://192.168.104.7:4001", {
       transports: ['websocket'],
     });
     setSocket(socket);

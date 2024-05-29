@@ -1,3 +1,4 @@
+// Screen1.js
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -25,13 +26,12 @@ function Screen1({ formData, handleChange, navigateToNext }) {
                 <Icon name="cash-100" size={24} color="#4CAF50" />
                 <Text style={styles.label}>Price:</Text>
                 <TextInput
-                 style={styles.input}
-                 onChangeText={(text) => handleChange('price', Number(text))}
-                 keyboardType="numeric"
-                 value={String(formData.price)}
-                 placeholder="Enter price"
-/>
-
+                    style={styles.input}
+                    onChangeText={(text) => handleChange('price', Number(text))}
+                    keyboardType="numeric"
+                    value={String(formData.price)}
+                    placeholder="Enter price"
+                />
             </View>
 
             {/* Number of Bedrooms */}
@@ -40,9 +40,9 @@ function Screen1({ formData, handleChange, navigateToNext }) {
                 <Text style={styles.label}>Number of Bedrooms:</Text>
                 <TextInput
                     style={styles.input}
-                    onChangeText={(text) => handleChange('numberBedrooms', text)}
+                    onChangeText={(text) => handleChange('numberBedrooms', Number(text))}
                     keyboardType="numeric"
-                    value={formData.numberBedrooms}
+                    value={String(formData.numberBedrooms)}
                     placeholder="Enter number of bedrooms"
                 />
             </View>
@@ -53,9 +53,9 @@ function Screen1({ formData, handleChange, navigateToNext }) {
                 <Text style={styles.label}>Number of Bathrooms:</Text>
                 <TextInput
                     style={styles.input}
-                    onChangeText={(text) => handleChange('numberBathrooms', text)}
+                    onChangeText={(text) => handleChange('numberBathrooms', Number(text))}
                     keyboardType="numeric"
-                    value={formData.numberBathrooms}
+                    value={String(formData.numberBathrooms)}
                     placeholder="Enter number of bathrooms"
                 />
             </View>
@@ -128,7 +128,7 @@ function Screen1({ formData, handleChange, navigateToNext }) {
             </View>
 
             {/* Next Button */}
-            <TouchableOpacity onPress={() => navigateToNext(formData)} style={styles.button}>
+            <TouchableOpacity onPress={navigateToNext} style={styles.button}>
                 <Text style={styles.buttonText}>Next</Text>
             </TouchableOpacity>
         </ScrollView>
