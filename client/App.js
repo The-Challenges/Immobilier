@@ -29,7 +29,6 @@ import FilterScreen from "./src/screens/FilterScreen";
 import ResultsScreen from "./src/screens/ResultsScreen";
 import Chat from "./src/components/chat/chat";
 import Onboarding from "./src/components/Authentification/OnboardingScreen";
-import splash from "./src/components/Authentification/SplashScreen";
 import EditProfile from './src/screens/Profile/editProfile'
 import AddHouse from './src/components/profile/cratePosts/AddHouse'
 import AddLand from './src/components/profile/cratePosts/AddLand'
@@ -37,7 +36,6 @@ import SeeAllHouses from "./src/screens/SeeAllHouses";
 import SeeAllLands from "./src/screens/SeeAllLands";
 import requeststatus from "./src/components/profile/requeststatus"
 import requeststatuslands from "./src/components/profile/requeststatuslands"
-// import Chatroom from "./src/components/chat/allrooms";
 import HomeTabs from './hpmetaps';
 import splach from './src/components/Authentification/SplashScreen'
 import Received from "./src/components/profile/requestreceived"
@@ -50,16 +48,11 @@ import PaymentScreen from './src/components/Subscription/Payment';
 import PaymentConfirmationScreen from './src/components/Subscription/PaymentConfirmationScreen';
 import Login from './src/components/Authentification/login'
 import socketserv from './src/components/request/socketserv';
-import ViewLandDetails from './src/viewDetLand';
-import ViewHouseDetails from './src/viewDetHouse';
-import TermsAndConditionsScreen from './src/components/request/sendRe/TermsAndConditions';
-import { API_AD } from './config';
-
-
-
-
-
-
+import FullCreateHouse from './src/components/profile/cratePosts/AddHouse'; 
+import EditPostScreen from './src/screens/Profile/EditPostScreen';
+import UserPostsScreen from './src/screens/Profile/UserPostsScreen';
+import ViewLandDetails from './src/viewDetLand'
+import ViewHouseDetails from './src/viewDetHouse'
 const Stack = createNativeStackNavigator();
 
 // Main stack navigator
@@ -168,7 +161,6 @@ console.log(data,'aaaamles,k,gpd,lpsg,psqg,lpl,mqlfk');
           <Stack.Screen name='ResultsScreen' component={ResultsScreen} options={{ headerShown: false }} />
           <Stack.Screen name='SeeAllHouses' component={SeeAllHouses} options={{ headerShown: false }} />
           <Stack.Screen name='SeeAllLands' component={SeeAllLands} options={{ headerShown: false }} />
-          <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }} />
           <Stack.Screen name='Received' component={Received} options={{ headerShown: false }} />
           <Stack.Screen name='requestreceivedlands' component={requestreceivedlands} options={{ headerShown: false }} />
           <Stack.Screen name='requeststatus' component={requeststatus} options={{ headerShown: false }} />
@@ -188,7 +180,7 @@ console.log(data,'aaaamles,k,gpd,lpsg,psqg,lpl,mqlfk');
           <Stack.Screen name='AddHouse' component={AddHouse} options={{ headerShown: false }} />
           <Stack.Screen name='AddLand' component={AddLand} options={{ headerShown: false }} />
           <Stack.Screen name='ViewDetailsLand' component={ViewLandDetails} options={{ headerShown: false }} />
-          <Stack.Screen name='TermsAndConditions' component={TermsAndConditionsScreen} options={{ headerShown: false }} />
+          {/* <Stack.Screen name='TermsAndConditions' component={TermsAndConditionsScreen} options={{ headerShown: false }} /> */}
           <Stack.Screen name='ViewDetailsHouse' component={ViewHouseDetails} options={{ headerShown: false }} />
 
 
@@ -227,6 +219,9 @@ console.log(data,'aaaamles,k,gpd,lpsg,psqg,lpl,mqlfk');
 
 
 
+<Stack.Screen name='FullCreateHouse' component={FullCreateHouse} options={{ headerShown: false }} />
+<Stack.Screen name='UserPostsScreen' component={UserPostsScreen} options={{ title: 'My Posts' }} />
+<Stack.Screen name='EditPostScreen' component={EditPostScreen} options={{ title: 'Edit Post' }} />
         </Stack.Navigator>
       </NavigationContainer>
       <View>

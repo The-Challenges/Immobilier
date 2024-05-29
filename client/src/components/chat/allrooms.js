@@ -15,9 +15,9 @@
 //   const socket = useRef(null); 
 //   useEffect(() => {
   
-//      socket.current = io("http://192.168.1.11:4002");
-//      fetchChats();
-//      scrollToBottom();
+     socket.current = io("http://192.168.104.7:4001");
+     fetchChats();
+     scrollToBottom();
   
 //      socket.current.on('newMessage', () => {
 //        fetchChats(); 

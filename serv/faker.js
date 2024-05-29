@@ -7,6 +7,13 @@ function getRandomElementFromArray(arr) {
   const randomIndex = Math.floor(Math.random() * arr.length);
   return arr[randomIndex];
 }
+module.exports = async (sequelize) => {
+  // Adjust the number of seeds you want for each model
+  const userCount = 2;
+  const houseCount = 2;
+  const landCount = 2;
+  const indoo = 2
+  const  optionCount=2
 
 module.exports = async (sequelize) => {
   const userCount = 50;
@@ -190,4 +197,4 @@ module.exports = async (sequelize) => {
       });
     })
   );
-}
+}}

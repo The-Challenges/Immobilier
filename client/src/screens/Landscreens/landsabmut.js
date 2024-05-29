@@ -1,30 +1,53 @@
-import React from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert, Modal, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView, Text, TouchableOpacity, Modal, Alert, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MapView, { Marker, Polygon } from 'react-native-maps';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import storage from '../../components/Authentification/storage'; // Import your storage module
 
-const Screen8 = ({ formData, navigateToPrevious }) => {
-    const [modalVisible, setModalVisible] = React.useState(false);
+const Screen8 = ({ formData, navigateToPrevious, handleSubmit }) => {
+    const [modalVisible, setModalVisible] = useState(false);
+    const [userId, setUserId] = useState(null); // State for user ID
     const navigation = useNavigation();
 
-    const handleSubmit = async () => {
+    useEffect(() => {
+        // Retrieve user ID from storage when component mounts
+        const fetchUserId = async () => {
+            try {
+                const userData = await storage.load({ key: 'loginState' });
+                setUserId(userData.user.userId); // Set the user ID state
+            } catch (error) {
+                console.error('Failed to retrieve user ID:', error);
+            }
+        };
+
+        fetchUserId();
+    }, []);
+
+    const submitForm = async () => {
+        if (!userId) {
+            Alert.alert("Error", "User ID is missing. Please log in again.");
+            return;
+        }
+
         try {
-            const response = await axios.post('http://192.168.11.225:4000/api/land/AddLand', formData, {
+            console.log('Submitting form data:', formData);
+            const response = await axios.post('http://192.168.104.29:4000/api/land/AddLand', { ...formData, userId }, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
+            console.log('Response:', response);
             if (response.status === 200 || response.status === 201) {
                 setModalVisible(true);
                 navigation.navigate('HomeTabs');
             } else {
-                throw new Error('Submission failed');
+                throw new Error(`Submission failed with status code ${response.status}`);
             }
         } catch (error) {
             console.error('Submission Error:', error);
-            Alert.alert('Submission Error', 'Failed to submit the form. Please try again later.');
+            Alert.alert('Submission Error', `Failed to submit the form: ${error.message}`);
         }
     };
 
@@ -33,15 +56,15 @@ const Screen8 = ({ formData, navigateToPrevious }) => {
     const fields = [
         { key: 'title', label: 'Title', icon: 'home-outline', iconColor: '#007BFF' },
         { key: 'price', label: 'Price', icon: 'cash-multiple', iconColor: '#28A745' },
-        { key: 'size', label: 'Size (m²)', icon: 'image-area', iconColor: '#FFC107' },
-        { key: 'TerrainType', label: 'Terrain Type', icon: 'mountain', iconColor: '#17A2B8' },
+        { key: 'size', label: 'Size', icon: 'image-area', iconColor: '#FFC107' },
+        { key: 'TerrainType', label: 'Terrain Type', icon: 'terrain', iconColor: '#17A2B8' },
         { key: 'Zoning', label: 'Zoning', icon: 'city', iconColor: '#DC3545' },
         { key: 'purchaseoption', label: 'Purchase Option', icon: 'hand-pointing-right', iconColor: '#6F42C1' },
         { key: 'isVerified', label: 'Verified', icon: 'check-circle', iconColor: formData.isVerified ? '#4CAF50' : '#FF6347', isBoolean: true }
     ];
 
     const views = [
-        { key: 'mountain', label: 'Mountain', icon: 'mountain', iconColor: '#4CAF50' },
+        { key: 'mountain', label: 'Mountain', icon: 'terrain', iconColor: '#4CAF50' },
         { key: 'water views', label: 'Water Views', icon: 'water', iconColor: '#1E90FF' },
         { key: 'city skyline', label: 'City Skyline', icon: 'city', iconColor: '#FF4500' }
     ];
@@ -65,11 +88,12 @@ const Screen8 = ({ formData, navigateToPrevious }) => {
         </View>
     );
 
-    const renderOptions = (options, data) => (
-        options.filter(option => data[option.key] && data[option.key] !== 'Unknown').map(option => (
+    const renderOptions = (options, dataKey) => (
+        options.map(option => (
             <View style={styles.detailRow} key={option.key}>
                 <Icon name={option.icon} size={24} color={option.iconColor} />
                 <Text style={styles.detailText}>{option.label}</Text>
+                <Icon name={formData[dataKey].includes(option.key) ? 'check-circle' : 'close-circle'} size={24} color={formData[dataKey].includes(option.key) ? '#4CAF50' : '#FF6347'} />
             </View>
         ))
     );
@@ -130,12 +154,12 @@ const Screen8 = ({ formData, navigateToPrevious }) => {
             <View style={styles.card}>
                 {fields.map(field => renderField(field))}
                 <Text style={styles.header}>Selected Views</Text>
-                {renderOptions(views, formData)}
+                {renderOptions(views, 'viewOptions')}
                 <Text style={styles.header}>Accessibility Options</Text>
-                {renderOptions(accessibilities, formData)}
+                {renderOptions(accessibilities, 'accessOptions')}
                 {formData.media && formData.media.length > 0 && renderMedia(formData.media)}
             </View>
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <TouchableOpacity style={styles.button} onPress={submitForm}>
                 <Icon name="check" size={24} color="#fff" />
                 <Text style={styles.buttonText}>Confirm and Submit</Text>
             </TouchableOpacity>

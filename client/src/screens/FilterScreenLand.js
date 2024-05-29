@@ -41,7 +41,7 @@ const FilterScreenLand = ({ navigation }) => {
       if (purchaseOption !== 'Unknown') params.purchaseOption = purchaseOption;
       if (isVerified) params.isVerifie = isVerified;
 
-      const response = await axios.get(`http://192.168.11.225:4000/api/land/filterlands`, { params });
+      const response = await axios.get(`http://192.168.104.29:4000/api/land/filterlands`, { params });
       console.log('Fetched data:', response.data);
       navigation.navigate('ResultsScreenLand', { lands: response.data });
     } catch (error) {

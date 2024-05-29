@@ -3,22 +3,30 @@ import { ScrollView, View, Text, Switch, TouchableOpacity, StyleSheet } from 're
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function Viewoptions({ formData, handleChange, navigateToNext, navigateToPrevious }) {
+    const options = [
+        { field: 'mountain', label: 'Mountain', icon: 'terrain', iconColor: '#1E90FF' },
+        { field: 'water views', label: 'Water Views', icon: 'water', iconColor: '#3CB371' },
+        { field: 'city skyline', label: 'City Skyline', icon: 'city', iconColor: '#6a5acd' },
+        { field: 'Unknown', label: 'Unknown', icon: 'alert-circle-outline', iconColor: '#ccc' }
+    ];
+
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.title}>View Options</Text>
-            {[
-                { field: 'mountain', label: 'Mountain', icon: 'pool', iconColor: '#1E90FF' },
-                { field: 'water views', label: 'Water Views', icon: 'balcony', iconColor: '#3CB371' },
-                { field: 'city skyline', label: 'City Skyline', icon: 'garage', iconColor: '#6a5acd' },
-            ].map(({ field, label, icon, iconColor }) => (
+            {options.map(({ field, label, icon, iconColor }) => (
                 <View style={styles.switchContainer} key={field}>
                     <Icon name={icon} size={24} color={iconColor} />
                     <Text style={styles.switchLabel}>{label}</Text>
                     <Switch
-                        onValueChange={(value) => handleChange(field, value)}
-                        value={formData[field]}
+                        onValueChange={(value) => {
+                            const updatedOptions = value
+                                ? [...formData.viewOptions, field]
+                                : formData.viewOptions.filter(opt => opt !== field);
+                            handleChange('viewOptions', updatedOptions);
+                        }}
+                        value={formData.viewOptions.includes(field)}
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={formData[field] ? "#f5dd4b" : "#f4f3f4"}
+                        thumbColor={formData.viewOptions.includes(field) ? "#f5dd4b" : "#f4f3f4"}
                     />
                 </View>
             ))}
@@ -34,7 +42,9 @@ function Viewoptions({ formData, handleChange, navigateToNext, navigateToPreviou
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         padding: 20,
         backgroundColor: '#f0f4f7',
     },
@@ -59,6 +69,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 3,
         elevation: 4,
+        width: '100%',
     },
     switchLabel: {
         fontSize: 16,
@@ -72,6 +83,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         marginTop: 20,
+        width: '100%',
     },
     buttonText: {
         color: '#ffffff',
