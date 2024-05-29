@@ -102,7 +102,7 @@ function Screen6({ formData, handleChange, handleSubmit }) {
 
             console.log('Payload being sent:', JSON.stringify(payload, null, 2));
 
-            const response = await axios.post('http://192.168.104.29:4000/api/house/postHouse', payload);
+            const response = await axios.post('http://192.168.11.225:4000/api/house/postHouse', payload);
 
             if (response.status === 200 || response.status === 201) {
                 setModalVisible(true);

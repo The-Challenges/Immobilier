@@ -4,7 +4,7 @@ import axios from 'axios';
 // Function to refresh the token
 const refreshToken = async () => {
     try {
-        const response = await axios.post('http://192.168.104.29:4000/api/auth/refresh', {
+        const response = await axios.post('http://192.168.11.225:4000/api/auth/refresh', {
             token: await AsyncStorage.getItem('refreshToken')
         });
         if (response.status === 200) {

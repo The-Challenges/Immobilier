@@ -33,7 +33,7 @@ const Screen8 = ({ formData, navigateToPrevious, handleSubmit }) => {
 
         try {
             console.log('Submitting form data:', formData);
-            const response = await axios.post('http://192.168.104.29:4000/api/land/AddLand', { ...formData, userId }, {
+            const response = await axios.post('http://192.168.11.225:4000/api/land/AddLand', { ...formData, userId }, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

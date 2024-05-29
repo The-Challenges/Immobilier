@@ -36,7 +36,7 @@ const UserPostsScreen = () => {
           throw new Error('User ID is null');
         }
 
-        const response = await fetch(`http://192.168.104.29:4000/api/user/${userId}/posts`);
+        const response = await fetch(`http://192.168.11.225:4000/api/user/${userId}/posts`);
         const responseText = await response.text();
 
         try {

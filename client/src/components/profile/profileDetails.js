@@ -39,7 +39,7 @@ const fetchUserProfile = async (userId) => {
       throw new Error('User ID is missing');
     }
 
-    const response = await fetch(`http://192.168.104.29:4000/api/user/${userId}`, {
+    const response = await fetch(`http://192.168.11.225:4000/api/user/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

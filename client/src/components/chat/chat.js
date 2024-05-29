@@ -14,7 +14,7 @@ const ChatScreen = ({ route }) => {
 
   useEffect(() => {
     getUserId();
-    const socket = io("http://192.168.104.29:4001", {
+    const socket = io("http://192.168.11.225:4002", {
       transports: ['websocket'],
     });
     setSocket(socket);
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   },
   otherMessage: {
     backgroundColor: COLORS.lightGrey,
-    
+
 
   },
   myMessageContent: {

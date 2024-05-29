@@ -19,7 +19,7 @@ const EditPostScreen = ({ route, navigation }) => {
     setLoading(true);
     try {
       const endpoint = post.type === 'land' ? `land/updateLand/${post.id}` : `house/updateHouse/${post.id}`;
-      const response = await axios.put(`http://192.168.104.29:4000/api/${endpoint}`, formData);
+      const response = await axios.put(`http://192.168.11.225:4000/api/${endpoint}`, formData);
       if (response.status === 200) {
         Alert.alert('Success', 'Post updated successfully');
         navigation.goBack();

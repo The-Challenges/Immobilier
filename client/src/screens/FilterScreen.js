@@ -47,7 +47,7 @@ const FilterScreen = ({ navigation }) => {
 
   const fetchOptions = async (type, setOptions) => {
     try {
-      const response = await axios.get(`http://192.168.104.29:4000/api/${type}/all${type}`);
+      const response = await axios.get(`http://192.168.11.225:4000/api/${type}/all${type}`);
       const options = response.data.map(option => ({
         label: option.options,
         icon: getIconForOption(option.options),
@@ -89,7 +89,7 @@ const FilterScreen = ({ navigation }) => {
       const outdoorOptionsSelected = Object.keys(selectedOutdoorOptions).filter(key => selectedOutdoorOptions[key]);
       const params = buildFilterParams(indoorOptionsSelected, outdoorOptionsSelected);
 
-      const response = await axios.get('http://192.168.104.7:4000/api/house/filterhouses', { params });
+      const response = await axios.get('http://192.168.11.225:4000/api/house/filterhouses', { params });
 
       console.log('Response Data:', response.data);
 
