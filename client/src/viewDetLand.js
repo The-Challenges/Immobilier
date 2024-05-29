@@ -1,215 +1,428 @@
-import React ,{useEffect,useState}from 'react';
-import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import Icon2 from 'react-native-vector-icons/SimpleLineIcons'
-import Icon1 from 'react-native-vector-icons/MaterialIcons'
-import { IconButton, Snackbar } from 'react-native-paper';
+import React, { useState, useEffect, useRef } from 'react';
+import { API_AD } from '../../config';
+import { SafeAreaView, StyleSheet, Dimensions, StatusBar, FlatList, Pressable, TextInput, TouchableOpacity, Image, View, Text, Alert, ActivityIndicator } from 'react-native';
+import storage from './components/Authentification/storage';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from './consts/colors';
-import { Button } from 'react-native-elements';
-import { API_AD } from '../config';
 import axios from 'axios';
+import FeaturedScroller from './components/featuredScroller'; 
+import socketserv from './components/request/socketserv';
 
-// Color and icon definitions (assuming FontAwesome5 supports all needed icons, replace if needed)
-const accessIcons = {
-    Airport: "plane-departure",
-    PublicTransportation: "bus-alt",
-    Highway: "road",
-    RoadAccess: "car-side",
-    Unknown: "question-circle"
-};
+const { width } = Dimensions.get('screen');
 
-const viewIcons = {
-    Mountain: "mountain",
-    WaterViews: "water",
-    CitySkyline: "city",
-    Unknown: "question-circle"
-};
+const HomeScreen = ({ navigation }) => {
+  const [houses, setHouses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pressedCard, setPressedCard] = useState(null);
+  const [favorites, setFavorites] = useState(new Set());
+  const [userId, setUserId] = useState(null);
+  const flatListRef = useRef(null);
 
-// Function to retrieve the correct icon element
-const getIcon = (name, category) => (
-    <Icon name={name} size={20} color={category === 'Access' ? COLORS.primary : COLORS.dark} />
-);
+  useEffect(() => {
+    fetchHouses();
+    getUserId();
+  }, []);
 
-// Component for displaying details with icons
-const PropertyDetail = ({ category, details }) => (
-    <View style={styles.detailContainer}>
-        <Text style={styles.categoryTitle}>{category}</Text>
-        <View style={styles.detailRow}>
-            {details.map((detail, index) => (
-                <View key={index} style={styles.detailBox}>
-                    {getIcon((category === 'Access' ? accessIcons[detail] : viewIcons[detail]), category)}
-                    <Text style={styles.detailText}>{detail}</Text>
-                </View>
-            ))}
-        </View>
-    </View>
-);
+  const getUserId = async () => {
+    try {
+      const userData = await storage.load({ key: 'loginState' });
+      setUserId(userData.user.userId);
+      socketserv.emit('receiver', userData.user.userId);
+    } catch (error) {
+      console.error('Failed to retrieve user data:', error);
+    }
+  };
 
-// Main component displaying the property details
-const ViewLandDetails = ({ route, navigation }) => {
-    const { land , user } = route.params;
-    const [hasRequested, setHasRequested] = useState(false);
-    // const [showSnackbar, setShowSnackbar] = useState(false);
-    useEffect(() => {
-        checkIfRequested();
-    }, []);
+  const fetchHouses = async () => {
+    try {
+      const response = await axios.get(`${API_AD}/api/house/allhouses`);
+      setHouses(response.data);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to fetch houses');
+      console.error('Failed to fetch houses:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const checkIfRequested = async () => {
-        try {
-            const response = await axios.get(`${API_AD}/api/reqtest/check`, {
-                params: {
-                    userId: user.id,
-                    landId: land.id
-                }
-            });
-            setHasRequested(response.data.hasRequested);
-        } catch (error) {
-            console.error('Failed to check request status:', error);
-            Alert.alert('Error', 'Failed to check if request has already been sent.');
+  const fetchFavorites = async (userId) => {
+    if (!userId) return;
+    try {
+      const response = await axios.get(`${API_AD}/api/favorites/${userId}/house`);
+      const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
+      setFavorites(favoriteHouses);
+    } catch (error) {
+      console.error('Failed to fetch favorites:', error);
+    }
+  };
+
+  const toggleFavorite = async (houseId) => {
+    if (!userId) {
+      Alert.alert('Error', 'User ID not set');
+      return;
+    }
+    setLoading(true);
+    try {
+      await axios.post(`${API_AD}/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      setFavorites(prev => {
+        const updated = new Set(prev);
+        if (updated.has(houseId)) {
+          updated.delete(houseId);
+        } else {
+          updated.add(houseId);
         }
-    };
+        return updated;
+      });
+    } catch (error) {
+      console.error("Failed to toggle favorite:", error);
+      Alert.alert('Error', 'Failed to update favorites');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-
-    // const handleRequest = () => {
-    //     if (hasRequested) {
-    //         setShowSnackbar(true);
-    //     } else {
-    //         setShowSnackbar(false);
-    //     }
-    // };
-
-    // const closeSnackbar = () => setShowSnackbar(false);
-    // const uniqueAccesses = [...new Set(land.Accesses.map(access => access.options))];
-    // const uniqueViews = [...new Set(land.Views.map(view => view.options))];
-
+  const ListOptions = () => {
+    const optionsList = [
+      {
+        title: 'See all houses',
+        img: require('./assets/villa.jpg'),
+        action: () => navigation.navigate('SeeAllHouses'),
+      },
+      {
+        title: 'See all lands',
+        img: require('./assets/land2.jpg'),
+        action: () => navigation.navigate('SeeAllLands'),
+      },
+    ];
 
     return (
-        <ScrollView style={styles.container}>
-            <Image source={{ uri: land.image }} style={styles.image} />
-            <Text style={styles.title}>{land.title}</Text>
-
-            <View style={styles.iconContainer}>
-                <TouchableOpacity onPress={() => {}}>
-                    <Icon name="heart" size={30} color={COLORS.dark} solid />
-                    
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('chat', { roomId: `room_${land.id}`, userId: user.id, userName: user.username })}>
-                    <Icon name="comments" size={30} color={COLORS.dark} />
-                </TouchableOpacity>
+      <View style={styles.optionListContainer}>
+        {optionsList.map((option, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={option.action}
+            style={styles.optionCard}
+            activeOpacity={0.8}
+          >
+            <Image source={option.img} style={styles.optionCardImage} />
+            <View style={styles.optionCardContent}>
+              <Text style={styles.optionCardTitle}>{option.title}</Text>
             </View>
-            <View style={styles.detailsSection}>
-    <Text style={styles.price}>
-        <Icon1 name="monetization-on" size={15} color="#4CAF50" /> {land.price}
-    </Text>
-    <Text style={styles.price}>
-        <Icon name="envelope" size={15} color="#FF9800" /> {land.User.email}
-    </Text>
-    <Text style={styles.price}>
-        <Icon2 name="phone" size={15} color="#2196F3" /> {land.User.phoneNumber}
-    </Text>
-
-    <Text style={styles.location}>
-        <Icon2 name="location-pin" size={15} color="#F44336" /> {land.User.location}
-    </Text>
-    <Button
-        icon={<Icon name="arrow-right" size={15} color="white" />}
-        title={hasRequested ? 'You have already sent a request' : `Contact ${land.User.firstName}`}
-        buttonStyle={styles.contactButton}
-        onPress={() => navigation.navigate('TermeCondition', { user,land })}
-        disabled={hasRequested}
-    />
-</View>
-            {/* <PropertyDetail category="Access" details={land.Accesses} />
-            <PropertyDetail category="View" details={land.Views} /> */}
-            <Text style={styles.description}>{land.description}</Text>
-            
-        </ScrollView>
+          </TouchableOpacity>
+        ))}
+      </View>
     );
+  };
+
+  const toggleCard = (id) => {
+    setPressedCard(pressedCard === id ? null : id);
+  };
+
+  const renderHouseItem = ({ item }) => {
+    const isFavorite = favorites.has(item.id);
+    return (
+      <Pressable onPress={() => toggleCard(item.id)}>
+        <View style={styles.card}>
+          <Image
+            source={{ uri: item.Media[0]?.link || 'https://cdn.pixabay.com/photo/2014/11/21/17/17/house-540796_1280.jpg' }}
+            style={styles.cardImage}
+          />
+          <View style={styles.cardContent}>
+            <View style={styles.cardHeader}>
+              <Text style={styles.cardType}>{item.propertyType}</Text>
+              <View style={styles.iconContainer}>
+                <View style={styles.rating}>
+                  <Icon name="star" size={20} color="#FFD700" />
+                  <Text style={styles.ratingText}>{item.rating || '4.5'}</Text>
+                </View>
+                <TouchableOpacity
+                  style={[styles.favoriteButton, isFavorite && styles.favoriteButtonActive]}
+                  onPress={() => toggleFavorite(item.id)}
+                >
+                  <Icon name={isFavorite ? "favorite" : "favorite-border"} size={20} color={isFavorite ? COLORS.red : COLORS.yellow} />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <Text style={styles.cardPrice}>${item.price}/month</Text>
+            <Text style={styles.cardTitle}>{item.title}</Text>
+            <Text style={styles.cardLocation}>{item.location}</Text>
+            {pressedCard === item.id && (
+              <View style={styles.iconsContainer}>
+                <View style={styles.iconRow}>
+                  <Icon name="bathtub" size={20} color="#000" />
+                  <Text style={styles.iconText}>{item.numberbathrooms}</Text>
+                </View>
+                <View style={styles.iconRow}>
+                  <Icon name="king-bed" size={20} color="#000" />
+                  <Text style={styles.iconText}>{item.numberbedrooms}</Text>
+                </View>
+                <View style={styles.iconRow}>
+                  <Icon name="garage" size={20} color="#000" />
+                  <Text style={styles.iconText}>{item.garage}</Text>
+                </View>
+                <View style={styles.iconRow}>
+                  <Icon name="local-parking" size={20} color="#000" />
+                  <Text style={styles.iconText}>{item.parking ? 'Yes' : 'No'}</Text>
+                </View>
+                <View style={styles.iconRow}>
+                  <Icon name="check-circle" size={20} color={item.isVerified ? '#00FF00' : '#FF0000'} />
+                  <Text style={styles.iconText}>{item.isVerified ? 'Verified' : 'Not Verified'}</Text>
+                </View>
+                <View style={styles.iconRow}>
+                  <Icon name="attach-money" size={20} color="#000" />
+                  <Text style={styles.iconText}>{item.purchaseoption}</Text>
+                </View>
+                <View style={styles.iconRow}>
+                  <Icon name="home" size={20} color="#000" />
+                  <Text style={styles.iconText}>{item.houseAge}</Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.detailsButton}
+                  onPress={() => navigation.navigate('viewDetHouse', { house: item })}
+                >
+                  <Text style={styles.detailsButtonText}>View Details</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        </View>
+      </Pressable>
+    );
+  };
+
+  const renderHeader = () => (
+    <View>
+      <View style={styles.header}>
+        <View style={styles.searchInputContainer}>
+          <Icon name="search" style={styles.searchIcon} />
+          <TextInput
+            placeholder="Search address, city, location"
+            placeholderTextColor="#888"
+            style={{ flex: 1 }}
+          />
+        </View>
+        <TouchableOpacity style={styles.sortBtn} onPress={() => navigation.navigate('FilterScreen')}>
+          <Icon name="tune" color={COLORS.white} size={28} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.favoriteBtn} onPress={() => navigation.navigate('FavoritesScreen')}>
+          <Icon name="favorite" color={COLORS.white} size={28} />
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.sectionTitle}>Featured Properties</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      ) : (
+        <FeaturedScroller
+          houses={houses}
+          navigation={navigation}
+          toggleCard={toggleCard}
+          pressedCard={pressedCard}
+        />
+      )}
+      <ListOptions />
+      <Text style={styles.sectionTitle}>All Properties</Text>
+    </View>
+  );
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <StatusBar backgroundColor={COLORS.white} barStyle="dark-content" />
+      <FlatList
+        data={houses}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderHouseItem}
+        contentContainerStyle={styles.listContainer}
+        numColumns={2}
+        ListHeaderComponent={renderHeader}
+      />
+    </SafeAreaView>
+  );
 };
 
-// Styles
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: COLORS.white,
-    },
-    image: {
-        width: '100%',
-        height: 300,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginTop: 10,
-        marginHorizontal: 20,
-    },
-    iconContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginHorizontal: 20,
-        marginTop: 10,
-    },
-    detailsSection: {
-        marginHorizontal: 20,
-        marginTop: 20,
-    },
-    price: {
-        fontSize: 22,
-        color: COLORS.primary,
-        fontWeight: 'bold',
-    },
-    location: {
-        fontSize: 18,
-        color: COLORS.dark,
-        marginVertical: 5,
-    },
-    contactButton: {
-        backgroundColor: COLORS.primary,
-        borderRadius: 5,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 4,
-    },
-    detailContainer: {
-        marginHorizontal: 20,
-        marginTop: 20,
-    },
-    categoryTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        color: '#333',
-    },
-    detailRow: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-    },
-    detailBox: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#f0f0f0',
-        borderRadius: 20,
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        marginRight: 10,
-        marginBottom: 10,
-    },
-    detailText: {
-        marginLeft: 10,
-        fontSize: 16,
-    },
-    description: {
-        fontSize: 16,
-        marginHorizontal: 20,
-        marginTop: 20,
-    },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 20,
+    backgroundColor: '#f8f8f8',
+    alignItems: 'center',
+  },
+  searchInputContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: '#ffffff',
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    marginRight: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 3,
+    borderWidth: 0.5,
+    borderColor: '#ddd',
+  },
+  searchIcon: {
+    marginRight: 10,
+    color: '#888',
+    fontSize: 27,
+  },
+  favoriteBtn: {
+    padding: 10,
+    backgroundColor: COLORS.primary,
+    borderRadius: 25,
+    marginLeft: 10,
+  },
+  sortBtn: {
+    padding: 10,
+    backgroundColor: COLORS.primary,
+    borderRadius: 25,
+  },
+  optionListContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 20,
+    paddingHorizontal: 10,
+  },
+  optionCard: {
+    width: width / 2.3,
+    backgroundColor: COLORS.white,
+    borderRadius: 15,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 3,
+    overflow: 'hidden',
+  },
+  optionCardImage: {
+    width: '100%',
+    height: 120,
+  },
+  optionCardContent: {
+    padding: 10,
+    alignItems: 'center',
+  },
+  optionCardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.dark,
+    textAlign: 'center',
+  },
+  featuredListContainer: {
+    paddingVertical: 10,
+    paddingLeft: 20,
+  },
+  listContainer: {
+    padding: 10,
+  },
+  card: {
+    elevation: 2,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginBottom: 20,
+    marginHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    width: (width / 2) - 20,
+    overflow: 'hidden',
+  },
+  cardImage: {
+    width: '100%',
+    height: 120,
+  },
+  cardContent: {
+    padding: 10,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cardType: {
+    fontSize: 14,
+    color: '#888',
+    backgroundColor: '#e0e0e0',
+    borderRadius: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rating: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 5,
+  },
+  ratingText: {
+    marginLeft: 5,
+    color: '#FFD700',
+    fontSize: 16,
+  },
+  favoriteButton: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 5,
+    elevation: 5,
+  },
+  favoriteButtonActive: {
+    backgroundColor: 'white',
+  },
+  cardPrice: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    marginVertical: 5,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  cardLocation: {
+    fontSize: 12,
+    color: '#888',
+    marginVertical: 5,
+  },
+  iconsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 10,
+  },
+  iconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10,
+    marginBottom: 10,
+  },
+  iconText: {
+    marginLeft: 5,
+    fontSize: 14,
+  },
+  detailsButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    marginTop: 10,
+  },
+  detailsButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: COLORS.dark,
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
 });
 
-export default ViewLandDetails;
+export default HomeScreen;

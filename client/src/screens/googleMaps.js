@@ -99,7 +99,7 @@ const GoogleMaps = () => {
 
   async function fetchHouses() {
     try {
-      const response = await fetch('http://192.168.11.62:4000/api/house/allhouses');
+      const response = await fetch('http://192.168.103.15:4000/api/house/allhouses');
       const json = await response.json();
       setHouses(
         json.map((house) => ({
@@ -118,7 +118,7 @@ const GoogleMaps = () => {
 
   async function fetchLands() {
     try {
-      const response = await fetch('http://192.168.11.62:4000/api/land/alllands');
+      const response = await fetch('http://192.168.103.15:4000/api/land/alllands');
       const json = await response.json();
       setLands(
         json.map((land) => ({

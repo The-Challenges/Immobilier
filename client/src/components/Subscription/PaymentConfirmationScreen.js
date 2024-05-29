@@ -7,7 +7,7 @@ const PaymentConfirmationScreen = ({ navigation }) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate('HomeScreen');
+      navigation.navigate('HomeTabs');
     }, 3000);
 
     // Start the fade-in animation
@@ -24,8 +24,8 @@ const PaymentConfirmationScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Animated.View style={{ ...styles.content, opacity: fadeAnim }}>
-        <Icon name="check-circle" size={100} color="#4a90e2" style={styles.icon} />
+      <Animated.View style={{ opacity: fadeAnim, alignItems: 'center' }}>
+        <Icon name="check-circle" size={100} color="#4a90e2" />
         <Text style={styles.text}>Payment Confirmed!</Text>
         <Text style={styles.subText}>Thank you for your purchase.</Text>
       </Animated.View>
@@ -38,20 +38,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#fff',  // Set the background to white
     padding: 20,
-  },
-  content: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 30,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
   },
   icon: {
     marginBottom: 20,

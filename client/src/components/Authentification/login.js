@@ -25,7 +25,8 @@ const Signin = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.103.2:4000/api/auth/login', { email, password });
+
+      const response = await axios.post('http://192.168.11.234:4000/api/auth/login', { email, password });
       if (response.data && response.data.user) {
         const { user, token } = response.data;
         console.log(user.userId); // Make sure this logs the expected value
@@ -47,7 +48,7 @@ const Signin = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-      <Image source={{ uri: 'https://d1csarkz8obe9u.cloudfront.net/posterpreviews/real-estate-logo%2C-real-estate-company-logo-design-template-8ee9c59179ae1793f475915d6f19f9ff_screen.jpg?ts=1665168739' }} style={styles.logo} />
+      <Image source={{ uri: 'https://i.ibb.co/dmkt6n2/Screenshot-33.png' }} style={styles.logo} />
       <Text style={styles.title}>Login to Your Account</Text>
       <View style={styles.inputContainer}>
         <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} />

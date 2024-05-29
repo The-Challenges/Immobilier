@@ -37,8 +37,8 @@ const RequestItem = ({ request, onConfirm, onDecline, confirmationVisible, decli
         </Card.Content>
         {!confirmationVisible && !declineVisible && (
           <Card.Actions style={styles.buttonContainer}>
-            <Button mode="contained" onPress={() => onConfirm(request.id)} style={[styles.confirmButton, { backgroundColor: '#F5F7C4' }]} labelStyle={{ color: 'black' }}>Confirm</Button>
-            <Button mode="contained" onPress={() => onDecline(request.id)} style={[styles.declineButton, { backgroundColor: '#F5F7C4' }]} labelStyle={{ color: 'black' }}>Decline</Button>
+            <Button mode="contained" onPress={() => onConfirm(request.id)} style={[styles.confirmButton, { backgroundColor: '#4a90e2' }]} labelStyle={{ color: 'white' }}>Confirm</Button>
+            <Button mode="contained" onPress={() => onDecline(request.id)} style={[styles.declineButton, { backgroundColor: '#4a90e2' }]} labelStyle={{ color: 'white' }}>Decline</Button>
           </Card.Actions>
         )}
         {confirmationVisible && (
@@ -81,7 +81,7 @@ const RequestsList = () => {
   const fetchRequests = async (userId, savedStatuses = {}) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.103.2:4000/api/request/seller/${userId}/land`);
+      const response = await axios.get(`http://192.168.1.18:4000/api/request/seller/${userId}/land`);
       if (response.data && Array.isArray(response.data)) {
         const propertiesWithRequests = response.data.filter(property => property.Users && property.Users.length > 0);
         const updatedRequests = propertiesWithRequests.map(request => ({
@@ -100,7 +100,7 @@ const RequestsList = () => {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.post(`http://192.168.103.2:4000/api/request/updateLandRequestStatus/${id}`, { status });
+      await axios.post(`http://192.168.1.18:4000/api/request/updateLandRequestStatus/${id}`, { status });
       const updatedRequests = requests.map(request => ({
         ...request,
         confirmationVisible: status === 'Confirmed',
@@ -126,18 +126,25 @@ const RequestsList = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      {requests.map(request => (
-        <RequestItem
-          key={request.id}
-          request={request}
-          onConfirm={handleConfirm}
-          onDecline={handleDecline}
-          confirmationVisible={request.confirmationVisible}
-          declineVisible={request.declineVisible}
-        />
-      ))}
+      {requests.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyMessage}>No land requests available at the moment.</Text>
+        </View>
+      ) : (
+        requests.map(request => (
+          <RequestItem
+            key={request.id}
+            request={request}
+            onConfirm={() => handleConfirm(request.id)}
+            onDecline={() => handleDecline(request.id)}
+            confirmationVisible={request.confirmationVisible}
+            declineVisible={request.declineVisible}
+          />
+        ))
+      )}
     </ScrollView>
   );
+  
 };
 
 
@@ -147,6 +154,17 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingHorizontal: 10,
     backgroundColor: '#F4F4F9',  
+  },
+  emptyContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 100, // Adjust the padding as needed
+  },
+  emptyMessage: {
+    fontSize: 20,
+    color: '#666666',
+    fontFamily: 'Lato-Regular',
   },
   requestItem: {
     marginBottom: 20,

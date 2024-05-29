@@ -1,3 +1,3 @@
 
-export const API_AD='http://192.168.103.2:4000'    
+export const API_AD='http://192.168.11.234:4000'    
 

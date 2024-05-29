@@ -63,16 +63,16 @@ const RequestItem = ({ request, onConfirm, onDecline, confirmationVisible, decli
             <Button
               mode="contained"
               onPress={() => onConfirm(request.id)}
-              style={[styles.confirmButton, { backgroundColor: '#F5F7C4' }]}
-              labelStyle={{ color: 'black' }}
+              style={[styles.confirmButton, { backgroundColor: '#4a90e2' }]}
+              labelStyle={{ color: 'white' }}
             >
               Confirm
             </Button>
             <Button
               mode="contained"
               onPress={() => onDecline(request.id)}
-              style={[styles.declineButton, { backgroundColor: '#F5F7C4' }]}
-              labelStyle={{ color: 'black' }}
+              style={[styles.declineButton, { backgroundColor: '#4a90e2' }]}
+              labelStyle={{ color: 'white' }}
             >
               Decline
             </Button>
@@ -125,7 +125,7 @@ const RequestsList = () => {
 
   const fetchRequests = async (userId, savedStatuses) => {
     try {
-      const response = await axios.get(`http://192.168.103.2:4000/api/request/seller/${userId}/house`);
+      const response = await axios.get(`http://192.168.11.234:4000/api/request/seller/${userId}/house`);
       if (Array.isArray(response.data)) {
         const housesWithRequests = response.data.map(house => ({
           ...house,
@@ -143,7 +143,7 @@ const RequestsList = () => {
 
   const handleStatusChange = async (id, status) => {
     try {
-      await axios.post(`http://192.168.103.2:4000/api/request/updateStatus/${id}`, { status });
+      await axios.post(`http://192.168.11.234:4000/api/request/updateStatus/${id}`, { status });
       const updatedRequests = requests.map((request) => {
         if (request.id === id) {
           return {
@@ -173,16 +173,22 @@ const RequestsList = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      {requests.map(request => (
-        <RequestItem
-          key={request.id}
-          request={request}
-          onConfirm={() => handleStatusChange(request.id, 'Confirmed')}
-          onDecline={() => handleStatusChange(request.id, 'Rejected')}
-          confirmationVisible={request.confirmationVisible}
-          declineVisible={request.declineVisible}
-        />
-      ))}
+      {requests.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyMessage}>No requests available at the moment.</Text>
+        </View>
+      ) : (
+        requests.map(request => (
+          <RequestItem
+            key={request.id}
+            request={request}
+            onConfirm={() => handleStatusChange(request.id, 'Confirmed')}
+            onDecline={() => handleStatusChange(request.id, 'Rejected')}
+            confirmationVisible={request.confirmationVisible}
+            declineVisible={request.declineVisible}
+          />
+        ))
+      )}
     </ScrollView>
   );
 };
@@ -194,6 +200,17 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingHorizontal: 10,
     backgroundColor: '#F4F4F9', 
+  },
+  emptyContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 100, // Adjust the padding as needed
+  },
+  emptyMessage: {
+    fontSize: 20,
+    color: '#666666',
+    fontFamily: 'Lato-Regular',
   },
   requestItem: {
     marginBottom: 20,

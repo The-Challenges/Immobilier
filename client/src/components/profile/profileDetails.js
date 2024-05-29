@@ -16,12 +16,11 @@ import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import storage from '../Authentification/storage'; // Import your storage module
 
+
 const getUserId = async () => {
   try {
-    console.log('Retrieving user ID...');
     const userData = await storage.load({ key: 'loginState' });
-    console.log('User data retrieved:', userData);
-    return userData.user.userId; // Accessing userId correctly
+    return userData.user.userId;
   } catch (error) {
     console.error('Failed to retrieve user data:', error);
     return null;
@@ -30,13 +29,7 @@ const getUserId = async () => {
 
 const fetchUserProfile = async (userId) => {
   try {
-    console.log('Fetching user profile for user ID:', userId);
-
-    if (!userId) {
-      throw new Error('User ID is missing');
-    }
-
-    const response = await fetch(`http://192.168.103.2:4000/api/user/${userId}`, {
+    const response = await fetch(`http://192.168.11.234:4000/api/user/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -45,18 +38,29 @@ const fetchUserProfile = async (userId) => {
 
     if (response.ok) {
       const userData = await response.json();
-      console.log('User profile data retrieved:', userData);
       return userData;
     } else {
-      const errorData = await response.json(); // Fetching error response from server
+      const errorData = await response.json();
       throw new Error(errorData.error || 'Failed to fetch user profile');
     }
   } catch (error) {
     console.error('Error fetching user profile:', error);
-    Alert.alert('Error', error.message || 'Failed to fetch user profile'); // Display error message
+    Alert.alert('Error', error.message || 'Failed to fetch user profile');
     return null;
   }
 };
+
+const checkVerificationStatus = async () => {
+  try {
+    const verificationStatus = await storage.load({ key: 'verificationStatus' });
+    return verificationStatus.verified;
+  } catch (error) {
+    return false;
+  }
+};
+
+
+
 
 const Action = ({ icon, title, onPress, iconColor = '#4F8EF7' }) => (
   <Pressable onPress={onPress} style={styles.action}>
@@ -77,30 +81,28 @@ const UserProfile = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [verified, setVerified] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
 
   const loadUserData = async () => {
     try {
-      console.log('Starting user data fetch...');
       const userId = await getUserId();
-      console.log('Retrieved userId:', userId); // Log the userId
       if (userId) {
         const profileData = await fetchUserProfile(userId);
         if (profileData) {
           setUserData(profileData);
+          const isVerified = await checkVerificationStatus();
+          setVerified(isVerified);
         } else {
-          console.error('Failed to fetch profile data.');
           setError('Failed to load user data.');
         }
       } else {
-        console.error('User ID is null.');
         setError('User ID is missing.');
       }
     } catch (error) {
-      console.error('An unexpected error occurred:', error);
       setError('An unexpected error occurred.');
     } finally {
-      setLoading(false); // Set loading to false after data is fetched or fetch failed
-      console.log('User data fetch completed.');
+      setLoading(false);
     }
   };
 
@@ -133,6 +135,34 @@ const UserProfile = () => {
       </View>
     );
   }
+  const handleLogout = async () => {
+    setLogoutLoading(true); // Start logout loading
+    try {
+      // Clear necessary storage items
+      await storage.remove({ key: 'verificationStatus' });
+      await storage.remove({ key: 'loginState' });
+
+      // Introduce a delay before navigating
+      setTimeout(() => {
+        setLogoutLoading(false); // Stop logout loading
+        console.log('Logout successful');
+        navigation.navigate('Login');
+      }, 2000); // Delay of 2 seconds
+    } catch (error) {
+      setLogoutLoading(false); // Stop logout loading on error
+      console.error('Logout failed:', error);
+      Alert.alert('Logout Failed', 'Could not log out. Please try again.');
+    }
+  };
+
+  if (logoutLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4F8EF7" />
+        <Text style={styles.loadingText}>Logging out...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -146,7 +176,9 @@ const UserProfile = () => {
             )}
             <View style={styles.profileTextContainer}>
               <Text style={styles.profileName}>{userData.firstName}</Text>
-              <Text style={styles.profileEmail}>{userData.email}</Text>
+              {verified && (
+                <Icon name="verified" size={20} color="#4F8EF7" style={styles.verifiedIcon} />
+              )}
             </View>
           </View>
         </View>
@@ -167,10 +199,7 @@ const UserProfile = () => {
         </View>
 
         <View style={styles.actionList}>
-          <Action title={'Edit Profile'} icon={'edit'} onPress={() => {
-            console.log('Navigating to EditProfile with userId:', userData.id); // Ensure you pass `userData.id` instead of `userData.userId`
-            navigation.navigate('EditProfile', { userId: userData.id });
-          }} />
+          <Action title={'Edit Profile'} icon={'edit'} onPress={() => navigation.navigate('EditProfile', { userId: userData.id })} />
           <Action title={'Notification'} icon={'bell'} onPress={() => navigation.navigate('Notifications')} />
           <Action title={'Security'} icon={'lock'} onPress={() => { }} />
           <Action title={'Appearance'} icon={'eye'} onPress={() => { }} />
@@ -178,12 +207,15 @@ const UserProfile = () => {
           <Action title={'Invite Friends'} icon={'user-plus'} onPress={() => { }} />
           <Action title={'Listings'} icon={'list'} onPress={() => navigation.navigate('apartement')} />
           <Action title={'Contact'} icon={'phone'} onPress={() => navigation.navigate('Contact')} />
-          <Action title={'My House Requests'} icon={'home'} onPress={() => navigation.navigate('Received')} />
-          <Action title={'My Lands Requests'} icon={'map'} onPress={() => navigation.navigate('requestreceivedlands')} />
+          <Action title={'Requests Houses Received'} icon={'home'} onPress={() => navigation.navigate('Received')} />
+          <Action title={'Requests Houses Sended'} icon={'home'} onPress={() => navigation.navigate('requeststatus')} />
+          <Action title={'Requests Lands Received'} icon={'map'} onPress={() => navigation.navigate('requestreceivedlands')} />
+          <Action title={'Requests Lands Sended'} icon={'map'} onPress={() => navigation.navigate('requeststatuslands')} />
+
         </View>
 
         <View style={styles.logoutContainer}>
-          <Action title={'Logout'} icon={'log-out'} onPress={() => navigation.navigate('profile')} iconColor={'#FF0000'} />
+        <Action title={'Logout'} icon={'log-out'} onPress={handleLogout} iconColor={'#FF0000'} />
         </View>
       </ScrollView>
 
@@ -274,6 +306,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f8f8f8',
   },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#4F8EF7',
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -312,10 +349,19 @@ const styles = StyleSheet.create({
   profileTextContainer: {
     flex: 1,
   },
+  profileTextContainer: {
+    flex: 1,
+    flexDirection: 'row', // Ensure the items are in a row
+    alignItems: 'center', // Align items vertically in the center
+  },
   profileName: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
+  },
+  verifiedIcon: {
+    marginLeft: 5, // Adjust if more space is needed
+    alignSelf: 'center', // Align the icon vertically with the text
   },
   profileEmail: {
     fontSize: 14,

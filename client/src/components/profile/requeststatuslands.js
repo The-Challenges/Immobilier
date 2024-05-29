@@ -34,7 +34,7 @@ const RequestStatus = ({ request, image }) => {
             </Text>
             {request.status === 'Confirmed' && (
               <View style={styles.iconsBelowStatus}>
-                <TouchableOpacity onPress={() => navigation.navigate('ChatPage')}>
+                <TouchableOpacity onPress={() => navigation.navigate('chat')}>
                   <MaterialCommunityIcons name="message-text" size={30} color="#4CAF50" style={styles.icon} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate('MapPage')}>
