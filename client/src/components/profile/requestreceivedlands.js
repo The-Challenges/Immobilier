@@ -81,7 +81,7 @@ const RequestsList = () => {
   const fetchRequests = async (userId, savedStatuses = {}) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.103.2:4000/api/request/seller/${userId}/land`);
+      const response = await axios.get(`http://192.168.103.4:4000/api/request/seller/${userId}/land`);
       if (response.data && Array.isArray(response.data)) {
         const propertiesWithRequests = response.data.filter(property => property.Users && property.Users.length > 0);
         const updatedRequests = propertiesWithRequests.map(request => ({
@@ -100,7 +100,7 @@ const RequestsList = () => {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.post(`http://192.168.103.2:4000/api/request/updateLandRequestStatus/${id}`, { status });
+      await axios.post(`http://192.168.103.4:4000/api/request/updateLandRequestStatus/${id}`, { status });
       const updatedRequests = requests.map(request => ({
         ...request,
         confirmationVisible: status === 'Confirmed',

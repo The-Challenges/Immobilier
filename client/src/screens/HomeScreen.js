@@ -37,12 +37,18 @@ const HomeScreen = ({ navigation }) => {
   const fetchHouses = useCallback(async (page) => {
     setLoadingMore(true);
     try {
-      const response = await axios.get(`http://192.168.1.3:4000/api/house/allhouses?page=${page}&limit=15`);
+      const response = await axios.get(`http://192.168.103.4:4000/api/house/allhouses?page=${page}&limit=15`);
       const fetchedHouses = response.data;
       if (fetchedHouses.length < 15) {
         setHasMore(false);
       }
-      setHouses((prevHouses) => [...prevHouses, ...fetchedHouses]);
+      setHouses((prevHouses) => {
+        if (page === 1) {
+          return fetchedHouses;
+        } else {
+          return [...prevHouses, ...fetchedHouses];
+        }
+      }); // Prepend new houses
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch houses');
       console.error('Failed to fetch houses:', error);
@@ -51,11 +57,12 @@ const HomeScreen = ({ navigation }) => {
       setLoadingMore(false);
     }
   }, []);
+  
 
   const fetchFavorites = useCallback(async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.1.3:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.103.4:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
@@ -70,7 +77,7 @@ const HomeScreen = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.1.3:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`http://192.168.103.4:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {
@@ -200,6 +207,7 @@ const HomeScreen = ({ navigation }) => {
       const nextPage = page + 1;
       setPage(nextPage);
       fetchHouses(nextPage);
+      flatListRef.current.scrollToOffset({ animated: true, offset: 0 }); // Scroll to top
     }
   }, [hasMore, loadingMore, page]);
 
@@ -466,4 +474,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-

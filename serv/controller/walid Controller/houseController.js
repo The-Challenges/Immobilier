@@ -37,34 +37,34 @@ module.exports = {
                 include: [
                     {
                         model: db.Media,
-                        attributes: ['type', 'name', 'link'] 
+                        attributes: ['type', 'name', 'link']
                     },
                     {
                         model: db.Indoor,
-                        attributes: ['options'] 
+                        attributes: ['options']
                     },
                     {
                         model: db.Climate,
-                        attributes: ['options'] 
+                        attributes: ['options']
                     },
                     {
                         model: db.Outdoor,
-                        attributes: ['options'] 
+                        attributes: ['options']
                     },
                     {
-                        model: db.View, 
-                        attributes: ['options'], 
+                        model: db.View,
+                        attributes: ['options']
                     }
-                    
-                ]
+                ],
             });
-            console.log(houses); 
-
-            res.json(houses);
+                    
+            // console.log(houses);
+    
         } catch (error) {
             res.status(500).json({ error: `error fetching houses: ${error.message}` });
         }
     },
+    
 
 
      getHouseCoordinates : async (req, res) => {

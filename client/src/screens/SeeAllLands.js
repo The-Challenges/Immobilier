@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, View, FlatList, Text, Alert, ActivityIndicator, Dimensions, Image
+  StyleSheet, View, FlatList, Text, Alert, ActivityIndicator, Dimensions, Image, TouchableOpacity
 } from 'react-native';
 import axios from 'axios';
 import { Card, Button, IconButton } from 'react-native-paper';
@@ -17,9 +17,12 @@ const { width } = Dimensions.get('window');
 const SeeAllLands = ({ navigation }) => {
   const [lands, setLands] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
   const [userId, setUserId] = useState(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   const navigateDetails = (item) => {
     navigation.navigate('ViewLandDetails', { land: item, user, landId: item.id, userId: item.UserId });
@@ -27,7 +30,7 @@ const SeeAllLands = ({ navigation }) => {
   };
 
   useEffect(() => {
-    fetchLands();
+    fetchLands(1);
     getUserId();
   }, []);
 
@@ -78,15 +81,22 @@ const SeeAllLands = ({ navigation }) => {
     }
   };
 
-  const fetchLands = async () => {
-    setLoading(true);
+  const fetchLands = async (page) => {
+    if (!hasMore && page !== 1) return;
+    setLoading(page === 1);
+    setLoadingMore(page !== 1);
     try {
-      const response = await axios.get(`${API_AD}/api/land/all`);
-      setLands(response.data);
+      const response = await axios.get(`${API_AD}/api/land/all?page=${page}&limit=15`);
+      const fetchedLands = response.data;
+      if (fetchedLands.length < 15) {
+        setHasMore(false);
+      }
+      setLands((prevLands) => page === 1 ? fetchedLands : [...prevLands, ...fetchedLands]);
     } catch (error) {
       handleFetchError();
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
@@ -150,7 +160,28 @@ const SeeAllLands = ({ navigation }) => {
     );
   };
 
-  if (loading) {
+  const handleLoadMore = () => {
+    if (hasMore && !loadingMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchLands(nextPage);
+    }
+  };
+
+  const renderFooter = () => {
+    if (!hasMore) return null;
+    return (
+      <TouchableOpacity style={styles.loadMoreButton} onPress={handleLoadMore}>
+        {loadingMore ? (
+          <ActivityIndicator size="small" color={COLORS.white} />
+        ) : (
+          <Text style={styles.loadMoreButtonText}>Load More</Text>
+        )}
+      </TouchableOpacity>
+    );
+  };
+
+  if (loading && page === 1) {
     return (
       <View style={styles.loader}>
         <ActivityIndicator size="large" color={COLORS.primary} />
@@ -165,6 +196,7 @@ const SeeAllLands = ({ navigation }) => {
         keyExtractor={item => `${item.id}`}
         renderItem={({ item }) => <LandCard land={item} />}
         contentContainerStyle={styles.listContainer}
+        ListFooterComponent={renderFooter}
       />
     </View>
   );
@@ -253,6 +285,18 @@ const styles = StyleSheet.create({
     height: '100%',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
+  },
+  loadMoreButton: {
+    padding: 10,
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  loadMoreButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.white,
   },
 });
 

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/SimpleLineIcons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import COLORS from './consts/colors';
-import { Button, Card, Overlay } from 'react-native-elements';
+import { Button, Card } from 'react-native-elements';
 
 // Define icons for different categories
 const featureIcons = {
@@ -68,18 +68,18 @@ const getIcon = (name, category) => {
   return <Icon name={iconName} size={20} color={COLORS.dark} />;
 };
 
-// Component for displaying details with icons
+// Component for displaying details with icons in a horizontal scroll view
 const PropertyDetail = ({ category, details }) => (
   <Card containerStyle={styles.cardContainer}>
     <Text style={styles.categoryTitle}>{category}</Text>
-    <View style={styles.detailRow}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalScrollView}>
       {details.map((detail, index) => (
         <View key={index} style={styles.detailBox}>
           {getIcon(detail, category)}
           <Text style={styles.detailText}>{detail}</Text>
         </View>
       ))}
-    </View>
+    </ScrollView>
   </Card>
 );
 
@@ -97,7 +97,7 @@ const ViewHouseDetails = ({ route, navigation }) => {
   const { house, user } = route.params;
   const [hasRequested, setHasRequested] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [overlayVisible, setOverlayVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     checkIfRequested();
@@ -105,7 +105,7 @@ const ViewHouseDetails = ({ route, navigation }) => {
 
   const checkIfRequested = async () => {
     try {
-      const response = await axios.get(`http://192.168.1.3:4000/api/reqtest/check`, {
+      const response = await axios.get(`http://192.168.103.4:4000/api/reqtest/check`, {
         params: {
           userId: user.id,
           houseId: house.id
@@ -133,36 +133,20 @@ const ViewHouseDetails = ({ route, navigation }) => {
     <ScrollView style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.imageContainer}>
-          {house.Media.length > 0 ? (
+          {house.Media && house.Media.length > 0 ? (
             <Image source={{ uri: house.Media[0].link }} style={styles.image} />
           ) : (
             <Text style={styles.noImageText}>No image available</Text>
           )}
         </View>
-        <Text style={styles.title}>{house.title}</Text>
-
-        <View style={styles.iconContainer}>
-          <TouchableOpacity onPress={() => {}}>
-            <Icon name="heart" size={30} color={COLORS.dark} solid />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('chat', { roomId: `room_${house.id}`, userId: user.id, userName: user.username })}>
-            <Icon name="comments" size={30} color={COLORS.dark} />
-          </TouchableOpacity>
+        <View style={styles.headerInfo}>
+          <Text style={styles.title}>{house.title}</Text>
+          <Text style={styles.location}>Surabaya, Indonesia</Text>
+          <Text style={styles.price}>${house.price}/month</Text>
         </View>
       </View>
 
-      <View style={styles.contactDetails}>
-        <Text style={styles.contactDetail}><Icon name="envelope" size={15} color="#FF9800" /> {house.User.email}</Text>
-        <Text style={styles.contactDetail}><Icon2 name="phone" size={15} color="#2196F3" /> {house.User.phoneNumber}</Text>
-        <Text style={styles.contactDetail}><Icon2 name="location-pin" size={15} color="#F44336" /> {house.User.location}</Text>
-      </View>
-
-      <View style={styles.detailContainer}>
-        <Text style={styles.price}>${house.price}</Text>
-        <Text style={styles.type}>{house.propertyType}</Text>
-      </View>
-
-      <View style={styles.section}>
+      <View style={styles.contentContainer}>
         <Text style={styles.sectionTitle}>General Information</Text>
         <Text style={styles.text}><Icon1 name="bed" size={18} /> Bedrooms: {house.numberbedrooms}</Text>
         <Text style={styles.text}><Icon1 name="bathtub" size={18} /> Bathrooms: {house.numberbathrooms}</Text>
@@ -171,31 +155,53 @@ const ViewHouseDetails = ({ route, navigation }) => {
         <Text style={styles.text}><Icon name="money-check-alt" size={18} /> Purchase Option: {house.purchaseoption}</Text>
         <Text style={styles.text}><Icon name="building" size={18} /> Property Type: {house.propertyType}</Text>
         <Text style={styles.text}><Icon name="calendar-alt" size={18} /> House Age: {house.houseAge}</Text>
+
+        <PropertyDetail category="Indoor" details={house.Indoors.map(indoor => indoor.options)} />
+        <PropertyDetail category="Outdoor" details={house.Outdoors.map(outdoor => outdoor.options)} />
+        <PropertyDetail category="Climate features" details={house.Climates.map(climate => climate.options)} />
+        <PropertyDetail category="Views" details={house.Views.map(Views => Views.options)} />
+
+        <TouchableOpacity
+          style={styles.favoriteButton}
+          onPress={() => setModalVisible(true)}
+        >
+          <Icon name="heart" size={25} color={COLORS.red} />
+        </TouchableOpacity>
       </View>
 
-      <PropertyDetail category="Indoor" details={house.Indoors.map(indoor => indoor.options)} />
-      <PropertyDetail category="Outdoor" details={house.Outdoors.map(outdoor => outdoor.options)} />
-      <PropertyDetail category="Climate features" details={house.Climates.map(climate => climate.options)} />
-      <PropertyDetail category="Views" details={house.Views.map(Views => Views.options)} />
-
-      <Button
-        icon={<Icon name="arrow-right" size={15} color="white" />}
-        title={hasRequested ? 'You have already sent a request' : `Contact ${house.User.firstName}`}
-        buttonStyle={styles.contactButton}
-        onPress={() => setOverlayVisible(true)}
-        disabled={hasRequested}
-      />
-
-      <Text style={styles.description}>{house.description}</Text>
-
-      <Overlay isVisible={overlayVisible} onBackdropPress={() => setOverlayVisible(false)}>
-        <View style={styles.overlayContainer}>
-          <Text style={styles.overlayText}>Contact {house.User.firstName}</Text>
-          <Text style={styles.overlayText}>Email: {house.User.email}</Text>
-          <Text style={styles.overlayText}>Phone: {house.User.phoneNumber}</Text>
-          <Button title="Close" onPress={() => setOverlayVisible(false)} />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(!modalVisible)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            {house.Media && house.Media.length > 0 && (
+              <Image source={{ uri: house.Media[0].link }} style={styles.modalImage} />
+            )}
+            <Text style={styles.modalTitle}>{house.title}</Text>
+            <Text style={styles.modalLocation}>Surabaya, Indonesia</Text>
+            <Text style={styles.modalPrice}>${house.price}/month</Text>
+            <Text style={styles.modalText}>Remove from favorite?</Text>
+            <View style={styles.modalButtonContainer}>
+              <Button
+                title="Cancel"
+                buttonStyle={styles.cancelButton}
+                onPress={() => setModalVisible(!modalVisible)}
+              />
+              <Button
+                title="Yes, Remove"
+                buttonStyle={styles.removeButton}
+                onPress={() => {
+                  // Handle remove favorite action
+                  setModalVisible(!modalVisible);
+                }}
+              />
+            </View>
+          </View>
         </View>
-      </Overlay>
+      </Modal>
     </ScrollView>
   );
 };
@@ -220,25 +226,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: COLORS.white,
-    marginVertical: 10,
+    textAlign: 'center',
+  },
+  location: {
+    fontSize: 16,
+    color: COLORS.light,
+    textAlign: 'center',
+  },
+  price: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.light,
     textAlign: 'center',
   },
   imageContainer: {
     width: '90%',
-    height: 250,
-    marginBottom: 20,
+    height: 200,
     borderRadius: 15,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: COLORS.light,
-    shadowColor: COLORS.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
   },
   image: {
     width: '100%',
@@ -248,62 +258,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.grey,
     textAlign: 'center',
-    lineHeight: 250,
+    lineHeight: 200,
   },
-  iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '60%',
-    marginVertical: 20,
-  },
-  contactDetails: {
-    marginHorizontal: 20,
-    marginVertical: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-    borderRadius: 10,
-    backgroundColor: COLORS.white,
-    shadowColor: COLORS.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  contactDetail: {
-    fontSize: 18,
-    color: COLORS.dark,
-    marginBottom: 5,
-    flexDirection: 'row',
+  headerInfo: {
     alignItems: 'center',
+    marginTop: 10,
   },
-  detailContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: 20,
-    marginVertical: 10,
-  },
-  price: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.green,
-  },
-  type: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: COLORS.primary,
-  },
-  section: {
-    marginVertical: 20,
+  contentContainer: {
+    padding: 20,
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.primary,
     marginBottom: 10,
-    textAlign: 'center',
   },
   text: {
-    fontSize: 18,
+    fontSize: 16,
     color: COLORS.dark,
     marginBottom: 5,
   },
@@ -325,65 +296,92 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.primary,
   },
+  horizontalScrollView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   detailText: {
     marginLeft: 5,
     fontSize: 16,
     color: COLORS.dark,
   },
-  contactButton: {
-    backgroundColor: COLORS.primary,
+  favoriteButton: {
+    position: 'absolute',
+    right: 20,
+    top: 20,
+    backgroundColor: COLORS.white,
+    borderRadius: 50,
+    padding: 10,
+    shadowColor: COLORS.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalView: {
+    width: '80%',
+    backgroundColor: COLORS.white,
     borderRadius: 20,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    marginVertical: 10,
-    marginHorizontal: 20,
-    shadowColor: COLORS.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  description: {
-    fontSize: 18,
-    color: COLORS.dark,
-    marginVertical: 10,
-    marginHorizontal: 20,
-    textAlign: 'justify',
-    backgroundColor: COLORS.light,
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: COLORS.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  categoryTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  overlayContainer: {
     padding: 20,
     alignItems: 'center',
-  },
-  overlayText: {
-    fontSize: 18,
-    color: COLORS.dark,
-    marginBottom: 10,
-  },
-  cardContainer: {
-    borderRadius: 15,
-    borderColor: COLORS.primary,
-    backgroundColor: COLORS.white,
     shadowColor: COLORS.dark,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
-    marginVertical: 10,
+  },
+  modalImage: {
+    width: '100%',
+    height: 150,
+    borderRadius: 10,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  modalLocation: {
+    fontSize: 16,
+    color: COLORS.grey,
+    textAlign: 'center',
+    marginVertical: 5,
+  },
+  modalPrice: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.dark,
+    textAlign: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    color: COLORS.dark,
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  cancelButton: {
+    backgroundColor: COLORS.grey,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  removeButton: {
+    backgroundColor: COLORS.red,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
   skeletonContainer: {
     width: '90%',

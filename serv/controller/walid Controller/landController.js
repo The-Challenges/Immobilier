@@ -25,7 +25,10 @@ module.exports = {
                         as: 'shapeCoordinates', 
                         attributes: ['latitude', 'longitude'],  
                     }
-                ]
+                ],
+                
+                order: [['createdAt', 'DESC']]
+
             });
             res.json(lands);
         } catch (error) {

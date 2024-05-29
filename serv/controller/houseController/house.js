@@ -32,7 +32,8 @@ module.exports = {
                         attributes: ['options'], 
                     }
                     
-                ]
+                ],
+                        order: [['createdAt', 'DESC']]
             });
             res.json(houses);
         } catch (error) {
