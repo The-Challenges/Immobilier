@@ -222,9 +222,9 @@ function generateRectangleCoordinates(centerLat, centerLong) {
 
 module.exports = async (sequelize) => {
   const userCount = 50;
-  const houseCount = 100;
+  const houseCount = 75;
   const landCount = 75;
-  const optionCount = 1000;
+  const optionCount = 200;
 
   const users = await Promise.all(
     Array.from({ length: userCount }).map(async () => {
@@ -382,12 +382,16 @@ module.exports = async (sequelize) => {
     })
   );
 
+  const statusOptions = ['pending', 'accepted', 'rejected'];
+
   const requestHouses = await Promise.all(
     Array.from({ length: 25 }).map(async () => {
       const user = users[Math.floor(Math.random() * userCount)];
       const house = houses[Math.floor(Math.random() * houseCount)];
+      const status = getRandomElementFromArray(statusOptions); // Get status
+      console.log(`Inserting: Status - ${status}, House ID - ${house.id}, User ID - ${user.id}`); // Log it
       return await db.RequestHouse.create({
-        status: getRandomElementFromArray(['pending', 'accepted', 'rejected']),
+        status,
         houseId: house.id,
         userId: user.id,
       });

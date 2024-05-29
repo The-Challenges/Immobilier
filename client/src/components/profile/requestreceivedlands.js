@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import storage from '../Authentification/storage'; 
+import { API_AD } from '../../../config';
 
 const FadeInView = ({ children, style }) => {
   const fadeAnim = new Animated.Value(0);

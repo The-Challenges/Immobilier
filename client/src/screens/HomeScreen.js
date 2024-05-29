@@ -4,7 +4,8 @@ import storage from '../components/Authentification/storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import axios from 'axios';
-import FeaturedScroller from '../components/featuredScroller'; // Adjust the import path as needed
+import FeaturedScroller from '../components/featuredScroller'; 
+import socketserv from '../components/request/socketserv';
 
 const { width } = Dimensions.get('screen');
 
@@ -190,7 +191,7 @@ const HomeScreen = ({ navigation }) => {
                 </View>
                 <TouchableOpacity
                   style={styles.detailsButton}
-                  onPress={() => navigation.navigate('viewDetHouse', { house: item })}
+                  onPress={() => navigation.navigate('ViewDetailsHouse', { house: item })}
                 >
                   <Text style={styles.detailsButtonText}>View Details</Text>
                 </TouchableOpacity>

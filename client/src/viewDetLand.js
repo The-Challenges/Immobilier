@@ -8,64 +8,29 @@ import { Button, Card, Overlay } from 'react-native-elements';
 import COLORS from './consts/colors';
 import { API_AD } from '../config';
 
-// Define icons for different categories
-const featureIcons = {
-  Garage: "car",
-  Pool: "swimming-pool",
-  Garden: "tree",
-  Fireplace: "fire-alt",
-  Unknown: "question-circle",
-  "Outdoor area": "campground",
-  "Outdoor spa": "hot-tub",
-  "Fully fenced": "border-all",
-  Balcony: "building",
-  "Undercover parking": "car-port",
-  Shed: "warehouse",
-  "Tennis court": "table-tennis",
-  "Swimming pool": "swimming-pool",
-};
-
-const indoorIcons = {
-  Ensuite: "bath",
-  Study: "book",
-  "Alarm System": "bell",
-  FloorBoards: "border-all",
-  "Rumpus room": "couch",
-  Dishwasher: "utensils",
-  "Built in robe": "tshirt",
-  Broadband: "wifi",
-  Gym: "dumbbell",
-  Workshop: "tools",
-  Unknown: "question-circle",
-};
-
-const energyIcons = {
-  "Air conditioning": "wind",
-  Heating: "fire",
-  "Solar panels": "solar-panel",
-  "High energy efficiency": "bolt",
-  Unknown: "battery-slash"
+const accessIcons = {
+  "Airport": "plane",
+  "Public transportation": "bus",
+  "Highway": "road",
+  "road access": "car",
+  "Unknown": "question-circle"
 };
 
 const viewIcons = {
-  Mountain: "mountain",
-  WaterViews: "water",
-  CitySkyline: "city",
-  Unknown: "question-circle"
+  "mountain": "mountain",
+  "water views": "water",
+  "city skyline": "city",
+  "Unknown": "question-circle"
 };
 
-// Function to retrieve the correct icon element
-const getIcon = (name, category) => {
+const getIcon = (detail, category) => {
   const iconSets = {
-    Features: featureIcons,
-    Energy: energyIcons,
-    Indoor: indoorIcons,
-    Outdoor: featureIcons,
-    View: viewIcons
+    Accesses: accessIcons,
+    Views: viewIcons,
   };
 
   const icons = iconSets[category] || {};
-  const iconName = icons[name] || icons.Unknown;
+  const iconName = icons[detail] || icons.Unknown;
   return <Icon name={iconName} size={20} color={COLORS.dark} />;
 };
 
@@ -74,7 +39,7 @@ const PropertyDetail = ({ category, details }) => (
   <Card containerStyle={styles.cardContainer}>
     <Text style={styles.categoryTitle}>{category}</Text>
     <View style={styles.detailRow}>
-      {details.map((detail, index) => (
+      {(details || []).map((detail, index) => (
         <View key={index} style={styles.detailBox}>
           {getIcon(detail, category)}
           <Text style={styles.detailText}>{detail}</Text>
@@ -92,8 +57,6 @@ const CustomSkeleton = () => (
     <View style={styles.skeletonBox} />
   </View>
 );
-
-// Main component displaying the property details
 const ViewLandDetails = ({ route, navigation }) => {
   const { land, user } = route.params;
   const [hasRequested, setHasRequested] = useState(false);
@@ -106,16 +69,15 @@ const ViewLandDetails = ({ route, navigation }) => {
 
   const checkIfRequested = async () => {
     try {
-      const response = await axios.get(`${API_AD}/api/reqtest/check`, {
+      const response = await axios.get(`http://192.168.11.225:4000/api/reqtest/check`, {
         params: {
-          userId: user.id,
-          landId: land.id
+          userId: parseInt(user.userId),
+          landId: parseInt(land.id)
         }
       });
       setHasRequested(response.data.hasRequested);
       setLoading(false);
     } catch (error) {
-      console.error('Failed to check request status:', error);
       Alert.alert('Error', 'Failed to check if request has already been sent.');
       setLoading(false);
     }
@@ -197,7 +159,6 @@ const ViewLandDetails = ({ route, navigation }) => {
   );
 };
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -252,6 +213,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '60%',
     marginVertical: 20,
+    alignItems: 'center',
   },
   contactDetails: {
     marginHorizontal: 20,
@@ -268,21 +230,20 @@ const styles = StyleSheet.create({
   },
   contactDetail: {
     fontSize: 18,
-    color: COLORS.dark,
+    color: COLORS.primary,
     marginBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
   },
   detailContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     marginHorizontal: 20,
     marginVertical: 10,
   },
   price: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: COLORS.green,
+    color: COLORS.primary,
   },
   type: {
     fontSize: 20,

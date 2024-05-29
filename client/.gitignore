@@ -2,10 +2,7 @@
 #
 .DS_Store
 package-lock.json
-<<<<<<< HEAD
 yarn.lock
-=======
->>>>>>> df25d2daf59f69a1b776b418d7a54e50cbd929c6
 # Xcode
 #
 build/

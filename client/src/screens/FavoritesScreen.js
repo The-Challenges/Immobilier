@@ -12,6 +12,7 @@ import {
 import axios from 'axios';
 import COLORS from '../consts/colors';
 import storage from '../components/Authentification/storage'; 
+import { API_AD } from '../../config';
 
 const FavoritesScreen = ({ navigation }) => {
   const [favorites, setFavorites] = useState([]);

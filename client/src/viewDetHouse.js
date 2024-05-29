@@ -96,27 +96,25 @@ const CustomSkeleton = () => (
 const ViewHouseDetails = ({ route, navigation }) => {
   const { house, user } = route.params;
   const [hasRequested, setHasRequested] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false);
-
   useEffect(() => {
     checkIfRequested();
   }, []);
+
+
 
   const checkIfRequested = async () => {
     try {
       const response = await axios.get(`http://192.168.103.4:4000/api/reqtest/check`, {
         params: {
-          userId: user.id,
-          houseId: house.id
+          userId: parseInt(user.userId),
+          landId: parseInt(house.id)
         }
       });
       setHasRequested(response.data.hasRequested);
       setLoading(false);
     } catch (error) {
-      console.error('Failed to check request status:', error);
       Alert.alert('Error', 'Failed to check if request has already been sent.');
-      setLoading(false);
+      console.log('Error response data:', error.response ? error.response.data : 'No response data');
     }
   };
 
@@ -131,19 +129,22 @@ const ViewHouseDetails = ({ route, navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <View style={styles.imageContainer}>
-          {house.Media && house.Media.length > 0 ? (
-            <Image source={{ uri: house.Media[0].link }} style={styles.image} />
-          ) : (
-            <Text style={styles.noImageText}>No image available</Text>
-          )}
-        </View>
-        <View style={styles.headerInfo}>
-          <Text style={styles.title}>{house.title}</Text>
-          <Text style={styles.location}>Surabaya, Indonesia</Text>
-          <Text style={styles.price}>${house.price}/month</Text>
-        </View>
+      <View style={styles.imageContainer}>
+        {house.Media.length > 0 ? (
+          <Image source={{ uri: house.Media[0].link }} style={styles.image} />
+        ) : (
+          <Text style={styles.noImageText}>No image available</Text>
+        )}
+      </View>
+      <Text style={styles.title}>{house.title}</Text>
+
+      <View style={styles.iconContainer}>
+        <TouchableOpacity onPress={() => {}}>
+          <Icon name="heart" size={30} color={COLORS.primary} solid />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('chat')}>
+          <Icon name="comments" size={30} color={COLORS.primary} />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.contentContainer}>
@@ -169,39 +170,20 @@ const ViewHouseDetails = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalView}>
-            {house.Media && house.Media.length > 0 && (
-              <Image source={{ uri: house.Media[0].link }} style={styles.modalImage} />
-            )}
-            <Text style={styles.modalTitle}>{house.title}</Text>
-            <Text style={styles.modalLocation}>Surabaya, Indonesia</Text>
-            <Text style={styles.modalPrice}>${house.price}/month</Text>
-            <Text style={styles.modalText}>Remove from favorite?</Text>
-            <View style={styles.modalButtonContainer}>
-              <Button
-                title="Cancel"
-                buttonStyle={styles.cancelButton}
-                onPress={() => setModalVisible(!modalVisible)}
-              />
-              <Button
-                title="Yes, Remove"
-                buttonStyle={styles.removeButton}
-                onPress={() => {
-                  // Handle remove favorite action
-                  setModalVisible(!modalVisible);
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <HouseDetail category="Indoor Features" details={house.Indoors.map(indoor => indoor.options)} />
+      <HouseDetail category="Outdoor Features" details={house.Outdoors.map(outdoor => outdoor.options)} />
+      <HouseDetail category="Climate Features" details={house.Climates.map(climate => climate.options)} />
+      <HouseDetail category="Views" details={house.Views.map(view => view.options)} />
+
+      <Button
+        icon={<Icon name="arrow-right" size={15} color="white" />}
+        title={hasRequested ? 'You have already sent a request' : `Contact ${house.User.firstName}`}
+        buttonStyle={styles.contactButton}
+        onPress={() => navigation.navigate('TermsAndConditions', { user, house })}
+        disabled={hasRequested}
+      />
+
+      <Text style={styles.description}>{house.description}</Text>
     </ScrollView>
   );
 };
@@ -260,12 +242,41 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 200,
   },
-  headerInfo: {
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 20,
+    alignItems: 'center',
+  },
+  contactDetails: {
+    marginHorizontal: 20,
+    marginVertical: 10,
+  },
+  contactDetail: {
+    fontSize: 18,
+    color: COLORS.primary,
+    marginBottom: 5,
+    flexDirection: 'row',
     alignItems: 'center',
     marginTop: 10,
   },
-  contentContainer: {
-    padding: 20,
+  detailContainer: {
+    flexDirection: 'column',
+    marginHorizontal: 20,
+    marginVertical: 10,
+  },
+  price: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+  },
+  type: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: COLORS.primary,
+  },
+  section: {
+    marginVertical: 20,
   },
   sectionTitle: {
     fontSize: 18,
@@ -274,8 +285,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   text: {
-    fontSize: 16,
-    color: COLORS.dark,
+    fontSize: 18,
+    color: COLORS.primary,
     marginBottom: 5,
   },
   detailRow: {

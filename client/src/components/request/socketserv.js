@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 import { API_AD } from "../../../config";
 
-export default socket = io("http:// 192.168.103.2:4001")
+export default socket = io("http://192.168.11.225:4001")
 // Listening to events
 // socket.on('connect', () => {
 //   console.log('connected to socket server');

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
+// import React, { Component } from 'react';
+// import PropTypes from 'prop-types';
+
 import { View, StyleSheet } from 'react-native';
 import { Button, Dialog, Portal, Text, PaperProvider } from 'react-native-paper';
 import ProfileDetails from './src/components/profile/profileDetails';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+// import { ViewPropTypes } from 'deprecated-react-native-prop-types';
 import Listings from './src/screens/Profile/Listings';
 import Contact from './src/screens/Profile/Contact';
 import Search from './src/screens/Profile/SearchBar';
@@ -19,6 +22,7 @@ import Two from "./src/components/two/two";
 import axios from 'axios';
 import Signup from "./src/components/Authentification/signup";
 import HomeScreen from "./src/screens/HomeScreen";
+import PropTypes from 'prop-types';
 // import DetailsScreen from "./src/screens/DetailsScreen";
 import FilterScreen from "./src/screens/FilterScreen";
 // import RecommendedScreen from "./src/screens/RecommendedScreen";
@@ -50,6 +54,8 @@ import ViewLandDetails from './src/viewDetLand';
 import ViewHouseDetails from './src/viewDetHouse';
 import TermsAndConditionsScreen from './src/components/request/sendRe/TermsAndConditions';
 import { API_AD } from './config';
+
+
 
 
 
@@ -150,20 +156,20 @@ console.log(data,'aaaamles,k,gpd,lpsg,psqg,lpl,mqlfk');
       <NavigationContainer>
 
         <Stack.Navigator initialRouteName="splash">
-           {/* <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} />
+          {/* <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} />
           <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} />
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-          <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />   */}
+          <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />  */}
           <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
-         <Stack.Screen name='chat' component={Chat} options={{ headerShown: false }} />
-         {/* <Stack.Screen name='DetailsScreen' component={DetailsScreen} options={{ headerShown: false }} />  */}
+         {/* <Stack.Screen name='chat' component={Chat} options={{ headerShown: false }} /> */}
+          {/* <Stack.Screen name='DetailsScreen' component={DetailsScreen} options={{ headerShown: false }} />   */}
           <Stack.Screen name='HomeScreen' component={HomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name='FilterScreen' component={FilterScreen} options={{ headerShown: false }} />
           <Stack.Screen name='ResultsScreen' component={ResultsScreen} options={{ headerShown: false }} />
           <Stack.Screen name='SeeAllHouses' component={SeeAllHouses} options={{ headerShown: false }} />
           <Stack.Screen name='SeeAllLands' component={SeeAllLands} options={{ headerShown: false }} />
           <Stack.Screen name='ProfilDetail' component={ProfileDetails} options={{ headerShown: false }} />
-          {/* <Stack.Screen name='Received' component={Received} options={{ headerShown: false }} />
+           <Stack.Screen name='Received' component={Received} options={{ headerShown: false }} />
           <Stack.Screen name='requestreceivedlands' component={requestreceivedlands} options={{ headerShown: false }} />
           <Stack.Screen name='requeststatus' component={requeststatus} options={{ headerShown: false }} />
           <Stack.Screen name='requeststatuslands' component={requeststatuslands} options={{ headerShown: false }} />
@@ -171,10 +177,10 @@ console.log(data,'aaaamles,k,gpd,lpsg,psqg,lpl,mqlfk');
           <Stack.Screen name='PaymentScreen' component={PaymentScreen} options={{ headerShown: false }} />
           <Stack.Screen name='FavoritesScreen' component={FavoritesScreen} options={{ headerShown: false }} />
           <Stack.Screen name="PaymentConfirmation" component={PaymentConfirmationScreen} options={{ headerShown: false }} />
-           <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }} />
-          <Stack.Screen name='splash' component={splach} options={{ headerShown: false }} /> 
-           <Stack.Screen name='apartement' component={Apartment} options={{ headerShown: false }} />
-          <Stack.Screen name='Land' component={Lands} options={{ headerShown: false }} /> */}
+          {/* <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }} />
+          <Stack.Screen name='splash' component={splach} options={{ headerShown: false }} /> */}
+          <Stack.Screen name='apartement' component={Apartment} options={{ headerShown: false }} />
+          <Stack.Screen name='Land' component={Lands} options={{ headerShown: false }} />
           <Stack.Screen name='FilterScreenLands' component={FilterScreenLands} options={{ headerShown: false }} />
           <Stack.Screen name='ResultsScreenLand' component={ResultsScreenLand} options={{ headerShown: false }} />
           <Stack.Screen name='ProfileDetails' component={ProfileDetails} options={{ headerShown: false }} />
@@ -184,9 +190,8 @@ console.log(data,'aaaamles,k,gpd,lpsg,psqg,lpl,mqlfk');
           <Stack.Screen name='ViewDetailsLand' component={ViewLandDetails} options={{ headerShown: false }} />
           <Stack.Screen name='TermsAndConditions' component={TermsAndConditionsScreen} options={{ headerShown: false }} />
           <Stack.Screen name='ViewDetailsHouse' component={ViewHouseDetails} options={{ headerShown: false }} />
-          <Stack.Screen name='ViewLandDetails' component={ViewLandDetails} options={{ headerShown: false }} /> 
 
-          
+
           {/* <Stack.Screen
 
             name='RecommendedScreen'
@@ -266,4 +271,11 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
+
+
+// App.propTypes = {
+//   title: PropTypes.string.isRequired,
+
+// };
+
 export default App;

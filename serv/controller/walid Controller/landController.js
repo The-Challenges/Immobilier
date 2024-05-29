@@ -116,7 +116,7 @@ module.exports = {
       },
 
 
-    filterLands: async (req, res) => {
+      filterLands: async (req, res) => {
         const {
             priceMin,
             priceMax,
@@ -129,7 +129,8 @@ module.exports = {
             terrainType,
             zoning,
             purchaseOption,
-            isVerified
+            isVerified,
+            view // Added view parameter
         } = req.query;
     
         const queryConditions = {
@@ -183,8 +184,18 @@ module.exports = {
         }
     
         if (isVerified !== undefined) {
-            queryConditions.where.isVerifie = isVerified === 'true';
-          }
+            queryConditions.where.isVerified = isVerified === 'true';
+        }
+    
+        if (view && view !== 'Unknown') {
+            queryConditions.include.push({
+                model: db.View,
+                where: {
+                    options: view
+                },
+                attributes: []
+            });
+        }
     
         try {
             const filteredLands = await db.Land.findAll(queryConditions);

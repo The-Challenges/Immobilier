@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js",
-    "socket": "nodemon socket.js"
+    "socket": "nodemon socket.js",
+    "socketM":"nodemon socketMessage.js"
   },
   "keywords": [],
   "author": "",

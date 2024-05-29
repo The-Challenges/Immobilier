@@ -61,15 +61,8 @@ const SeeAllHouses = ({ navigation }) => {
     }
   };
 
-  const getUserId = async () => {
-    try {
-      const userData = await storage.load({ key: 'loginState' });
-      setUserId(userData.user.userId);
-      fetchFavorites(userData.user.userId);
-    } catch (error) {
-      console.error('Failed to retrieve user data:', error);
-    }
-  };
+;
+
 
   const fetchHouses = async (page) => {
     if (!hasMore && page !== 1) return;

@@ -7,7 +7,7 @@ const PaymentConfirmationScreen = ({ navigation }) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate('HomeScreen');
+      navigation.navigate('HomeTabs');
     }, 3000);
 
     // Start the fade-in animation

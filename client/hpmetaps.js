@@ -2,7 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileDetails from './src/components/profile/profileDetails';
-import Chatroom from './src/components/chat/allrooms';
+// import Chatroom from './src/components/chat/allrooms';
 import GoogleMaps from './src/screens/googleMaps';
 import Subscription from './src/components/Subscription/Subscription';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -64,7 +64,7 @@ function HomeTabs() {
     >
       <Tab.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false, title: 'Home' }} />
       <Tab.Screen name="GoogleMaps" component={GoogleMaps} options={{ headerShown: false, title: 'Map' }} />
-      <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false, title: 'Chat' }} />
+      {/* <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false, title: 'Chat' }} /> */}
       <Tab.Screen name="Subscription" component={Subscription} options={{ headerShown: false, title: 'Subscription' }} />
       <Tab.Screen name="ProfileDetails" component={ProfileDetails} options={{ headerShown: false, title: 'Profile' }} />
     </Tab.Navigator>

@@ -14,24 +14,25 @@ const Signin = ({ navigation }) => {
     navigation.navigate('Signup');
   };
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    // Simulate a refresh time delay
-    setTimeout(() => {
-      setRefreshing(false);
-      navigation.navigate('HomeTabs');
-    }, 1000);
-  }, []);
+  // const onRefresh = useCallback(() => {
+  //   setRefreshing(true);
+  //   // Simulate a refresh time delay
+  //   setTimeout(() => {
+  //     setRefreshing(false);
+  //     navigation.navigate('HomeTabs');
+  //   }, 1000);
+  // }, []);
 
   const handleSubmit = async () => {
     try {
 
-      const response = await axios.post('http://192.168.103.11:4000/api/auth/login', { email, password });
+      const response = await axios.post(`http://192.168.11.225:4000/api/auth/login`, { email, password });
       if (response.data && response.data.user) {
         const { user, token } = response.data;
         console.log(user.userId); // Make sure this logs the expected value
         await storage.save({ key: 'loginState', data: { token, user } });
-        onRefresh();
+        navigation.navigate('HomeTabs');
+        // onRefresh();
       } else {
         Alert.alert('Login failed', 'No user data found in response');
       }
@@ -45,9 +46,9 @@ const Signin = ({ navigation }) => {
       }
     }
   };
-
+  // onRefresh={onRefresh}
   return (
-    <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+  <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing}  />}>
       <Image source={{ uri: 'https://d1csarkz8obe9u.cloudfront.net/posterpreviews/real-estate-logo%2C-real-estate-company-logo-design-template-8ee9c59179ae1793f475915d6f19f9ff_screen.jpg?ts=1665168739' }} style={styles.logo} />
       <Text style={styles.title}>Login to Your Account</Text>
       <View style={styles.inputContainer}>
