@@ -101,15 +101,17 @@ User.belongsToMany(House, { through: RequestHouse, foreignKey: 'userId' });
 
 /* **********************************************************jointable relationships******************************************** */
 
+Conversation.hasMany(Chat, { foreignKey: 'ConversationId' });
+Chat.belongsTo(Conversation, { foreignKey: 'ConversationId' });
+
+User.hasMany(Chat, { foreignKey: 'senderId' });
+Chat.belongsTo(User, { foreignKey: 'senderId' });
 Conversation.belongsTo(User, { as: 'User1' });
 Conversation.belongsTo(User, { as: 'User2' });
-Chat.belongsTo(Conversation);
-Conversation.hasMany(Chat);
-
-// async function test(params) {
-//   await sequelize.sync({ force: true });
-//   console.log('The table for the User model was just (re)created!');
-// }
+async function test(params) {
+  await sequelize.sync({ force: true });
+  console.log('The table for the User model was just (re)created!');
+}
 // test()
 
 House.belongsToMany(User, { through: FavouriteHouse, foreignKey: 'houseId' });

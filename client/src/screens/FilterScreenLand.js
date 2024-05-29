@@ -7,8 +7,6 @@ import { Picker } from '@react-native-picker/picker';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import COLORS from '../consts/colors';
 
-import { API_AD } from '../../config';
-
 const terrainOptions = ['Flat', 'Sloping', 'Hilly', 'Forested'];
 const zoningOptions = ['Residential', 'Commercial', 'Agricultural', 'Industrial', 'Mixed-use'];
 
@@ -43,7 +41,7 @@ const FilterScreenLand = ({ navigation }) => {
       if (purchaseOption !== 'Unknown') params.purchaseOption = purchaseOption;
       if (isVerified) params.isVerifie = isVerified;
 
-      const response = await axios.get(`room_${API_AD}/api/land/filterlands`, { params });
+      const response = await axios.get(`http://192.168.11.225:4000/api/land/filterlands`, { params });
       console.log('Fetched data:', response.data);
       navigation.navigate('ResultsScreenLand', { lands: response.data });
     } catch (error) {

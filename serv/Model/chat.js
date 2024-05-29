@@ -7,13 +7,17 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     time: {
-      type: DataTypes.STRING(45),
+      type:  DataTypes.DATE,
       allowNull: false,
     },
   }, {
     freezeTableName: true,
     timestamps: false,
   });
-     
+
+  Chat.associate = (models) => {
+    Chat.belongsTo(models.Conversation, { foreignKey: 'conversationId', as: 'Conversation' });
+    Chat.belongsTo(models.User, { foreignKey: 'senderId', as: 'Sender' });
+  };
   return Chat;
 };

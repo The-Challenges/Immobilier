@@ -71,7 +71,7 @@ function Screen6({ formData, handleChange, handleSubmit, houseId }) {
 
     const updateHouse = async () => {
         try {
-            const response = await axios.put(`http://192.168.103.2:4000/api/house/updateHouse/${houseId}`, formData, {
+            const response = await axios.put(`http://192.168.11.225:4000/api/house/updateHouse/${houseId}`, formData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

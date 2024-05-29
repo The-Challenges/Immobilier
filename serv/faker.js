@@ -10,12 +10,10 @@ function getRandomElementFromArray(arr) {
 
 module.exports = async (sequelize) => {
   const userCount = 50;
-  const houseCount = 100;
+  const houseCount = 75;
   const landCount = 75;
-  const optionCount = 1000;
+  const optionCount = 200;
 
-  
-  // Generate random users
   const users = await Promise.all(
     Array.from({ length: userCount }).map(async () => {
       return await db.User.create({
@@ -77,27 +75,7 @@ module.exports = async (sequelize) => {
         HouseId: house.id
       });
     })
-  )
-  const outdooroption = await Promise.all(
-    Array.from({ length: indoo }).map(async () => {
-      const house = houses[Math.floor(Math.random() * houseCount)];
-      return await db.Outdoor.create({
-        options: getRandomElementFromArray(['Swimming pool', 'Balcony', 'Undercover parking', 'Fully fenced', 'Tennis court', 'Garage', 'Outdoor area', 'Shed', 'Outdoor spa', 'Unknown']),
-        HouseId: house.id
-      });
-    })
-  )
-  
-  
-  // const indoorOption = await Promise.all(
-  //   Array.from({ length: optionCount }).map(async () => {
-  //     const house = houses[Math.floor(Math.random() * houseCount)];
-  //     return await db.Indoor.create({
-  //       options: getRandomElementFromArray(['Ensuite', 'Study', 'Alarm System', 'FloorBoards', 'Rumpus room', 'Dishwasher', 'Built in robe', 'Broadband', 'Gym', 'Workshop', 'Unknown']),
-  //       HouseId: house.id
-  //     });
-  //   })
-  // );
+  );
 
   const outdoorOption = await Promise.all(
     Array.from({ length: optionCount }).map(async () => {
@@ -158,8 +136,8 @@ module.exports = async (sequelize) => {
   const access = await Promise.all(
     Array.from({ length: optionCount }).map(async () => {
       const land = lands[Math.floor(Math.random() * landCount)];
-      return await db.View.create({
-        options: getRandomElementFromArray(['Mountain', 'Water views', 'City skyline', 'Unknown']),
+      return await db.Access.create({
+        options: getRandomElementFromArray(['Airport', 'Public transportation', 'Highway', 'Road access', 'Unknown']),
         LandId: land.id
       });
     })

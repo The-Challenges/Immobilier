@@ -4,6 +4,9 @@
 
 import {AppRegistry} from 'react-native';
 import App from './App';
+import React, { Component } from 'react';
+// import PropTypes from 'prop-types';
+
 import {name as appName} from './app.json';
 import { Provider, PaperProvider } from 'react-native-paper';
 import { MD3LightTheme as DefaultTheme} from 'react-native-paper';
@@ -33,4 +36,4 @@ export default function Main() {
     );
   }
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => Main);

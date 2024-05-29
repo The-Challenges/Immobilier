@@ -7,7 +7,6 @@ import COLORS from '../consts/colors';
 import axios from 'axios';
 import FeaturedScroller from '../components/featuredScroller'; 
 import socketserv from '../components/request/socketserv';
-// Adjust the import path as needed
 
 const { width } = Dimensions.get('screen');
 
@@ -19,19 +18,16 @@ const HomeScreen = ({ navigation }) => {
   const [userId, setUserId] = useState(null);
   const flatListRef = useRef(null);
 
-
-
   useEffect(() => {
     fetchHouses();
-    getUserId()
+    getUserId();
   }, []);
 
   const getUserId = async () => {
     try {
       const userData = await storage.load({ key: 'loginState' });
-      console.log("userddfyhgjklmlùkjhgjhklm",userData);
       setUserId(userData.user.userId);
-      socketserv.emit('receiver',userData.user.userId)
+      socketserv.emit('receiver', userData.user.userId);
     } catch (error) {
       console.error('Failed to retrieve user data:', error);
     }
@@ -182,8 +178,7 @@ const HomeScreen = ({ navigation }) => {
                 </View>
                 <TouchableOpacity
                   style={styles.detailsButton}
-                  onPress={() => navigation.navigate('viewDetHouse', { house: item })}
-                  
+                  onPress={() => navigation.navigate('ViewDetailsHouse', { house: item })}
                 >
                   <Text style={styles.detailsButtonText}>View Details</Text>
                 </TouchableOpacity>
@@ -233,13 +228,12 @@ const HomeScreen = ({ navigation }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar backgroundColor={COLORS.white} barStyle="dark-content" />
       <FlatList
-        ListHeaderComponent={renderHeader}
         data={houses}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderHouseItem}
         contentContainerStyle={styles.listContainer}
         numColumns={2}
-        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={renderHeader}
       />
     </SafeAreaView>
   );

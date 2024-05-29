@@ -21,6 +21,10 @@ module.exports = {
                     {
                         model: db.Outdoor,
                         attributes: ['options'] 
+                    },
+                    {
+                        model: db.View, 
+                        attributes: ['options'], 
                     }
                     
                 ]
