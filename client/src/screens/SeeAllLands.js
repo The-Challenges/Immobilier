@@ -22,7 +22,7 @@ const SeeAllLands = ({ navigation }) => {
   const [userId, setUserId] = useState(null);
 
   const navigateDetails = (item) => {
-    navigation.navigate('viewDetLand', { land: item, user, landId: item.id, userId: item.UserId });
+    navigation.navigate('ViewDetailsLand', { land: item, user, landId: item.id, userId: item.UserId });
     socketserv.emit("receiver", item.UserId);
   };
 

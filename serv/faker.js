@@ -10,9 +10,9 @@ function getRandomElementFromArray(arr) {
 
 module.exports = async (sequelize) => {
   const userCount = 50;
-  const houseCount = 100;
+  const houseCount = 75;
   const landCount = 75;
-  const optionCount = 1000;
+  const optionCount = 200;
 
   const users = await Promise.all(
     Array.from({ length: userCount }).map(async () => {

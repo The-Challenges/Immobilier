@@ -2,7 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './src/screens/HomeScreen';
 import RecommendedScreen from './src/screens/RecommendedScreen';
-import Chatroom from './src/components/chat/allrooms';
+// import Chatroom from './src/components/chat/allrooms';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
@@ -33,10 +33,10 @@ function HomeTabs() {
             case 'Recommended':
               iconName = 'star-outline';
               break;
-            case 'Chatroom':  
-              iconName = 'chatbox-ellipses-outline';
-              Component = Icon2;
-              break;
+            // case 'Chatroom':  
+            //   iconName = 'chatbox-ellipses-outline';
+            //   Component = Icon2;
+            //   break;
             case 'Notifications':
               iconName = focused ? 'bell' : 'bell-outline';
               Component = Icon4;
@@ -57,7 +57,7 @@ function HomeTabs() {
       <Tab.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
       <Tab.Screen name="ProfilDetail" component={ProfileDetails} options={{ headerShown: false }} />
       <Tab.Screen name="Recommended" component={RecommendedScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false }} />
+      {/* <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false }} /> */}
       <Tab.Screen name="GoogleMaps" component={GoogleMaps} options={{ headerShown: false }} />
       <Tab.Screen name="Subscription" component={Subscription} options={{ headerShown: false }} />
     </Tab.Navigator>

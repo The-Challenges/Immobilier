@@ -15,6 +15,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import storage from '../Authentification/storage'; // Import your storage module
+import { API_AD } from '../../../config';
 
 const getUserId = async () => {
   try {
@@ -36,7 +37,7 @@ const fetchUserProfile = async (userId) => {
       throw new Error('User ID is missing');
     }
 
-    const response = await fetch(`http://192.168.103.11:4000/api/user/${userId}`, {
+    const response = await fetch(`${API_AD}/api/user/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -78,6 +79,20 @@ const UserProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+
+const logout= async ()=>{
+  try {
+    console.log('Logging out...');
+    const userData = await storage.remove({ key: 'loginState' })
+    navigation.navigate('Login')
+ 
+   
+  } catch (error) {
+    console.error('Failed to retrieve user data:', error);
+  
+}
+}
+  
   const loadUserData = async () => {
     try {
       console.log('Starting user data fetch...');
@@ -183,7 +198,7 @@ const UserProfile = () => {
         </View>
 
         <View style={styles.logoutContainer}>
-          <Action title={'Logout'} icon={'log-out'} onPress={() => navigation.navigate('profile')} iconColor={'#FF0000'} />
+          <Action title={'Logout'} icon={'log-out'} onPress={() => logout()} iconColor={'#FF0000'} />
         </View>
       </ScrollView>
 

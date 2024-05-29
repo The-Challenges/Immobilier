@@ -6,6 +6,7 @@ import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import COLORS from './consts/colors';
 import { Button } from 'react-native-elements';
+import { API_AD } from '../config';
 
 const featureIcons = {
   Garage: "car",
@@ -75,23 +76,24 @@ const HouseDetail = ({ category, details }) => (
 const ViewHouseDetails = ({ route, navigation }) => {
   const { house, user } = route.params;
   const [hasRequested, setHasRequested] = useState(false);
-
   useEffect(() => {
     checkIfRequested();
   }, []);
 
+
+
   const checkIfRequested = async () => {
     try {
-      const response = await axios.get(`http://192.168.103.11:4000/api/reqtest/check`, {
+      const response = await axios.get(`http://192.168.1.11:4000/api/reqtest/check`, {
         params: {
-          userId: user.id,
-          houseId: house.id
+          userId: parseInt(user.userId),
+          landId: parseInt(house.id)
         }
       });
       setHasRequested(response.data.hasRequested);
     } catch (error) {
-      console.error('Failed to check request status:', error);
       Alert.alert('Error', 'Failed to check if request has already been sent.');
+      console.log('Error response data:', error.response ? error.response.data : 'No response data');
     }
   };
 
@@ -108,10 +110,10 @@ const ViewHouseDetails = ({ route, navigation }) => {
 
       <View style={styles.iconContainer}>
         <TouchableOpacity onPress={() => {}}>
-          <Icon name="heart" size={30} color={COLORS.dark} solid />
+          <Icon name="heart" size={30} color={COLORS.primary} solid />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('chat')}>
-          <Icon name="comments" size={30} color={COLORS.dark} />
+          <Icon name="comments" size={30} color={COLORS.primary} />
         </TouchableOpacity>
       </View>
 
@@ -137,10 +139,10 @@ const ViewHouseDetails = ({ route, navigation }) => {
         <Text style={styles.text}><Icon name="calendar-alt" size={18} /> House Age: {house.houseAge}</Text>
       </View>
 
-      <HouseDetail category="Indoor" details={house.Indoors.map(indoor => indoor.options)} />
-      <HouseDetail category="Outdoor" details={house.Outdoors.map(outdoor => outdoor.options)} />
-      <HouseDetail category="Climate features" details={house.Climates.map(climate => climate.options)} />
-      <HouseDetail category="Views" details={house.Views.map(Views => Views.options)} />
+      <HouseDetail category="Indoor Features" details={house.Indoors.map(indoor => indoor.options)} />
+      <HouseDetail category="Outdoor Features" details={house.Outdoors.map(outdoor => outdoor.options)} />
+      <HouseDetail category="Climate Features" details={house.Climates.map(climate => climate.options)} />
+      <HouseDetail category="Views" details={house.Views.map(view => view.options)} />
 
       <Button
         icon={<Icon name="arrow-right" size={15} color="white" />}
@@ -189,9 +191,9 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: 40,
+    justifyContent: 'space-around',
     marginVertical: 20,
+    alignItems: 'center',
   },
   contactDetails: {
     marginHorizontal: 20,
@@ -199,21 +201,20 @@ const styles = StyleSheet.create({
   },
   contactDetail: {
     fontSize: 18,
-    color: COLORS.dark,
+    color: COLORS.primary,
     marginBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
   },
   detailContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     marginHorizontal: 20,
     marginVertical: 10,
   },
   price: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: COLORS.green,
+    color: COLORS.primary,
   },
   type: {
     fontSize: 20,
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    color: COLORS.dark,
+    color: COLORS.primary,
     marginBottom: 5,
   },
   detailRow: {

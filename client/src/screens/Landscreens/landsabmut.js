@@ -11,13 +11,14 @@ const Screen8 = ({ formData, navigateToPrevious }) => {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('http://192.168.103.20:4000/api/land/AddLand', formData, {
+            const response = await axios.post('http://192.168.11.225:4000/api/land/AddLand', formData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
             if (response.status === 200 || response.status === 201) {
                 setModalVisible(true);
+                navigation.navigate('HomeTabs');
             } else {
                 throw new Error('Submission failed');
             }

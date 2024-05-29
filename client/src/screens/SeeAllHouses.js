@@ -15,17 +15,74 @@ const SeeAllHouses = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState(null);
-  const [favorites, setFavorites] = useState(new Set());
+  const [user, setUser] = useState(null);
+
+  const [favorites,setFavorites]=useState(new Set());
+  const navigateDetails=(house)=>{
+    navigation.navigate('ViewDetailsHouse', { house: house ,user ,houseId:house.id,userId:house.UserId } )
+   console.log("azertyhjnbhghyu",user);
+    socketserv.emit("receiver",house.UserId)
+}
+const getUserId = async () => {
+  try {
+    const userData = await storage.load({ key: 'loginState' });
+    setUser(userData.user);
+    setUserId(userData.user.userId);
+    fetchFavorites(userData.user.userId);
+  } catch (error) {
+    console.error('Failed to retrieve user data:', error);
+  }
+};
+
+
 
   useEffect(() => {
-    fetchHouses();
-    getUserId();
-  }, []);
+    const initializeData = async () => {
+      try {
+        const userData = await storage.load({ key: 'loginState' });
+        setUserId(userData.user.userId);
+        fetchHouses();
+        fetchFavorites(userData.user.userId);
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        Alert.alert('Error', 'Unable to load user data');
+      }
+    };
+
+    initializeData();
+
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (userId) {
+        fetchFavorites(userId);
+      }
+    });
+
+    return unsubscribe;
+
+
+
+  }, [navigation, userId]);
+  useEffect(() => {
+  getUserId()
+  }, [])
+
+  const fetchHouses = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get('http://192.168.11.225:4000/api/house/allhouses');
+      setHouses(response.data);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to fetch houses');
+      console.error('Failed to fetch houses:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.103.11:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.11.225:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
@@ -40,7 +97,7 @@ const SeeAllHouses = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.103.11:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`http://192.168.11.225:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {
@@ -58,28 +115,9 @@ const SeeAllHouses = ({ navigation }) => {
     }
   };
 
-  const getUserId = async () => {
-    try {
-      const userData = await storage.load({ key: 'loginState' });
-      setUserId(userData.user.userId);
-      fetchFavorites(userData.user.userId);
-    } catch (error) {
-      console.error('Failed to retrieve user data:', error);
-    }
-  };
+;
 
-  const fetchHouses = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get('http://192.168.103.11:4000/api/house/allhouses');
-      setHouses(response.data);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to fetch houses');
-      console.error('Failed to fetch houses:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const renderCarouselItem = ({ item }) => (
     <View style={styles.carouselItem}>
@@ -137,10 +175,6 @@ const SeeAllHouses = ({ navigation }) => {
     );
   };
 
-  const navigateDetails = (house) => {
-    navigation.navigate('viewDetHouse', { house });
-    socketserv.emit("receiver", house.UserId);
-  };
 
   return (
     <SafeAreaView style={styles.container}>

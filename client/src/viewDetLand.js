@@ -1,80 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/SimpleLineIcons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import { Button } from 'react-native-elements';
-import axios from 'axios';
 import COLORS from './consts/colors';
+import axios from 'axios';
 import { API_AD } from '../config';
 
-// Define icons for different categories
-const featureIcons = {
-  Garage: "car",
-  Pool: "swimming-pool",
-  Garden: "tree",
-  Fireplace: "fire-alt",
-  Unknown: "question-circle",
-  "Outdoor area": "campground",
-  "Outdoor spa": "hot-tub",
-  "Fully fenced": "border-all",
-  Balcony: "building",
-  "Undercover parking": "car-port",
-  Shed: "warehouse",
-  "Tennis court": "table-tennis",
-  "Swimming pool": "swimming-pool",
-};
-
-const indoorIcons = {
-  Ensuite: "bath",
-  Study: "book",
-  "Alarm System": "bell",
-  FloorBoards: "border-all",
-  "Rumpus room": "couch",
-  Dishwasher: "utensils",
-  "Built in robe": "tshirt",
-  Broadband: "wifi",
-  Gym: "dumbbell",
-  Workshop: "tools",
-  Unknown: "question-circle",
-};
-
-const energyIcons = {
-  "Air conditioning": "wind",
-  Heating: "fire",
-  "Solar panels": "solar-panel",
-  "High energy efficiency": "bolt",
-  Unknown: "battery-slash"
+const accessIcons = {
+  "Airport": "plane",
+  "Public transportation": "bus",
+  "Highway": "road",
+  "road access": "car",
+  "Unknown": "question-circle"
 };
 
 const viewIcons = {
-  Mountain: "mountain",
-  WaterViews: "water",
-  CitySkyline: "city",
-  Unknown: "question-circle"
+  "mountain": "mountain",
+  "water views": "water",
+  "city skyline": "city",
+  "Unknown": "question-circle"
 };
 
-// Function to retrieve the correct icon element
-const getIcon = (name, category) => {
+const getIcon = (detail, category) => {
   const iconSets = {
-    Features: featureIcons,
-    Energy: energyIcons,
-    Indoor: indoorIcons,
-    Outdoor: featureIcons,
-    View: viewIcons
+    Accesses: accessIcons,
+    Views: viewIcons,
   };
 
   const icons = iconSets[category] || {};
-  const iconName = icons[name] || icons.Unknown;
+  const iconName = icons[detail] || icons.Unknown;
   return <Icon name={iconName} size={20} color={COLORS.dark} />;
 };
 
-// Component for displaying details with icons
-const PropertyDetail = ({ category, details }) => (
+const LandDetail = ({ category, details }) => (
   <View style={styles.detailContainer}>
     <Text style={styles.categoryTitle}>{category}</Text>
     <View style={styles.detailRow}>
-      {details.map((detail, index) => (
+      {(details || []).map((detail, index) => (
         <View key={index} style={styles.detailBox}>
           {getIcon(detail, category)}
           <Text style={styles.detailText}>{detail}</Text>
@@ -83,8 +47,6 @@ const PropertyDetail = ({ category, details }) => (
     </View>
   </View>
 );
-
-// Main component displaying the property details
 const ViewLandDetails = ({ route, navigation }) => {
   const { land, user } = route.params;
   const [hasRequested, setHasRequested] = useState(false);
@@ -95,20 +57,20 @@ const ViewLandDetails = ({ route, navigation }) => {
 
   const checkIfRequested = async () => {
     try {
-      const response = await axios.get(`${API_AD}/api/reqtest/check`, {
+      const response = await axios.get(`http://192.168.11.225:4000/api/reqtest/check`, {
         params: {
-          userId: user.id,
-          landId: land.id
+          userId: parseInt(user.userId),
+          landId: parseInt(land.id)
         }
       });
       setHasRequested(response.data.hasRequested);
     } catch (error) {
-      console.error('Failed to check request status:', error);
       Alert.alert('Error', 'Failed to check if request has already been sent.');
+      console.log('Error response data:', error.response ? error.response.data : 'No response data');
     }
   };
 
-  const uniqueViews = [...new Set(land.Views.map(view => view.options))];
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -123,10 +85,10 @@ const ViewLandDetails = ({ route, navigation }) => {
 
       <View style={styles.iconContainer}>
         <TouchableOpacity onPress={() => {}}>
-          <Icon name="heart" size={30} color={COLORS.dark} solid />
+          <Icon name="heart" size={30} color={COLORS.primary} solid />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('chat', { roomId: `room_${land.id}`, userId: user.id, userName: user.username })}>
-          <Icon name="comments" size={30} color={COLORS.dark} />
+        <TouchableOpacity onPress={() => navigation.navigate('chat', { roomId: `room_${land.id}`, userId: user.userId })}>
+          <Icon name="comments" size={30} color={COLORS.primary} />
         </TouchableOpacity>
       </View>
 
@@ -151,8 +113,6 @@ const ViewLandDetails = ({ route, navigation }) => {
         <Text style={styles.text}><Icon name="calendar-alt" size={18} /> Verified: {land.isVerifie ? 'Yes' : 'No'}</Text>
       </View>
 
-      <PropertyDetail category="View" details={uniqueViews} />
-
       <Button
         icon={<Icon name="arrow-right" size={15} color="white" />}
         title={hasRequested ? 'You have already sent a request' : `Contact ${land.User.firstName}`}
@@ -166,7 +126,6 @@ const ViewLandDetails = ({ route, navigation }) => {
   );
 };
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -177,7 +136,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 250,
     marginBottom: 20,
-    borderRadius: 10,
+    borderRadius: 15,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: COLORS.light,
@@ -185,7 +144,6 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
-    borderRadius: 10,
   },
   noImageText: {
     fontSize: 16,
@@ -202,9 +160,9 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: 40,
+    justifyContent: 'space-around',
     marginVertical: 20,
+    alignItems: 'center',
   },
   contactDetails: {
     marginHorizontal: 20,
@@ -212,21 +170,20 @@ const styles = StyleSheet.create({
   },
   contactDetail: {
     fontSize: 18,
-    color: COLORS.dark,
+    color: COLORS.primary,
     marginBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
   },
   detailContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     marginHorizontal: 20,
     marginVertical: 10,
   },
   price: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: COLORS.green,
+    color: COLORS.primary,
   },
   type: {
     fontSize: 20,
@@ -239,43 +196,14 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: COLORS.dark,
+    color: COLORS.primary,
     marginBottom: 10,
     textAlign: 'center',
   },
   text: {
     fontSize: 18,
-    color: COLORS.dark,
-    marginBottom: 5,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  detailBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.light,
-    borderRadius: 20,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    marginRight: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: COLORS.primary,
-  },
-  detailText: {
-    marginLeft: 5,
-    fontSize: 16,
-    color: COLORS.dark,
-  },
-  categoryTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
     color: COLORS.primary,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   contactButton: {
     backgroundColor: COLORS.primary,

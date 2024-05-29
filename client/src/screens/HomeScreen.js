@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { API_AD } from '../../config';
-import { SafeAreaView, StyleSheet, Dimensions, StatusBar, FlatList, ScrollView, Pressable, TextInput, TouchableOpacity, Image, View, Text, Alert, ActivityIndicator } from 'react-native';
+import { SafeAreaView, StyleSheet, Dimensions, StatusBar, FlatList, Pressable, TextInput, TouchableOpacity, Image, View, Text, Alert, ActivityIndicator } from 'react-native';
 import storage from '../components/Authentification/storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import axios from 'axios';
-import FeaturedScroller from '../components/featuredScroller'; // Adjust the import path as needed
-// import PushNotification from 'react-native-push-notification';
-
-// import socket from '../components/request/socketserv'
+import FeaturedScroller from '../components/featuredScroller'; 
+import socketserv from '../components/request/socketserv';
 
 const { width } = Dimensions.get('screen');
 
@@ -28,9 +26,8 @@ const HomeScreen = ({ navigation }) => {
   const getUserId = async () => {
     try {
       const userData = await storage.load({ key: 'loginState' });
-      console.log(userData);
-      // socket.emit('receiver', userData.user.id); // Ensure socket is defined
-      setUserId(userData.user.id);
+      setUserId(userData.user.userId);
+      socketserv.emit('receiver', userData.user.userId);
     } catch (error) {
       console.error('Failed to retrieve user data:', error);
     }
@@ -38,7 +35,7 @@ const HomeScreen = ({ navigation }) => {
 
   const fetchHouses = async () => {
     try {
-      const response = await axios.get(`http://192.168.103.11:4000/api/house/allhouses`);
+      const response = await axios.get(`${API_AD}/api/house/allhouses`);
       setHouses(response.data);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch houses');
@@ -51,7 +48,7 @@ const HomeScreen = ({ navigation }) => {
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.103.11:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`${API_AD}/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
@@ -66,7 +63,7 @@ const HomeScreen = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.103.11:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`${API_AD}/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {
@@ -181,8 +178,7 @@ const HomeScreen = ({ navigation }) => {
                 </View>
                 <TouchableOpacity
                   style={styles.detailsButton}
-
-                  onPress={() => navigation.navigate('viewDetHouse', { house: item })}
+                  onPress={() => navigation.navigate('ViewDetailsHouse', { house: item })}
                 >
                   <Text style={styles.detailsButtonText}>View Details</Text>
                 </TouchableOpacity>
@@ -194,47 +190,51 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
+  const renderHeader = () => (
+    <View>
+      <View style={styles.header}>
+        <View style={styles.searchInputContainer}>
+          <Icon name="search" style={styles.searchIcon} />
+          <TextInput
+            placeholder="Search address, city, location"
+            placeholderTextColor="#888"
+            style={{ flex: 1 }}
+          />
+        </View>
+        <TouchableOpacity style={styles.sortBtn} onPress={() => navigation.navigate('FilterScreen')}>
+          <Icon name="tune" color={COLORS.white} size={28} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.favoriteBtn} onPress={() => navigation.navigate('FavoritesScreen')}>
+          <Icon name="favorite" color={COLORS.white} size={28} />
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.sectionTitle}>Featured Properties</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      ) : (
+        <FeaturedScroller
+          houses={houses}
+          navigation={navigation}
+          toggleCard={toggleCard}
+          pressedCard={pressedCard}
+        />
+      )}
+      <ListOptions />
+      <Text style={styles.sectionTitle}>All Properties</Text>
+    </View>
+  );
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar backgroundColor={COLORS.white} barStyle="dark-content" />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <View style={styles.searchInputContainer}>
-            <Icon name="search" style={styles.searchIcon} />
-            <TextInput
-              placeholder="Search address, city, location"
-              placeholderTextColor="#888"
-              style={{ flex: 1 }}
-            />
-          </View>
-          <TouchableOpacity style={styles.sortBtn} onPress={() => navigation.navigate('FilterScreen')}>
-            <Icon name="tune" color={COLORS.white} size={28} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.favoriteBtn} onPress={() => navigation.navigate('FavoritesScreen')}>
-            <Icon name="favorite" color={COLORS.white} size={28} />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.sectionTitle}>Featured Properties</Text>
-        {loading ? (
-          <ActivityIndicator size="large" color={COLORS.primary} />
-        ) : (
-          <FeaturedScroller
-            houses={houses}
-            navigation={navigation}
-            toggleCard={toggleCard}
-            pressedCard={pressedCard}
-          />
-        )}
-        <ListOptions />
-        <Text style={styles.sectionTitle}>All Properties</Text>
-        <FlatList
-          data={houses}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderHouseItem}
-          contentContainerStyle={styles.listContainer}
-          numColumns={2}
-        />
-      </ScrollView>
+      <FlatList
+        data={houses}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderHouseItem}
+        contentContainerStyle={styles.listContainer}
+        numColumns={2}
+        ListHeaderComponent={renderHeader}
+      />
     </SafeAreaView>
   );
 };

@@ -12,6 +12,7 @@ import {
 import axios from 'axios';
 import COLORS from '../consts/colors';
 import storage from '../components/Authentification/storage'; 
+import { API_AD } from '../../config';
 
 const FavoritesScreen = ({ navigation }) => {
   const [favorites, setFavorites] = useState([]);
@@ -38,8 +39,8 @@ const FavoritesScreen = ({ navigation }) => {
     setLoading(true);
     try {
       const [houseResponse, landResponse] = await Promise.all([
-        axios.get(`http://192.168.103.11:4000/api/favorites/${userId}/house`),
-        axios.get(`http://192.168.103.11:4000/api/favorites/${userId}/land`)
+        axios.get(`${API_AD}/api/favorites/${userId}/house`),
+        axios.get(`${API_AD}/api/favorites/${userId}/land`)
       ]);
       setFavorites([...houseResponse.data, ...landResponse.data]); // Combine house and land favorites
     } catch (error) {
