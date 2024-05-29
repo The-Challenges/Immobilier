@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
@@ -11,14 +10,13 @@ import {
   Modal,
   ScrollView,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE, Polygon } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import GetLocation from 'react-native-get-location';
 import mapStyle from '../components/mapStyle/mapStyle';
 import { debounce } from 'lodash';
-import { API_AD } from '../../config';
+import Slider from '@react-native-community/slider';
 
 const GoogleMaps = () => {
   const [houses, setHouses] = useState([]);
@@ -35,7 +33,9 @@ const GoogleMaps = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [showDirections, setShowDirections] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const [filter, setFilter] = useState('all'); // New state for filtering markers
+  const [showZoom, setShowZoom] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(region.latitudeDelta);
+  const [filter, setFilter] = useState('all');
 
   const mapRef = useRef(null);
 
@@ -67,7 +67,7 @@ const GoogleMaps = () => {
         console.warn(err);
       }
     } else {
-      _getCurrentLocation(); // Direct call on iOS devices
+      _getCurrentLocation(); 
     }
   }
 
@@ -100,7 +100,7 @@ const GoogleMaps = () => {
 
   async function fetchHouses() {
     try {
-      const response = await fetch(`${API_AD}/api/house/allhouses`);
+      const response = await fetch('http://192.168.103.4:4000/api/house/allhouses');
       const json = await response.json();
       setHouses(
         json.map((house) => ({
@@ -119,17 +119,34 @@ const GoogleMaps = () => {
 
   async function fetchLands() {
     try {
-      const response = await fetch(`${API_AD}/api/land/alllands`);
+      const response = await fetch('http://192.168.103.4:4000/api/land/alllands');
       const json = await response.json();
-      setLands(
-        json.map((land) => ({
+      console.log('Lands fetched:', JSON.stringify(json, null, 2)); // Detailed log for verification
+
+      const landsData = json.map((land) => {
+        console.log(`Processing land ID ${land.id}:`, land);
+        const shapeCoordinates = land.shapeCoordinates && land.shapeCoordinates.length > 0
+          ? land.shapeCoordinates.map((coord, index) => {
+              console.log(`Parsing coordinate: latitude ${coord.latitude}, longitude ${coord.longitude}`);
+              return {
+                latitude: parseFloat(coord.latitude),
+                longitude: parseFloat(coord.longitude)
+              };
+            })
+          : [];
+        console.log(`Shape coordinates for land ID ${land.id}:`, shapeCoordinates);
+        
+        return {
           ...land,
           latitude: parseFloat(land.alt),
           longitude: parseFloat(land.long),
           id: land.id,
           title: land.title,
-        }))
-      );
+          shapeCoordinates,
+        };
+      });
+
+      setLands(landsData);
     } catch (error) {
       console.error('Failed to fetch lands', error);
       setLands([]);
@@ -149,6 +166,10 @@ const GoogleMaps = () => {
     } else if (option === 'direction') {
       setShowDirections(true);
       setShowDetails(false);
+    } else if (option === 'zoom') {
+      setShowZoom(true);
+      setShowDetails(false);
+      setShowDirections(false);
     }
     setModalVisible(false);
   };
@@ -171,6 +192,20 @@ const GoogleMaps = () => {
     debounce((newRegion) => setRegion(newRegion), 1000),
     []
   );
+
+  const handleZoomChange = (value) => {
+    const newZoomLevel = value;
+    setZoomLevel(newZoomLevel);
+    const newRegion = {
+      ...region,
+      latitudeDelta: newZoomLevel,
+      longitudeDelta: newZoomLevel,
+    };
+    setRegion(newRegion);
+    if (mapRef.current) {
+      mapRef.current.animateToRegion(newRegion, 1000);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -209,7 +244,10 @@ const GoogleMaps = () => {
         style={styles.map}
         customMapStyle={mapStyle}
         region={region}
-        onRegionChangeComplete={(newRegion) => debouncedSetRegion(newRegion)}
+        onRegionChangeComplete={(newRegion) => {
+          console.log('Map region changed to:', newRegion);
+          debouncedSetRegion(newRegion);
+        }}
       >
         {(filter === 'all' || filter === 'house') &&
           houses.map((house) => (
@@ -220,8 +258,8 @@ const GoogleMaps = () => {
               onPress={() => handleMarkerPress(house, 'house')}
             >
               <Image
-                source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3307/3307713.png' }}
-                style={{ width: 40, height: 40 }}
+                source={{ uri: 'https://img.icons8.com/?size=100&id=9GjGfnvIMI8E&format=png&color=228BE6' }}
+                style={{ width: 30, height: 30 }}
                 onError={(e) => console.log('Failed to load image:', e.nativeEvent.error)}
               />
             </Marker>
@@ -235,12 +273,39 @@ const GoogleMaps = () => {
               onPress={() => handleMarkerPress(land, 'land')}
             >
               <Image
-                source={{ uri: 'https://cdn-icons-png.flaticon.com/128/4350/4350287.png' }}
-                style={{ width: 40, height: 40 }}
+                source={{ uri: 'https://img.icons8.com/?size=100&id=120187&format=png&color=228BE6' }}
+                style={{ width: 30, height: 30 }}
                 onError={(e) => console.log('Failed to load image:', e.nativeEvent.error)}
               />
             </Marker>
           ))}
+        {lands.map((land) => (
+          <>
+            {land.shapeCoordinates.length > 0 && (
+              <Polygon
+                key={`polygon-${land.id}`}
+                coordinates={land.shapeCoordinates}
+                strokeWidth={2}
+                strokeColor="rgba(0,255,0,0.5)"
+                fillColor="rgba(0,255,0,0.2)"
+              />
+            )}
+            {land.shapeCoordinates.map((coord, index) => (
+              <Marker
+                key={`marker-${land.id}-${index}`}
+                coordinate={coord}
+                title={`Marker ${index + 1}`}
+              >
+                <Image
+                  source={{ uri: 'https://cdn-icons-png.flaticon.com/128/4350/4350287.png' }}
+                  style={{ width: 20, height: 20 }}
+                  onError={(e) => console.log('Failed to load image:', e.nativeEvent.error)}
+                />
+                {console.log(`Rendering marker for coordinate: latitude ${coord.latitude}, longitude ${coord.longitude}`)}
+              </Marker>
+            ))}
+          </>
+        ))}
         {currentLocation && selectedItem && showDirections && (
           <MapViewDirections
             origin={currentLocation}
@@ -249,7 +314,7 @@ const GoogleMaps = () => {
               longitude: selectedItem.longitude,
             }}
             radius={3000}
-            apikey={'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'} // Replace YOUR_API_KEY with your actual Google Maps API key
+            apikey={'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'} 
             strokeWidth={3}
             strokeColor="hotpink"
             onReady={(result) => {
@@ -285,9 +350,43 @@ const GoogleMaps = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.modalButton}
+              onPress={() => handleOptionPress('zoom')}
+            >
+              <Text style={styles.modalButtonText}>Zoom In</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalButton}
               onPress={() => setModalVisible(false)}
             >
               <Text style={styles.modalButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showZoom}
+        onRequestClose={() => setShowZoom(false)}
+      >
+        <View style={styles.zoomModalContainer}>
+          <View style={styles.zoomModalContent}>
+            <Text style={styles.zoomModalTitle}>Zoom In / Out</Text>
+            <View style={styles.sliderContainer}>
+              <Text>Zoom Level: {zoomLevel}</Text>
+              <Slider
+                style={{ width: 200, height: 40 }}
+                minimumValue={0.01}
+                maximumValue={0.1}
+                value={zoomLevel}
+                onValueChange={(value) => handleZoomChange(value)}
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setShowZoom(false)}
+            >
+              <Text style={styles.modalButtonText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -357,17 +456,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     flex: 1,
-    paddingTop: Platform.OS === 'ios' ? 60 : 80, // Add padding to avoid overlapping with status bar or notch
+    paddingTop: Platform.OS === 'ios' ? 60 : 80,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
   },
   buttonContainer: {
-    position: 'absolute', // Position the button container absolutely
-    top: 10, // Place it at the top of the screen
-    width: '100%', // Make it full width
-    zIndex: 1, // Ensure it's on top of other components
-    paddingHorizontal: 10, // Add some horizontal padding
+    position: 'absolute',
+    top: 10,
+    width: '100%',
+    zIndex: 1,
+    paddingHorizontal: 10,
   },
   sidebar: {
     position: 'absolute',
@@ -411,7 +510,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,
-    maxHeight: 400, 
+    maxHeight: 400,
   },
   closeButton: {
     position: 'absolute',
@@ -474,6 +573,28 @@ const styles = StyleSheet.create({
   modalButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  zoomModalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  zoomModalContent: {
+    width: 300,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  zoomModalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  sliderContainer: {
+    width: '100%',
+    alignItems: 'center',
   },
 });
 

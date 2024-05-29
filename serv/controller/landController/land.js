@@ -23,9 +23,11 @@ module.exports = {
                        model: db.User ,
                        attributes:['firstName','email','phoneNumber']
                     },
+                    
 
 
-                ]
+                ],
+
             });
             res.json(houses)
 

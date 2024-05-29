@@ -30,7 +30,9 @@ module.exports = {
                         model: db.View,
                         attributes: ['options']
                     }
-                ]
+                    
+                ],
+                        order: [['createdAt', 'DESC']]
             });
             res.json(houses);
         } catch (error) {

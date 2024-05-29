@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, Image, Dimensions, StatusBar, FlatList, View, Text, Alert, ActivityIndicator } from 'react-native';
+import { SafeAreaView, StyleSheet, Image, Dimensions, StatusBar, FlatList, View, Text, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { Card, Button, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -14,75 +14,21 @@ const { width } = Dimensions.get('window');
 const SeeAllHouses = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [userId, setUserId] = useState(null);
-  const [user, setUser] = useState(null);
-
-  const [favorites,setFavorites]=useState(new Set());
-  const navigateDetails=(house)=>{
-    navigation.navigate('ViewDetailsHouse', { house: house ,user ,houseId:house.id,userId:house.UserId } )
-   console.log("azertyhjnbhghyu",user);
-    socketserv.emit("receiver",house.UserId)
-}
-const getUserId = async () => {
-  try {
-    const userData = await storage.load({ key: 'loginState' });
-    setUser(userData.user);
-    setUserId(userData.user.userId);
-    fetchFavorites(userData.user.userId);
-  } catch (error) {
-    console.error('Failed to retrieve user data:', error);
-  }
-};
-
-
+  const [favorites, setFavorites] = useState(new Set());
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    const initializeData = async () => {
-      try {
-        const userData = await storage.load({ key: 'loginState' });
-        setUserId(userData.user.userId);
-        fetchHouses();
-        fetchFavorites(userData.user.userId);
-      } catch (error) {
-        console.error('Error loading user data:', error);
-        Alert.alert('Error', 'Unable to load user data');
-      }
-    };
-
-    initializeData();
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      if (userId) {
-        fetchFavorites(userId);
-      }
-    });
-
-    return unsubscribe;
-
-
-
-  }, [navigation, userId]);
-  useEffect(() => {
-  getUserId()
-  }, [])
-
-  const fetchHouses = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get('http://192.168.104.29:4000/api/house/allhouses');
-      setHouses(response.data);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to fetch houses');
-      console.error('Failed to fetch houses:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchHouses(1);
+    getUserId();
+  }, []);
 
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.104.29:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.103.4:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
@@ -97,7 +43,7 @@ const getUserId = async () => {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.104.29:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`http://192.168.103.4:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {
@@ -118,6 +64,25 @@ const getUserId = async () => {
 ;
 
 
+  const fetchHouses = async (page) => {
+    if (!hasMore && page !== 1) return;
+    setLoading(page === 1);
+    setLoadingMore(page !== 1);
+    try {
+      const response = await axios.get(`http://192.168.103.4:4000/api/house/allhouses?page=${page}&limit=15`);
+      const fetchedHouses = response.data;
+      if (fetchedHouses.length < 15) {
+        setHasMore(false);
+      }
+      setHouses((prevHouses) => page === 1 ? fetchedHouses : [...prevHouses, ...fetchedHouses]);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to fetch houses');
+      console.error('Failed to fetch houses:', error);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
 
   const renderCarouselItem = ({ item }) => (
     <View style={styles.carouselItem}>
@@ -175,11 +140,36 @@ const getUserId = async () => {
     );
   };
 
+  const navigateDetails = (house) => {
+    navigation.navigate('ViewDetailsHouse', { house });
+    socketserv.emit("receiver", house.UserId);
+  };
+
+  const handleLoadMore = () => {
+    if (hasMore && !loadingMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchHouses(nextPage);
+    }
+  };
+
+  const renderFooter = () => {
+    if (!hasMore) return null;
+    return (
+      <TouchableOpacity style={styles.loadMoreButton} onPress={handleLoadMore}>
+        {loadingMore ? (
+          <ActivityIndicator size="small" color={COLORS.white} />
+        ) : (
+          <Text style={styles.loadMoreButtonText}>Load More</Text>
+        )}
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={COLORS.background} barStyle="dark-content" />
-      {loading ? (
+      {loading && page === 1 ? (
         <ActivityIndicator size="large" color={COLORS.primary} style={styles.loader} />
       ) : (
         <FlatList
@@ -187,6 +177,7 @@ const getUserId = async () => {
           keyExtractor={(item) => `${item.id}`}
           renderItem={({ item }) => <HouseCard house={item} />}
           contentContainerStyle={styles.listContainer}
+          ListFooterComponent={renderFooter}
         />
       )}
     </SafeAreaView>
@@ -274,8 +265,19 @@ const styles = StyleSheet.create({
   carouselImage: {
     width: '100%',
     height: '100%',
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    borderRadius: 15,
+  },
+  loadMoreButton: {
+    padding: 10,
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  loadMoreButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.white,
   },
 });
 

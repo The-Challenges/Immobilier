@@ -5,7 +5,7 @@ import COLORS from '../consts/colors';
 
 const { width } = Dimensions.get('screen');
 
-const FeaturedScroller = ({ houses, navigation, toggleCard, pressedCard }) => {
+const FeaturedScroller = ({ houses = [], navigation, toggleCard, pressedCard }) => {
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -33,17 +33,15 @@ const FeaturedScroller = ({ houses, navigation, toggleCard, pressedCard }) => {
           style={styles.cardImage}
         />
         <View style={styles.cardContent}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardType}>{item.propertyType}</Text>
-            <View style={styles.iconContainer}>
-              <View style={styles.rating}>
-                <Icon name="star" size={20} color="#FFD700" />
-                <Text style={styles.ratingText}>{item.rating || '4.5'}</Text>
-              </View>
-              <TouchableOpacity style={styles.favoriteButton}>
-                <Icon name="favorite-border" size={20} color="#FFD700" />
-              </TouchableOpacity>
+          <Text style={styles.cardType}>{item.propertyType}</Text>
+          <View style={styles.ratingContainer}>
+            <View style={styles.rating}>
+              <Icon name="star" size={20} color="#FFD700" />
+              <Text style={styles.ratingText}>{item.rating || '4.5'}</Text>
             </View>
+            <TouchableOpacity style={styles.favoriteButton}>
+              <Icon name="favorite-border" size={20} color={COLORS.primary} />
+            </TouchableOpacity>
           </View>
           <Text style={styles.cardPrice}>${item.price}/month</Text>
           <Text style={styles.cardTitle}>{item.title}</Text>
@@ -118,20 +116,15 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    width: (width / 2) - 20, // Adjust the width of the card for two columns
+    width: (width / 2) - 20,
     overflow: 'hidden',
   },
   cardImage: {
     width: '100%',
-    height: 120, // Adjust the height of the card image
+    height: 120,
   },
   cardContent: {
     padding: 10,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   cardType: {
     fontSize: 14,
@@ -140,15 +133,17 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 8,
     paddingVertical: 2,
+    marginBottom: 5,
   },
-  iconContainer: {
+  ratingContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 5,
   },
   rating: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 5,
   },
   ratingText: {
     marginLeft: 5,
@@ -160,6 +155,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 5,
     elevation: 5,
+    alignSelf: 'flex-start',
   },
   cardPrice: {
     fontSize: 16,

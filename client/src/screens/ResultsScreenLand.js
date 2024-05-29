@@ -25,11 +25,9 @@ const ResultsScreenLand = ({ route, navigation }) => {
               <Icon name="star" size={20} color="#FFD700" />
               <Text style={styles.ratingText}>{item.rating || '4.5'}</Text>
             </View>
-            <View>
-              <TouchableOpacity style={styles.favoriteButton}>
-                <Icon name="favorite-border" size={24} color="#FFD700" />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.favoriteButton}>
+              <Icon name="favorite-border" size={24} color="#FFD700" />
+            </TouchableOpacity>
           </View>
           <Text style={styles.cardPrice}>${item.price}</Text>
           <Text style={styles.cardTitle}>{item.title}</Text>
@@ -125,7 +123,6 @@ const styles = StyleSheet.create({
   rating: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft:260
   },
   ratingText: {
     marginLeft: 5,
@@ -133,14 +130,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   favoriteButton: {
-    position: 'absolute',
-    top: -10,
-    right: -4,
     backgroundColor: '#fff',
     borderRadius: 20,
     padding: 5,
     elevation: 5,
-    marginTop:35
   },
   cardPrice: {
     fontSize: 20,
