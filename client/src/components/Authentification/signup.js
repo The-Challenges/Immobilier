@@ -12,7 +12,7 @@ const SignupScreen = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
 
-      const response = await axios.post(`${API_AD}/api/auth/signup`, {
+      const response = await axios.post(`http://192.168.11.225:4000/api/auth/signup`, {
 
         firstName,
         email,
@@ -69,8 +69,8 @@ const SignupScreen = ({ navigation }) => {
             secureTextEntry
           />
         </View>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#F5F7C4' }]} onPress={handleSubmit}>
-          <Text style={[styles.buttonText, { color: '#000' }]}>Create Account</Text>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#4a90e2' }]} onPress={handleSubmit}>
+          <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>Create Account</Text>
         </TouchableOpacity>
       </View>
       <Text style={styles.terms}>

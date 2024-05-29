@@ -12,21 +12,21 @@ const slides = [
     title: 'Find Your Dream Home With Us',
     text: 'Discover your perfect home with an immersive experience and access to the most comprehensive listings, including unique properties you won’t find anywhere else.',
     animation: require('../../animations/2.json'),
-    backgroundColors: ['#FFD700', '#FF8C00'],
+    backgroundColors: ['#4a90e2', '#005a9d'],
   },
   {
     key: '2',
     title: 'Explore World Class Smart Real Estate',
     text: 'Discover real estate for sale, new homes, new lands, find property records, condos & apartments.',
     animation: require('../../animations/3.json'),
-    backgroundColors: ['#FFD700', '#FF8C00'],
+    backgroundColors: ['#4a90e2', '#005a9d'],
   },
   {
     key: '3',
     title: 'The Perfect Choice for Your Future',
     text: 'Find a luxury residence that suits you, we will help you to find the most suitable residence for you.',
     animation: require('../../animations/4.json'),
-    backgroundColors: ['#FFD700', '#FF8C00'],
+    backgroundColors: ['#4a90e2', '#005a9d'],
   }
 ];
 

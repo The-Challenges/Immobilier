@@ -3,11 +3,11 @@ import { View, Text, StyleSheet, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const PaymentConfirmationScreen = ({ navigation }) => {
-  const fadeAnim = new Animated.Value(0); // Initial value for opacity: 0
+  const fadeAnim = new Animated.Value(0); 
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate('HomeScreen');
+      navigation.navigate('HomeTabs');
     }, 3000);
 
     // Start the fade-in animation
@@ -25,7 +25,7 @@ const PaymentConfirmationScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Animated.View style={{ ...styles.content, opacity: fadeAnim }}>
-        <Icon name="check-circle" size={100} color="orange" style={styles.icon} />
+        <Icon name="check-circle" size={100} color="#4a90e2" style={styles.icon} />
         <Text style={styles.text}>Payment Confirmed!</Text>
         <Text style={styles.subText}>Thank you for your purchase.</Text>
       </Animated.View>

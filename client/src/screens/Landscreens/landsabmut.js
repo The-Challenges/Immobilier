@@ -41,6 +41,7 @@ const Screen8 = ({ formData, navigateToPrevious, handleSubmit }) => {
             console.log('Response:', response);
             if (response.status === 200 || response.status === 201) {
                 setModalVisible(true);
+                navigation.navigate('HomeTabs');
             } else {
                 throw new Error(`Submission failed with status code ${response.status}`);
             }

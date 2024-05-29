@@ -17,6 +17,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { BarChart } from 'react-native-chart-kit';
 import storage from '../Authentification/storage'; // Import your storage module
+import { API_AD } from '../../../config';
 
 const getUserId = async () => {
   try {
@@ -130,6 +131,20 @@ const UserProfile = () => {
   const [requestsVisible, setRequestsVisible] = useState(false);
   const [chartData, setChartData] = useState([0, 0]);
 
+
+const logout= async ()=>{
+  try {
+    console.log('Logging out...');
+    const userData = await storage.remove({ key: 'loginState' })
+    navigation.navigate('Login')
+ 
+   
+  } catch (error) {
+    console.error('Failed to retrieve user data:', error);
+  
+}
+}
+  
   const loadUserData = async () => {
     try {
       console.log('Starting user data fetch...');
@@ -269,7 +284,7 @@ const UserProfile = () => {
         </View>
 
         <View style={styles.logoutContainer}>
-          <Action title={'Logout'} icon={'log-out'} onPress={() => navigation.navigate('profile')} iconColor={'#FF0000'} />
+          <Action title={'Logout'} icon={'log-out'} onPress={() => logout()} iconColor={'#FF0000'} />
         </View>
       </ScrollView>
 

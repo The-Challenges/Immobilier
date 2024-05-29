@@ -1,16 +1,27 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, RefreshControl, ScrollView } from 'react-native';
 import axios from 'axios';
 import { Button, IconButton } from 'react-native-paper';
 import storage from './storage';
 import { API_AD } from '../../../config';
 
 const Signin = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+
   const navigateToSignup = () => {
     navigation.navigate('Signup');
   };
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
+  // const onRefresh = useCallback(() => {
+  //   setRefreshing(true);
+  //   // Simulate a refresh time delay
+  //   setTimeout(() => {
+  //     setRefreshing(false);
+  //     navigation.navigate('HomeTabs');
+  //   }, 1000);
+  // }, []);
 
   const handleSubmit = async () => {
     try {
@@ -20,17 +31,14 @@ const Signin = ({ navigation }) => {
         const { user, token } = response.data;
         console.log(user.userId); // Make sure this logs the expected value
         await storage.save({ key: 'loginState', data: { token, user } });
-        
         navigation.navigate('HomeTabs');
-
+        // onRefresh();
       } else {
         Alert.alert('Login failed', 'No user data found in response');
       }
     } catch (error) {
       console.error(error);
-
       Alert.alert('Login failed', 'An unexpected error occurred');
-
       if (error.response) {
         Alert.alert('Login failed', error.response.data.message);
       } else {
@@ -38,35 +46,36 @@ const Signin = ({ navigation }) => {
       }
     }
   };
-  
-
+  // onRefresh={onRefresh}
   return (
-    <View style={styles.container}>
-      <Image source={{ uri: 'https://i.ibb.co/wWMcYf3/Screenshot-11.png' }} style={styles.logo} />
+  <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing}  />}>
+      <Image source={{ uri: 'https://d1csarkz8obe9u.cloudfront.net/posterpreviews/real-estate-logo%2C-real-estate-company-logo-design-template-8ee9c59179ae1793f475915d6f19f9ff_screen.jpg?ts=1665168739' }} style={styles.logo} />
       <Text style={styles.title}>Login to Your Account</Text>
       <View style={styles.inputContainer}>
         <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} />
         <TextInput style={styles.input} placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
       </View>
-      <Button style={[styles.button, { backgroundColor: '#F5F7C4' }]} mode="contained" onPress={handleSubmit} labelStyle={{ color: '#000' }}>
+      <Button
+        style={[styles.button, { backgroundColor: '#4a90e2' }]}
+        mode="contained"
+        onPress={handleSubmit}
+        labelStyle={[styles.buttonText, { color: '#FFFFFF', fontWeight: 'bold' }]}  // Added fontWeight: 'bold'
+      >
         Login
       </Button>
-      <TouchableOpacity>
-        <Text style={[styles.forgotPassword, { color: '#000' }]}>Forgot Password?</Text>
+      <Text style={styles.or}>OR</Text>
+      <TouchableOpacity style={[styles.socialButton, { backgroundColor: '#4a90e2' }]}>
+        <IconButton icon="google" color="#FFFFFF" style={styles.icon} />
+        <Text style={[styles.socialButtonText, { color: '#FFFFFF' }]}>Sign in with Google</Text>
       </TouchableOpacity>
-      <Text style={styles.or}>Or</Text>
-      <TouchableOpacity style={[styles.socialButton, { backgroundColor: '#F5F7C4' }]}>
-        <IconButton icon="google" color="#000" style={styles.icon} />
-        <Text style={[styles.socialButtonText, { color: '#000' }]}>Sign in with Google</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={[styles.socialButton, { backgroundColor: '#F5F7C4' }]}>
-        <IconButton icon="facebook" color="#000" style={styles.icon} />
-        <Text style={[styles.socialButtonText, { color: '#000' }]}>Sign in with Facebook</Text>
+      <TouchableOpacity style={[styles.socialButton, { backgroundColor: '#4a90e2' }]}>
+        <IconButton icon="facebook" color="#FFFFFF" style={styles.icon} />
+        <Text style={[styles.socialButtonText, { color: '#FFFFFF' }]}>Sign in with Facebook</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={navigateToSignup}>
         <Text style={[styles.createAccount, { color: '#000' }]}>Don't have an account? Create one</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -102,33 +111,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
   button: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#4a90e2',
     width: '80%',
     height: 50,
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 10,  // Reduced spacing to accommodate OR text
     borderRadius: 25,
   },
-  buttonText: {
-    color: '#000', 
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   forgotPassword: {
-    color: '#4CAF50',
+    color: '#4a90e2',
     fontWeight: 'bold',
     marginBottom: 20,
     fontSize: 14,
   },
   or: {
+    fontSize: 16,
     color: '#999',
     fontWeight: 'bold',
-    marginBottom: 20,
-    fontSize: 16,
+    marginBottom: 10,  // Adjusted for better spacing
   },
   socialButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#4a90e2',
     width: '80%',
     height: 50,
     marginBottom: 20,
@@ -144,6 +149,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 10,
+    color: '#FFF',  // Ensure text is white
   },
   createAccount: {
     color: '#4CAF50',

@@ -8,15 +8,7 @@ exports.createRequest = async (req, res) => {
         return res.status(400).send({ message: "Missing or invalid userId or landId. Both must be numeric." });
     }
     try {
-        // const existingRequest = await db.RequestLand.findOne({
-        //     where: {
-        //         userId: parseInt(userId),
-        //         landId: parseInt(landId)
-        //     }
-        // });
-        // if (existingRequest) {
-        //     return res.status(409).send({ message: "Request already exists." });
-        // }
+      
 
         const request = await db.RequestLand.create({
             userId: parseInt(userId),
@@ -42,15 +34,7 @@ exports.createRequestHouse = async (req, res) => {
     }
 
     try {
-        // const existingRequest = await db.RequestHouse.findOne({
-        //     where: {
-        //         userId: parseInt(userId),
-        //         houseId: parseInt(houseId)
-        //     }
-        // });
-        // if (existingRequest) {
-        //     return res.status(409).send({ message: "Request already exists." });
-        // }
+    
 
 
 
@@ -192,25 +176,27 @@ exports.getRequestByOwner = async (req, res) => {
 };
 
 
-exports.check=async (req, res) => {
+exports.check = async (req, res) => {
     const { userId, landId, houseId } = req.query;
+
     try {
         let request;
         if (landId) {
             request = await db.RequestLand.findOne({
-                where: { userId: userId, landId: landId }
+                where: { userId: parseInt(userId), landId: parseInt(landId) }
             });
         } else if (houseId) {
             request = await db.RequestHouse.findOne({
-                where: { userId: userId, houseId: houseId }
+                where: { userId: parseInt(userId), houseId: parseInt(houseId) }
             });
         }
+
         res.send({ hasRequested: !!request });
     } catch (error) {
         console.log('Error checking request status:', error);
         res.status(500).send({ message: "Internal server error", details: error.message });
     }
-}
+};
 
 
 

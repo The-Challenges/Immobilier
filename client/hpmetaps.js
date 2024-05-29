@@ -1,21 +1,18 @@
-
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from './src/screens/HomeScreen'
-// import DetailsScreen from './src/screens/DetailsScreen'
-import RecommendedScreen from './src/screens/RecommendedScreen'
-import Chatroom from './src/components/chat/allrooms'
+import HomeScreen from './src/screens/HomeScreen';
+import RecommendedScreen from './src/screens/RecommendedScreen';
+// import Chatroom from './src/components/chat/allrooms';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/Feather';
+import Icon5 from 'react-native-vector-icons/FontAwesome5';
+
 import ProfileDetails from './src/components/profile/profileDetails';
 import GoogleMaps from './src/screens/googleMaps';
 import NotificationsScreen from './src/components/notification';
-
-
-
-
+import Subscription from "./src/components/Subscription/Subscription"
 const Tab = createBottomTabNavigator();
 
 function HomeTabs() {
@@ -31,20 +28,23 @@ function HomeTabs() {
               break;
             case 'ProfilDetail':
               iconName = 'user';
-              Component= Icon3 ;
+              Component = Icon3;
               break;
             case 'Recommended':
               iconName = 'star-outline';
               break;
-            case 'Chatroom':  
-            iconName = 'chatbox-ellipses-outline';
-            Component = Icon2;
-              break;
-                 case 'Notifications':
-              iconName = 'bell' ? 'bell' : 'bell-outline';
+            // case 'Chatroom':  
+            //   iconName = 'chatbox-ellipses-outline';
+            //   Component = Icon2;
+            //   break;
+            case 'Notifications':
+              iconName = focused ? 'bell' : 'bell-outline';
               Component = Icon4;
-              break
-          
+              break;
+            case 'Subscription':
+              iconName = 'crown';
+              Component = Icon5;
+              break;
             default:
               iconName = 'alert-circle-outline';   
               break;
@@ -56,11 +56,10 @@ function HomeTabs() {
       })}>
       <Tab.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
       <Tab.Screen name="ProfilDetail" component={ProfileDetails} options={{ headerShown: false }} />
-      {/* <Tab.Screen name="Recommended" component={RecommendedScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false }} /> */}
-      {/* <Tab.Screen name="Chat" component={Chat} /> */}
-      <Tab.Screen name="GoogleMaps" component={GoogleMaps} options={{ headerShown: false }}  />
-
+      <Tab.Screen name="Recommended" component={RecommendedScreen} options={{ headerShown: false }} />
+      {/* <Tab.Screen name="Chatroom" component={Chatroom} options={{ headerShown: false }} /> */}
+      <Tab.Screen name="GoogleMaps" component={GoogleMaps} options={{ headerShown: false }} />
+      <Tab.Screen name="Subscription" component={Subscription} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }

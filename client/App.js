@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
+// import React, { Component } from 'react';
+// import PropTypes from 'prop-types';
+
 import { View, StyleSheet } from 'react-native';
 import { Button, Dialog, Portal, Text, PaperProvider } from 'react-native-paper';
 import ProfileDetails from './src/components/profile/profileDetails';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+// import { ViewPropTypes } from 'deprecated-react-native-prop-types';
 import Listings from './src/screens/Profile/Listings';
 import Contact from './src/screens/Profile/Contact';
 import Search from './src/screens/Profile/SearchBar';
@@ -16,10 +19,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import them from './src/font/font'
 import FrPage from "./src/components/first/frPage";
 import Two from "./src/components/two/two";
+import axios from 'axios';
+import Signup from "./src/components/Authentification/signup";
 import HomeScreen from "./src/screens/HomeScreen";
-import DetailsScreen from "./src/screens/DetailsScreen";
+import PropTypes from 'prop-types';
+// import DetailsScreen from "./src/screens/DetailsScreen";
 import FilterScreen from "./src/screens/FilterScreen";
-import RecommendedScreen from "./src/screens/RecommendedScreen";
+// import RecommendedScreen from "./src/screens/RecommendedScreen";
 import ResultsScreen from "./src/screens/ResultsScreen";
 import Chat from "./src/components/chat/chat";
 import Onboarding from "./src/components/Authentification/OnboardingScreen";
@@ -41,7 +47,6 @@ import ResultsScreenLand from './src/screens/ResultsScreenLand';
 import PaymentScreen from './src/components/Subscription/Payment';
 import PaymentConfirmationScreen from './src/components/Subscription/PaymentConfirmationScreen';
 import Login from './src/components/Authentification/login'
-import Signup from './src/components/Authentification/signup'
 import socketserv from './src/components/request/socketserv';
 import FullCreateHouse from './src/components/profile/cratePosts/AddHouse'; 
 import EditPostScreen from './src/screens/Profile/EditPostScreen';
@@ -53,6 +58,7 @@ const Stack = createNativeStackNavigator();
 
 // Main stack navigator
 function App() {
+
   const [visible, setVisible] = useState(false);
   const [requestData, setRequestData] = useState(null);
   const [responseVisible, setResponseVisible] = useState(false);
@@ -66,8 +72,8 @@ function App() {
   const handleAccept = async () => {
     if (requestData) {
       const { type, data } = requestData;
-      const endpoint = type === 'land' ? `update-land-request/${data.user.id}/${data.land.id}` : `update-house-request/${data.user.id}/${data.land.id}`;
-
+      const endpoint = type === 'land' ? `update-land-request/${data.user.userId}/${data.land.id}` : `update-house-request/${data.user.id}/${data.land.id}`;
+console.log(data,'aaaa');
       try {
         console.log(`Sending update request to ${API_AD}/api/reqtest/${endpoint} with status: Confirmed`);
         await axios.put(`${API_AD}/api/reqtest/${endpoint}`, { status: 'Confirmed' });
@@ -76,15 +82,15 @@ function App() {
       } catch (error) {
         console.error("Error updating request status:", error.response ? error.response.data : error.message);
       }
-
+    
     }
     hideDialog();
   }
   const handleRefuse = async () => {
     if (requestData) {
       const { type, data } = requestData;
-      const endpoint = type === 'land' ? `update-land-request/${data.user.id}/${data.land.id}` : `update-house-request/${data.user.id}/${data.house.id}`;
-
+      const endpoint = type === 'land' ? `update-land-request/${data.user.userId}/${data.land.id}` : `update-house-request/${data.user.id}/${data.house.id}`;
+console.log(data,'aaaamles,k,gpd,lpsg,psqg,lpl,mqlfk');
       try {
         console.log(`Sending update request to ${API_AD}/api/reqtest/${endpoint} with status: Rejected`);
         await axios.put(`${API_AD}/api/reqtest/${endpoint}`, { status: 'Rejected' });
@@ -93,10 +99,10 @@ function App() {
       } catch (error) {
         console.error("Error updating request status:", error.response ? error.response.data : error.message);
       }
-    }
+    }  
     hideDialog();
-    ;
-  }
+  ;
+}
 
   useEffect(() => {
     socketserv.on('connect', () => {
@@ -130,10 +136,11 @@ function App() {
     });
 
     return () => {
-
+    
       socketserv.disconnect("disconnect");
     };
   }, []);
+
 
 
   const Stack = createNativeStackNavigator();
@@ -141,14 +148,15 @@ function App() {
   return (
     <PaperProvider font={them}   >
       <NavigationContainer>
+
         <Stack.Navigator initialRouteName="splash">
           <Stack.Screen name="FrPage" component={FrPage} options={{ headerShown: false }} />
           <Stack.Screen name="Two" component={Two} options={{ headerShown: false }} />
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-          <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
+          <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} /> 
           <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
           <Stack.Screen name='chat' component={Chat} options={{ headerShown: false }} />
-          <Stack.Screen name='DetailsScreen' component={DetailsScreen} options={{ headerShown: false }} />
+          {/* <Stack.Screen name='DetailsScreen' component={DetailsScreen} options={{ headerShown: false }} /> */}
           <Stack.Screen name='HomeScreen' component={HomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name='FilterScreen' component={FilterScreen} options={{ headerShown: false }} />
           <Stack.Screen name='ResultsScreen' component={ResultsScreen} options={{ headerShown: false }} />
@@ -172,38 +180,45 @@ function App() {
           <Stack.Screen name='EditProfile' component={EditProfile} />
           <Stack.Screen name='AddHouse' component={AddHouse} options={{ headerShown: false }} />
           <Stack.Screen name='AddLand' component={AddLand} options={{ headerShown: false }} />
-          <Stack.Screen
+          <Stack.Screen name='ViewDetailsLand' component={ViewLandDetails} options={{ headerShown: false }} />
+          <Stack.Screen name='TermsAndConditions' component={TermsAndConditionsScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='ViewDetailsHouse' component={ViewHouseDetails} options={{ headerShown: false }} />
 
-name='RecommendedScreen'
-component={RecommendedScreen}
-options={({ navigation }) => ({
-  headerShown: true,
-  title: 'Recommended Houses',
-  headerStyle: {
-    backgroundColor: '#faebd7',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  headerTitleStyle: {
-    fontWeight: 'bold',
-    fontSize: 22,
-    fontFamily: 'Roboto, "Helvetica Neue", sans-serif',
-  },
-  headerTintColor: 'black',
-  headerLeft: () => (
-    <Icon2
-      name="arrow-back-sharp"
-      size={24}
-      color="black"
-      onPress={() => navigation.goBack()}
-      style={{ marginLeft: 15 }}
-    />
-  ),
-})}
-/>
+
+          {/* <Stack.Screen
+
+            name='RecommendedScreen'
+            component={RecommendedScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Recommended Houses',
+              headerStyle: {
+                backgroundColor: '#faebd7',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 3,
+                elevation: 5,
+              },
+              headerTitleStyle: {
+                fontWeight: 'bold',
+                fontSize: 22,
+                fontFamily: 'Roboto, "Helvetica Neue", sans-serif',
+              },
+              headerTintColor: 'black',
+              headerLeft: () => (
+                <Icon2
+                  name="arrow-back-sharp"
+                  size={24}
+                  color="black"
+                  onPress={() => navigation.goBack()}
+                  style={{ marginLeft: 15 }}
+                />
+              ),
+            })}
+          /> */}
+
+
 
 <Stack.Screen name='FullCreateHouse' component={FullCreateHouse} options={{ headerShown: false }} />
 <Stack.Screen name='UserPostsScreen' component={UserPostsScreen} options={{ title: 'My Posts' }} />
@@ -236,11 +251,11 @@ options={({ navigation }) => ({
           </Dialog>
         </Portal>
       </View>
-
     </PaperProvider>
-  );
-}
 
+  )
+
+}
 const styles = StyleSheet.create({
   accepted: {
     backgroundColor: 'green',
@@ -252,4 +267,11 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
+
+
+// App.propTypes = {
+//   title: PropTypes.string.isRequired,
+
+// };
+
 export default App;
