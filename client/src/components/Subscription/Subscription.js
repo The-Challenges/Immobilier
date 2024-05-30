@@ -31,7 +31,7 @@ const SubscriptionScreen = () => {
 
   return (
     <View style={styles.fullScreen}>
-      <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('HomeScreen')}>
+      <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('HomeTabs')}>
         <Text style={styles.skipButtonText}>{buttonTextSkip}</Text>
       </TouchableOpacity>
       <Image source={icon} style={styles.iconStyle} resizeMode="contain" />

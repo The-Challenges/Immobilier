@@ -1,4 +1,4 @@
-// <const { Sequelize, DataTypes } = require('sequelize');>
+const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (Sequelize, DataTypes) => {
     const Land = Sequelize.define('Land', {
@@ -32,9 +32,21 @@ module.exports = (Sequelize, DataTypes) => {
               isVerifie:{
                 type: DataTypes.BOOLEAN,
                 defaultValue: false
-              }
+              },
+
 
           });
+
+
+
+
+          Land.associate = function(models) {
+
+            Land.hasMany(models.ShapeCoordinate, {
+                foreignKey: 'LandId',
+                as: 'shapeCoordinates'
+            });
+        };
 
 
     return Land;

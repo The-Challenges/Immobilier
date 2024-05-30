@@ -12,11 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Indoor.associate = function(models) {
-      
-        Indoor.belongsTo(models.House, {
-            foreignKey: 'HouseId',
-            as: 'house'
-        });
+        Indoor.belongsTo(models.House, { foreignKey: 'HouseId', as: 'house' });
     };
 
     return Indoor;

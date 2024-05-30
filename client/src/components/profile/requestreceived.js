@@ -143,7 +143,7 @@ const RequestsList = () => {
 
   const handleStatusChange = async (id, status) => {
     try {
-      await axios.post(`http://192.168.11.234:4000/api/request/updateStatus/${id}`, { status });
+      await axios.post(`${API_AD}/api/request/updateStatus/${id}`, { status });
       const updatedRequests = requests.map((request) => {
         if (request.id === id) {
           return {

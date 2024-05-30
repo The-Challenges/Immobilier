@@ -32,27 +32,26 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.FLOAT
     },
   
-    // Uncomment and add these fields if needed
-    // isEmailVerified: {
-    //   type: DataTypes.BOOLEAN,
-    //   defaultValue: false
-    // },
-    // isMobileVerified: {
-    //   type: DataTypes.BOOLEAN,
-    //   defaultValue: false
-    // },
-    // userType: {
-    //   type: DataTypes.ENUM('user', 'admin'),
-    //   defaultValue: 'user'
-    // }
+ 
   });
 //////////////////////////////
   User.associate = function(models) {
     User.hasOne(models.Media, {
         foreignKey: 'userId',
-        as: 'media' // alias to use in include
+        as: 'media' 
     });
 };
+User.associate = (models) => {
+  User.hasMany(models.Chat, { foreignKey: 'senderId', as: 'SentMessages' });
+  User.belongsToMany(models.Conversation, {
+    through: 'UserConversations',
+    as: 'Conversations',
+    foreignKey: 'userId',
+    otherKey: 'conversationId'
+  });
+};
+// User.hasMany(models.Conversation, { foreignKey: 'User1Id', as: 'User1Conversations' });
+// User.hasMany(models.Conversation, { foreignKey: 'User2Id', as: 'User2Conversations' });
 
   return User;
 };

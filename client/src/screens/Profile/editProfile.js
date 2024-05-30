@@ -82,7 +82,7 @@ const EditProfile = ({ route }) => {
 
     try {
       console.log('Updating profile with userId:', userId);
-      const response = await fetch(`http://192.168.11.234:4000/api/user/${userId}`, {
+      const response = await fetch(`http://192.168.104.29:4000/api/user/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ const EditProfile = ({ route }) => {
       if (response.ok) {
         setModalMessage('Profile updated successfully!');
         // Navigate back to UserProfile after a successful update
-        navigation.navigate('ProfilDetail');
+        navigation.navigate('UserProfile');
       } else {
         setModalMessage('Failed to update profile');
       }

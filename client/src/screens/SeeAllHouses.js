@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
-import { SafeAreaView, StyleSheet, Image, Dimensions, StatusBar, FlatList, View, Text, Alert, ActivityIndicator } from 'react-native';
+import { SafeAreaView, StyleSheet, Image, Dimensions, StatusBar, FlatList, View, Text, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { Card, Button, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -14,11 +14,15 @@ const { width } = Dimensions.get('window');
 const SeeAllHouses = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [userId, setUserId] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
 
   useEffect(() => {
-    fetchHouses();
+    fetchHouses(1);
     getUserId();
   }, []);
 
@@ -55,26 +59,35 @@ const SeeAllHouses = ({ navigation }) => {
     }
   }, [userId]);
 
-  const getUserId = async () => {
-    try {
-      const userData = await storage.load({ key: 'loginState' });
-      setUserId(userData.user.userId);
-      fetchFavorites(userData.user.userId);
-    } catch (error) {
-      console.error('Failed to retrieve user data:', error);
-    }
-  };
+const getUserId = async () => {
+  try {
+    const userData = await storage.load({ key: 'loginState' });
+    setUserId(userData.user.userId);
+    fetchFavorites(userData.user.userId);
+    console.log('azertyjdjdddddddddgnkgaaaaaaaaa',userData.user);
+    console.log('zertyuisdfghjkwxcvbn,sdfghjfgh',user);
+  } catch (error) {
+    console.error('Failed to retrieve user data:', error);
+  }
+};
 
-  const fetchHouses = async () => {
-    setLoading(true);
+  const fetchHouses = async (page) => {
+    if (!hasMore && page !== 1) return;
+    setLoading(page === 1);
+    setLoadingMore(page !== 1);
     try {
-      const response = await axios.get('http://192.168.11.234:4000/api/house/allhouses');
-      setHouses(response.data);
+      const response = await axios.get(`http://192.168.11.234:4000/api/house/allhouses?page=${page}&limit=15`);
+      const fetchedHouses = response.data;
+      if (fetchedHouses.length < 15) {
+        setHasMore(false);
+      }
+      setHouses((prevHouses) => page === 1 ? fetchedHouses : [...prevHouses, ...fetchedHouses]);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch houses');
       console.error('Failed to fetch houses:', error);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
@@ -135,14 +148,35 @@ const SeeAllHouses = ({ navigation }) => {
   });
 
   const navigateDetails = (house) => {
-    navigation.navigate('viewDetHouse', { house });
+    navigation.navigate('ViewDetailsHouse', { house });
     socketserv.emit("receiver", house.UserId);
+  };
+
+  const handleLoadMore = () => {
+    if (hasMore && !loadingMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchHouses(nextPage);
+    }
+  };
+
+  const renderFooter = () => {
+    if (!hasMore) return null;
+    return (
+      <TouchableOpacity style={styles.loadMoreButton} onPress={handleLoadMore}>
+        {loadingMore ? (
+          <ActivityIndicator size="small" color={COLORS.white} />
+        ) : (
+          <Text style={styles.loadMoreButtonText}>Load More</Text>
+        )}
+      </TouchableOpacity>
+    );
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={COLORS.background} barStyle="dark-content" />
-      {loading ? (
+      {loading && page === 1 ? (
         <ActivityIndicator size="large" color={COLORS.primary} style={styles.loader} />
       ) : (
         <FlatList
@@ -151,6 +185,7 @@ const SeeAllHouses = ({ navigation }) => {
           extraData={Array.from(favorites)} // Helps in ensuring updates
           renderItem={({ item }) => <HouseCard house={item} />}
           contentContainerStyle={styles.listContainer}
+          ListFooterComponent={renderFooter}
         />
       )}
     </SafeAreaView>
@@ -238,8 +273,19 @@ const styles = StyleSheet.create({
   carouselImage: {
     width: '100%',
     height: '100%',
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    borderRadius: 15,
+  },
+  loadMoreButton: {
+    padding: 10,
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  loadMoreButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.white,
   },
 });
 

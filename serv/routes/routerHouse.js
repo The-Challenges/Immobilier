@@ -21,6 +21,13 @@ router.post('/addOutdoor/:houseId', HouseController.addOutdoorOptionToHouse);
 router.post('/addClimate/:houseId', HouseController.addClimateFeatureToHouse);
 
 // Route to update a specific house
-router.put('/updateHouse/:id', HouseController.updateHouse);
+// router.put('/updateHouse/:id', HouseController.updateHouse);
+router.get('/user/:userId', HouseController.getHousesByUser);
 
+// router.get('/:id', HouseController.getHouseById)
+// router.post('/createhouses', HouseController.createHouses);
+router.get('/filterhouses', HouseController.filterHouses);
+router.get('/coordhouse', HouseController.getHouseCoordinates);
+router.get('/allindoor', HouseController.getAllIndoorOptions);
+router.get('/alloutdoor', HouseController.getAllOutdoorOptions); 
 module.exports = router;

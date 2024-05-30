@@ -8,15 +8,12 @@ module.exports = (Sequelize, DataTypes) => {
  
   });
 
-  // View.associate = function(models) {
-  //   View.belongsTo(models.Land, {
-  //       foreignKey: 'LandId',
-  //       as: 'land'  
-  //   });
+ 
 
-  // }
+  View.associate = function(models) {
+    View.belongsTo(models.House, { foreignKey: 'HouseId', as: 'house' });
+};
 
-  
 
   return View;
 };

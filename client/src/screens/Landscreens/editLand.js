@@ -11,7 +11,7 @@ const Screen8 = ({ formData, landId, navigateToPrevious }) => {
 
     const handleUpdate = async () => {
         try {
-            const response = await axios.put(`http://192.168.103.15:4000/api/land/updateLand/${landId}`, formData, {
+            const response = await axios.put(`http://192.168.11.234:4000/api/land/updateLand/${landId}`, formData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

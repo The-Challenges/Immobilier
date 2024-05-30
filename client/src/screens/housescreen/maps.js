@@ -4,13 +4,16 @@ import MapView, { Marker } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 function Screen4({ formData, handleChange, navigateToNext }) {
-    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [selectedLocation, setSelectedLocation] = useState({
+        latitude: formData.latitude || 37.78825,
+        longitude: formData.longitude || -122.4324,
+    });
 
     const handleMapPress = (event) => {
         const { latitude, longitude } = event.nativeEvent.coordinate;
         setSelectedLocation({ latitude, longitude });
-        handleChange('alt', latitude);
-        handleChange('long', longitude);
+        handleChange('latitude', latitude);
+        handleChange('longitude', longitude);
     };
 
     return (
@@ -18,8 +21,8 @@ function Screen4({ formData, handleChange, navigateToNext }) {
             <MapView
                 style={styles.map}
                 initialRegion={{
-                    latitude: 37.78825,
-                    longitude: -122.4324,
+                    latitude: selectedLocation.latitude,
+                    longitude: selectedLocation.longitude,
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                 }}
@@ -46,7 +49,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f8f9fa',
     },
     map: {
-        flex: 1
+        flex: 1,
     },
     nextButton: {
         position: 'absolute',
@@ -54,7 +57,7 @@ const styles = StyleSheet.create({
         bottom: 20,
         backgroundColor: '#5A67D8',
         borderRadius: 50,
-        padding: 10
+        padding: 10,
     },
     coordinatesContainer: {
         position: 'absolute',
@@ -63,8 +66,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
         padding: 10,
         borderRadius: 8,
-        elevation: 5
-    }
+        elevation: 5,
+    },
 });
 
 export default Screen4;

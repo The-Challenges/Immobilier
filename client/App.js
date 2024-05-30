@@ -25,6 +25,8 @@ import Chat from "./src/components/chat/chat";
 
 import SeeAllHouses from "./src/screens/SeeAllHouses";
 import SeeAllLands from "./src/screens/SeeAllLands";
+import UserPostsScreen from "./src/screens/Profile/UserPostsScreen";
+
 
 
 // import Chatroom from "./src/components/chat/allrooms";
@@ -46,13 +48,14 @@ import FilterScreenLands from "./src/screens/FilterScreenLand"
 import ResultsScreenLand from './src/screens/ResultsScreenLand';
 import PaymentScreen from './src/components/Subscription/Payment';
 import PaymentConfirmationScreen from './src/components/Subscription/PaymentConfirmationScreen';
-import TermeAndCondition from './src/components/request/sendRe/TermsAndConditions'
+import TermsAndConditions from './src/components/request/sendRe/TermsAndConditions'
 import { View ,StyleSheet} from 'react-native';
 import { Button, Dialog, Portal, Text} from 'react-native-paper';
 import socketserv from './src/components/request/socketserv';
-import viewDetHouse from './src/viewDetHouse'
+import ViewDetailsHouse from './src/viewDetHouse'
 import viewDetLand from './src/viewDetLand'
 import EditProfile from "./src/screens/Profile/editProfile";
+
 
 
 
@@ -184,8 +187,10 @@ function App() {
           <Stack.Screen name='EditProfile' component={EditProfile} />
           <Stack.Screen name='AddHouse' component={AddHouse} options={{ headerShown: false }} />
           <Stack.Screen name='AddLand' component={AddLand} options={{ headerShown: false }} />
-          <Stack.Screen name='viewDetHouse' component={viewDetHouse} options={{ headerShown: false }} />
+          <Stack.Screen name='ViewDetailsHouse' component={ViewDetailsHouse} options={{ headerShown: false }} />
           <Stack.Screen name='viewDetLand' component={viewDetLand} options={{ headerShown: false }} />
+          <Stack.Screen name='UserPostsScreen' component={UserPostsScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='TermsAndConditions' component={TermsAndConditions} options={{ headerShown: false }} />
 
 
       

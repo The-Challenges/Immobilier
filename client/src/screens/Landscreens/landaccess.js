@@ -11,17 +11,22 @@ function AccessScreen({ formData, handleChange, navigateToNext, navigateToPrevio
     ];
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.title}>Select Access Option</Text>
             {accessOptions.map(({ field, label, icon, iconColor }) => (
                 <View style={styles.switchContainer} key={field}>
                     <Icon name={icon} size={24} color={iconColor} />
                     <Text style={styles.switchLabel}>{label}</Text>
                     <Switch
-                        onValueChange={(value) => handleChange(field, value)}
-                        value={formData[field]}
+                        onValueChange={(value) => {
+                            const updatedOptions = value
+                                ? [...formData.accessOptions, field]
+                                : formData.accessOptions.filter(opt => opt !== field);
+                            handleChange('accessOptions', updatedOptions);
+                        }}
+                        value={formData.accessOptions.includes(field)}
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={formData[field] ? "#f5dd4b" : "#f4f3f4"}
+                        thumbColor={formData.accessOptions.includes(field) ? "#f5dd4b" : "#f4f3f4"}
                     />
                 </View>
             ))}
@@ -37,7 +42,9 @@ function AccessScreen({ formData, handleChange, navigateToNext, navigateToPrevio
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         padding: 20,
         backgroundColor: '#f0f4f7',
     },
@@ -62,6 +69,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 3,
         elevation: 4,
+        width: '100%',
     },
     switchLabel: {
         fontSize: 16,
@@ -75,6 +83,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         marginTop: 20,
+        width: '100%',
     },
     buttonText: {
         color: '#ffffff',

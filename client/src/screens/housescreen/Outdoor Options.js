@@ -2,40 +2,47 @@ import React from 'react';
 import { ScrollView, View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-
 function Screen2({ formData, handleChange, navigateToNext }) {
+    const options = [
+        { field: 'Swimming pool', label: 'Swimming Pool', icon: 'pool', iconColor: '#1E90FF' },
+        { field: 'Balcony', label: 'Balcony', icon: 'balcony', iconColor: '#3CB371' },
+        { field: 'Undercover parking', label: 'Undercover Parking', icon: 'garage', iconColor: '#6a5acd' },
+        { field: 'Fully fenced', label: 'Fully Fenced', icon: 'fence', iconColor: '#228b22' },
+        { field: 'Tennis court', label: 'Tennis Court', icon: 'tennis', iconColor: '#ff6347' },
+        { field: 'Garage', label: 'Garage', icon: 'garage-alert', iconColor: '#ff4500' },
+        { field: 'Outdoor area', label: 'Outdoor Area', icon: 'tree', iconColor: '#2e8b57' },
+        { field: 'Shed', label: 'Shed', icon: 'warehouse', iconColor: '#4682b4' },
+        { field: 'Outdoor spa', label: 'Outdoor Spa', icon: 'hot-tub', iconColor: '#b0c4de' },
+        { field: 'Unknown', label: 'Unknown', icon: 'alert-circle-outline', iconColor: '#ccc' }
+    ];
+
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>Outdoor Options</Text>
-            {[
-                { field: 'Swimming pool', label: 'Swimming Pool', icon: 'pool', iconColor: '#1E90FF' },
-                { field: 'Balcony', label: 'Balcony', icon: 'balcony', iconColor: '#3CB371' },
-                { field: 'Undercover parking', label: 'Undercover Parking', icon: 'garage', iconColor: '#6a5acd' },
-                { field: 'Fully fenced', label: 'Fully Fenced', icon: 'fence', iconColor: '#228b22' },
-                { field: 'Tennis court', label: 'Tennis Court', icon: 'tennis', iconColor: '#ff6347' },
-                { field: 'Garage', label: 'Garage', icon: 'garage-alert', iconColor: '#ff4500' },
-                { field: 'Outdoor area', label: 'Outdoor Area', icon: 'tree', iconColor: '#2e8b57' },
-                { field: 'Shed', label: 'Shed', icon: 'warehouse', iconColor: '#4682b4' },
-                { field:  'Outdoor spa', label: 'Outdoor Spa', icon: 'hot-tub', iconColor: '#b0c4de' }
-            ].map(({ field, label, icon, iconColor }) => (
+            {options.map(({ field, label, icon, iconColor }) => (
                 <View style={styles.switchContainer} key={field}>
                     <Icon name={icon} size={24} color={iconColor} />
                     <Text style={styles.switchLabel}>{label}</Text>
                     <Switch
-                        onValueChange={(value) => handleChange(field, value)}
-                        value={formData[field]}
+                        onValueChange={(value) => {
+                            const updatedOptions = value
+                                ? [...formData.outdoorOptions, field]
+                                : formData.outdoorOptions.filter(opt => opt !== field);
+                            handleChange('outdoorOptions', updatedOptions);
+                        }}
+                        value={formData.outdoorOptions.includes(field)}
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={formData[field] ? "#f5dd4b" : "#f4f3f4"}
+                        thumbColor={formData.outdoorOptions.includes(field) ? "#f5dd4b" : "#f4f3f4"}
                     />
                 </View>
             ))}
-            {/* Navigation Button */}
             <TouchableOpacity onPress={navigateToNext} style={styles.button}>
                 <Text style={styles.buttonText}>Next</Text>
             </TouchableOpacity>
         </ScrollView>
     );
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,

@@ -9,12 +9,15 @@ import {
   StyleSheet,
   Modal,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  Dimensions
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { BarChart } from 'react-native-chart-kit';
 import storage from '../Authentification/storage'; // Import your storage module
+import { API_AD } from '../../../config';
 
 
 const getUserId = async () => {
@@ -74,6 +77,61 @@ const Action = ({ icon, title, onPress, iconColor = '#4F8EF7' }) => (
   </Pressable>
 );
 
+const MyPostsCard = ({ visible, onClose }) => (
+  <Modal
+    animationType="slide"
+    transparent={true}
+    visible={visible}
+    onRequestClose={onClose}
+  >
+    <View style={styles.modalView}>
+      <Text style={styles.modalText}>My Posts</Text>
+      {/* Add your card content here */}
+      <Pressable
+        style={[styles.button, styles.buttonClose]}
+        onPress={onClose}
+      >
+        <Text style={styles.textStyle}>Close</Text>
+      </Pressable>
+    </View>
+  </Modal>
+);
+
+const RequestsModal = ({ visible, onClose, navigation }) => (
+  <Modal
+    animationType="slide"
+    transparent={true}
+    visible={visible}
+    onRequestClose={onClose}
+  >
+    <View style={styles.modalView}>
+      <Text style={styles.modalText}>Requests</Text>
+      <Action title={'My Houses Requests Received'} icon={'home'} onPress={() => {
+        onClose();
+        navigation.navigate('Received');
+      }} />
+      <Action title={'My Houses Requests Sended'} icon={'home'} onPress={() => {
+        onClose();
+        navigation.navigate('requeststatus');
+      }} />
+       <Action title={'My Lands Requests Received'} icon={'home'} onPress={() => {
+        onClose();
+        navigation.navigate('requestreceivedlands');
+      }} />
+      <Action title={'My Lands Requests'} icon={'map'} onPress={() => {
+        onClose();
+        navigation.navigate('requeststatuslands');
+      }} />
+      <Pressable
+        style={[styles.button, styles.buttonClose]}
+        onPress={onClose}
+      >
+        <Text style={styles.textStyle}>Close</Text>
+      </Pressable>
+    </View>
+  </Modal>
+);
+
 const UserProfile = () => {
   const navigation = useNavigation();
   const [userData, setUserData] = useState(null);
@@ -83,7 +141,24 @@ const UserProfile = () => {
   const [error, setError] = useState(null);
   const [verified, setVerified] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
+  const [postsVisible, setPostsVisible] = useState(false);
+  const [requestsVisible, setRequestsVisible] = useState(false);
+  const [chartData, setChartData] = useState([0, 0]);
 
+
+const logout= async ()=>{
+  try {
+    console.log('Logging out...');
+    const userData = await storage.remove({ key: 'loginState' })
+    navigation.navigate('Login')
+ 
+   
+  } catch (error) {
+    console.error('Failed to retrieve user data:', error);
+  
+}
+}
+  
   const loadUserData = async () => {
     try {
       const userId = await getUserId();
@@ -93,6 +168,7 @@ const UserProfile = () => {
           setUserData(profileData);
           const isVerified = await checkVerificationStatus();
           setVerified(isVerified);
+          prepareChartData(profileData);
         } else {
           setError('Failed to load user data.');
         }
@@ -104,6 +180,12 @@ const UserProfile = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const prepareChartData = (data) => {
+    const houseCount = data.houses ? data.houses.length : 0;
+    const landCount = data.lands ? data.lands.length : 0;
+    setChartData([houseCount, landCount]);
   };
 
   useFocusEffect(
@@ -201,17 +283,41 @@ const UserProfile = () => {
         <View style={styles.actionList}>
           <Action title={'Edit Profile'} icon={'edit'} onPress={() => navigation.navigate('EditProfile', { userId: userData.id })} />
           <Action title={'Notification'} icon={'bell'} onPress={() => navigation.navigate('Notifications')} />
-          <Action title={'Security'} icon={'lock'} onPress={() => { }} />
-          <Action title={'Appearance'} icon={'eye'} onPress={() => { }} />
-          <Action title={'Help'} icon={'help-circle'} onPress={() => { }} />
-          <Action title={'Invite Friends'} icon={'user-plus'} onPress={() => { }} />
           <Action title={'Listings'} icon={'list'} onPress={() => navigation.navigate('apartement')} />
           <Action title={'Contact'} icon={'phone'} onPress={() => navigation.navigate('Contact')} />
-          <Action title={'Requests Houses Received'} icon={'home'} onPress={() => navigation.navigate('Received')} />
-          <Action title={'Requests Houses Sended'} icon={'home'} onPress={() => navigation.navigate('requeststatus')} />
-          <Action title={'Requests Lands Received'} icon={'map'} onPress={() => navigation.navigate('requestreceivedlands')} />
-          <Action title={'Requests Lands Sended'} icon={'map'} onPress={() => navigation.navigate('requeststatuslands')} />
+          <Action title={'Requests'} icon={'file-text'} onPress={() => setRequestsVisible(true)} />
+          <Action title={'My Posts'} icon={'file-text'} onPress={() => navigation.navigate('UserPostsScreen', { userId: userData.id })} />
+        </View>
 
+        <View style={styles.chartContainer}>
+          <Text style={styles.chartTitle}>Property Statistics</Text>
+          <BarChart
+            data={{
+              labels: ['Houses', 'Lands'],
+              datasets: [
+                {
+                  data: chartData,
+                },
+              ],
+            }}
+            width={Dimensions.get('window').width - 30} // from react-native
+            height={220}
+            yAxisLabel=""
+            chartConfig={{
+              backgroundColor: '#1cc910',
+              backgroundGradientFrom: '#eff3ff',
+              backgroundGradientTo: '#efefef',
+              decimalPlaces: 2,
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+            }}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
         </View>
 
         <View style={styles.logoutContainer}>
@@ -223,46 +329,7 @@ const UserProfile = () => {
         <TouchableOpacity style={styles.plusButton} onPress={() => setAddModalVisible(true)}>
           <Feather name="plus" size={30} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.editButton} onPress={() => setEditModalVisible(true)}>
-          <Feather name="edit" size={30} color="white" />
-        </TouchableOpacity>
       </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={editModalVisible}
-        onRequestClose={() => setEditModalVisible(false)}
-      >
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Edit</Text>
-          <Pressable
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => {
-              setEditModalVisible(false);
-              navigation.navigate('EditHouse');
-            }}
-          >
-            <Text style={styles.textStyle}>Edit House</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => {
-              setEditModalVisible(false);
-              navigation.navigate('EditLand');
-            }}
-          >
-            <Text style={styles.textStyle}>Edit Land</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => setEditModalVisible(false)}
-          >
-            <Text style={styles.textStyle}>Cancel</Text>
-          </Pressable>
-        </View>
-      </Modal>
-
       <Modal
         animationType="slide"
         transparent={true}
@@ -297,6 +364,9 @@ const UserProfile = () => {
           </Pressable>
         </View>
       </Modal>
+
+      <RequestsModal visible={requestsVisible} onClose={() => setRequestsVisible(false)} navigation={navigation} />
+      <MyPostsCard visible={postsVisible} onClose={() => setPostsVisible(false)} />
     </View>
   );
 };
@@ -413,13 +483,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  logoutContainer: {
+  chartContainer: {
     marginTop: 20,
+    alignItems: 'center',
+  },
+  chartTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333',
   },
   bottomButtons: {
     position: 'absolute',
     bottom: 20,
-    width: '100%',
+    right: 20,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -431,16 +508,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#4F8EF7',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 10,
-  },
-  editButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#4F8EF7',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 10,
   },
   modalView: {
     margin: 20,
@@ -462,9 +529,6 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
     marginVertical: 10,
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
   },
   buttonClose: {
     backgroundColor: "#2196F3",

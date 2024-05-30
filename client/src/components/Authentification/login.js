@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, RefreshControl, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import axios from 'axios';
 import { Button, IconButton } from 'react-native-paper';
 import storage from './storage';
@@ -8,36 +8,24 @@ import { API_AD } from '../../../config';
 const Signin = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
 
   const navigateToSignup = () => {
     navigation.navigate('Signup');
   };
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    // Simulate a refresh time delay
-    setTimeout(() => {
-      setRefreshing(false);
-      navigation.navigate('HomeTabs');
-    }, 1000);
-  }, []);
-
   const handleSubmit = async () => {
     try {
-
       const response = await axios.post('http://192.168.11.234:4000/api/auth/login', { email, password });
       if (response.data && response.data.user) {
         const { user, token } = response.data;
         console.log(user.userId); // Make sure this logs the expected value
         await storage.save({ key: 'loginState', data: { token, user } });
-        onRefresh();
+        navigation.navigate('HomeTabs');
       } else {
         Alert.alert('Login failed', 'No user data found in response');
       }
     } catch (error) {
       console.error(error);
-      Alert.alert('Login failed', 'An unexpected error occurred');
       if (error.response) {
         Alert.alert('Login failed', error.response.data.message);
       } else {
@@ -47,7 +35,7 @@ const Signin = ({ navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Image source={{ uri: 'https://i.ibb.co/dmkt6n2/Screenshot-33.png' }} style={styles.logo} />
       <Text style={styles.title}>Login to Your Account</Text>
       <View style={styles.inputContainer}>
@@ -116,12 +104,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 10,  // Reduced spacing to accommodate OR text
     borderRadius: 25,
-  },
-  forgotPassword: {
-    color: '#4a90e2',
-    fontWeight: 'bold',
-    marginBottom: 20,
-    fontSize: 14,
   },
   or: {
     fontSize: 16,

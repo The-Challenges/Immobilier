@@ -17,15 +17,19 @@
     "@react-native-community/geolocation": "^3.2.1",
     "@react-native-community/hooks": "^3.0.0",
     "@react-native-community/slider": "^4.5.2",
-    "@react-native-picker/picker": "^2.7.5",
+    "@react-native-picker/picker": "^2.7.6",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
     "@react-navigation/stack": "^6.3.29",
     "@stripe/stripe-react-native": "^0.37.3",
+    "@types/react": "^18.3.3",
+    "@types/react-native": "^0.73.0",
     "android": "^0.0.8",
-    "axios": "^1.6.8",
+    "axios": "^1.7.2",
+    "deprecated-react-native-prop-types": "^5.0.0",
     "expo-image-picker": "^15.0.4",
+    "expo-linear-gradient": "^13.0.2",
     "fbjs": "^3.0.5",
     "lodash": "^4.17.21",
     "lottie-react-native": "^6.7.2",
@@ -47,6 +51,7 @@
     "react-native-modal-dropdown": "^1.0.2",
     "react-native-paper": "^5.12.3",
     "react-native-picker-select": "^9.1.3",
+    "react-native-progress": "^5.0.1",
     "react-native-push-notification": "^8.1.1",
     "react-native-range-slider": "^0.1.2",
     "react-native-reanimated": "^3.11.0",
@@ -55,7 +60,7 @@
     "react-native-segmented-control-tab": "^4.0.0",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-storage": "^0.2.4",
-    "react-native-svg": "^15.2.0",
+    "react-native-svg": "^15.3.0",
     "react-native-swiper": "^1.6.0",
     "react-native-swiper-flatlist": "^3.2.4",
     "react-native-switch": "^1.5.1",
@@ -66,7 +71,7 @@
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
     "supercluster": "^8.0.1",
-    "victory-native": "^40.2.0"
+    "victory-native": "^40.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -80,7 +85,7 @@
     "prettier": "2.8.8",
     "react-native-dotenv": "^3.4.11",
     "react-test-renderer": "18.2.0",
-    "typescript": "5.0.4"
+    "typescript": "^5.0.4"
   },
   "engines": {
     "node": ">=18"

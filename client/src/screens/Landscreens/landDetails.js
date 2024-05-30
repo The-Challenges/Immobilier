@@ -6,22 +6,22 @@ import CustomPicker from './pk';
 const Screen1 = ({ formData, handleChange, navigateToNext }) => {
   const purchaseOptions = [
     { label: 'Finance', value: 'Finance', icon: 'finance' },
-    { label: 'Cash', value: 'cash', icon: 'cash' },
+    { label: 'Cash', value: 'Cash', icon: 'cash' },
   ];
 
   const terrainTypes = [
     { label: 'Flat', value: 'Flat', icon: 'terrain' },
     { label: 'Sloping', value: 'Sloping', icon: 'terrain' },
-    { label: 'Hilly', value: 'hilly', icon: 'terrain' },
-    { label: 'Forested', value: 'forested', icon: 'forest' },
+    { label: 'Hilly', value: 'Hilly', icon: 'terrain' },
+    { label: 'Forested', value: 'Forested', icon: 'forest' },
   ];
 
   const zoningOptions = [
-    { label: 'Residential', value: 'residential', icon: 'home-city' },
-    { label: 'Commercial', value: 'commercial', icon: 'office-building' },
-    { label: 'Agricultural', value: 'agricultural', icon: 'tractor' },
-    { label: 'Industrial', value: 'industrial', icon: 'factory' },
-    { label: 'Mixed-use', value: 'mixed-use', icon: 'city' },
+    { label: 'Residential', value: 'Residential', icon: 'home-city' },
+    { label: 'Commercial', value: 'Commercial', icon: 'office-building' },
+    { label: 'Agricultural', value: 'Agricultural', icon: 'tractor' },
+    { label: 'Industrial', value: 'Industrial', icon: 'factory' },
+    { label: 'Mixed-use', value: 'Mixed-use', icon: 'city' },
   ];
 
   const handleSizeChange = (text) => {
@@ -35,7 +35,7 @@ const Screen1 = ({ formData, handleChange, navigateToNext }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Land Details</Text>
 
       <View style={styles.inputContainer}>
@@ -115,7 +115,9 @@ const Screen1 = ({ formData, handleChange, navigateToNext }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
     backgroundColor: '#fff',
   },
@@ -130,6 +132,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
+    width: '100%',
   },
   label: {
     fontSize: 18,
@@ -161,7 +164,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '500',
   },
 });
