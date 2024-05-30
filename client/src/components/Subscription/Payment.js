@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
-import { API_AD } from '../../../config';
+import storage from '../../components/Authentification/storage'; // Import your storage module
 
 const PaymentScreen = () => {
   const [name, setName] = useState('');
@@ -52,45 +52,52 @@ const PaymentScreen = () => {
 
   const handlePayment = async () => {
     if (!validateInputs()) {
-      return;
+        return;
     }
 
     try {
-      const response = await fetch(`${API_AD}/api/payment/create-payment-intent`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: 500.00,
-          currency: 'usd',
-        }),
-      });
+        const response = await fetch('http://192.168.11.234:4000/api/payment/create-payment-intent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                amount: 500.00,
+                currency: 'usd',
+            }),
+        });
 
-      const contentType = response.headers.get('content-type');
-      if (!response.ok) {
-        const text = await response.text();
-        console.error(`HTTP error! status: ${response.status}, message: ${text}`);
-        alert('An error occurred while processing your payment. Please try again later.');
-        return;
-      }
-
-      if (contentType && contentType.indexOf('application/json') !== -1) {
-        const paymentIntentResponse = await response.json();
-        if (paymentIntentResponse.clientSecret) {
-          navigation.navigate('PaymentConfirmation');
-        } else {
-          alert('Failed to create payment intent.');
+        const contentType = response.headers.get('content-type');
+        if (!response.ok) {
+            const text = await response.text();
+            console.error(`HTTP error! status: ${response.status}, message: ${text}`);
+            alert('An error occurred while processing your payment. Please try again later.');
+            return;
         }
-      } else {
-        const text = await response.text();
-        throw new Error(`Unexpected content type: ${contentType}, message: ${text}`);
-      }
+
+        if (contentType && contentType.indexOf('application/json') !== -1) {
+            const paymentIntentResponse = await response.json();
+            if (paymentIntentResponse.clientSecret) {
+                await storage.save({
+                    key: 'verificationStatus',
+                    data: {
+                        verified: true
+                    }
+                });
+                navigation.navigate('PaymentConfirmation'); // Adjusted to navigate to the confirmation screen
+            } else {
+                alert('Failed to create payment intent.');
+            }
+        } else {
+            const text = await response.text();
+            throw new Error(`Unexpected content type: ${contentType}, message: ${text}`);
+        }
     } catch (error) {
-      console.error('Payment Error:', error);
-      alert(`Error processing payment: ${error.message}`);
+        console.error('Payment Error:', error);
+        alert(`Error processing payment: ${error.message}`);
     }
-  };
+};
+
 
   const formatExpiryDate = (text) => {
     if (text.length === 2 && !text.includes('/')) {

@@ -1,1 +1,1 @@
-module.exports.API_AD='http://192.168.103.4:4000' 
+module.exports.API_AD='http://192.168.151.159:4000' 

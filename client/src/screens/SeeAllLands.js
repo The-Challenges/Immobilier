@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   StyleSheet, View, FlatList, Text, Alert, ActivityIndicator, Dimensions, Image, TouchableOpacity
 } from 'react-native';
@@ -25,7 +25,7 @@ const SeeAllLands = ({ navigation }) => {
   const [hasMore, setHasMore] = useState(true);
 
   const navigateDetails = (item) => {
-    navigation.navigate('ViewLandDetails', { land: item, user, landId: item.id, userId: item.UserId });
+    navigation.navigate('viewDetLand', { land: item, user, landId: item.id, userId: item.UserId });
     socketserv.emit("receiver", item.UserId);
   };
 
@@ -56,35 +56,31 @@ const SeeAllLands = ({ navigation }) => {
     }
   };
 
-  const toggleFavorite = async (landId) => {
+  const toggleFavorite = useCallback(async (landId) => {
     if (!userId) {
       Alert.alert('Error', 'User ID not set');
       return;
     }
-    setLoading(true);
     try {
       await axios.post(`${API_AD}/api/favorite/toggle`, { userId, estateId: landId, type: 'land' });
-      setFavorites(prev => {
-        const updated = new Set(prev);
-        if (updated.has(landId)) {
-          updated.delete(landId);
+      setFavorites((prevFavorites) => {
+        const updatedFavorites = new Set(prevFavorites);
+        if (updatedFavorites.has(landId)) {
+          updatedFavorites.delete(landId);
         } else {
-          updated.add(landId);
+          updatedFavorites.add(landId);
         }
-        return updated;
+        return updatedFavorites;
       });
     } catch (error) {
       console.error("Failed to toggle favorite:", error);
       Alert.alert('Error', 'Failed to update favorites');
-    } finally {
-      setLoading(false);
     }
-  };
-
+  }, [userId, favorites]);
   const fetchLands = async (page) => {
     if (!hasMore && page !== 1) return;
     setLoading(page === 1);
-    setLoadingMore(page !== 1);
+    setLoadingMore(page !== 1)
     try {
       const response = await axios.get(`${API_AD}/api/land/all?page=${page}&limit=15`);
       const fetchedLands = response.data;

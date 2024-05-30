@@ -80,7 +80,7 @@ function FullAddLand() {
 
             console.log('Payload being sent:', JSON.stringify(payload, null, 2));
 
-            const response = await axios.post('http://192.168.104.29:4000/api/land/AddLand', payload);
+            const response = await axios.post('http://192.168.11.234:4000/api/land/AddLand', payload);
 
             if (response.status === 200 || response.status === 201) {
                 Alert.alert("Success", "Land has been listed successfully.");

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { SafeAreaView, StyleSheet, Image, Dimensions, StatusBar, FlatList, View, Text, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { Card, Button, IconButton } from 'react-native-paper';
@@ -20,6 +20,7 @@ const SeeAllHouses = ({ navigation }) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
+
   useEffect(() => {
     fetchHouses(1);
     getUserId();
@@ -28,7 +29,7 @@ const SeeAllHouses = ({ navigation }) => {
   const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.103.4:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.11.234:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
@@ -36,40 +37,46 @@ const SeeAllHouses = ({ navigation }) => {
     }
   };
 
-  const toggleFavorite = async (houseId) => {
+  const toggleFavorite = useCallback(async (houseId) => {
     if (!userId) {
       Alert.alert('Error', 'User ID not set');
       return;
     }
-    setLoading(true);
     try {
-      await axios.post(`http://192.168.103.4:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
-      setFavorites(prev => {
-        const updated = new Set(prev);
-        if (updated.has(houseId)) {
-          updated.delete(houseId);
+      const result = await axios.post(`http://192.168.11.234:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      setFavorites((prevFavorites) => {
+        const updatedFavorites = new Set(prevFavorites);
+        if (updatedFavorites.has(houseId)) {
+          updatedFavorites.delete(houseId);
         } else {
-          updated.add(houseId);
+          updatedFavorites.add(houseId);
         }
-        return updated;
+        return updatedFavorites;
       });
     } catch (error) {
       console.error("Failed to toggle favorite:", error);
       Alert.alert('Error', 'Failed to update favorites');
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [userId]);
 
-;
-
+const getUserId = async () => {
+  try {
+    const userData = await storage.load({ key: 'loginState' });
+    setUserId(userData.user.userId);
+    fetchFavorites(userData.user.userId);
+    console.log('azertyjdjdddddddddgnkgaaaaaaaaa',userData.user);
+    console.log('zertyuisdfghjkwxcvbn,sdfghjfgh',user);
+  } catch (error) {
+    console.error('Failed to retrieve user data:', error);
+  }
+};
 
   const fetchHouses = async (page) => {
     if (!hasMore && page !== 1) return;
     setLoading(page === 1);
     setLoadingMore(page !== 1);
     try {
-      const response = await axios.get(`http://192.168.103.4:4000/api/house/allhouses?page=${page}&limit=15`);
+      const response = await axios.get(`http://192.168.11.234:4000/api/house/allhouses?page=${page}&limit=15`);
       const fetchedHouses = response.data;
       if (fetchedHouses.length < 15) {
         setHasMore(false);
@@ -90,7 +97,7 @@ const SeeAllHouses = ({ navigation }) => {
     </View>
   );
 
-  const HouseCard = ({ house }) => {
+  const HouseCard = memo(({ house }) => {
     const isFavorite = favorites.has(house.id);
     const images = house.Media && house.Media.length > 0 ? house.Media : [{ link: 'https://via.placeholder.com/400x200.png?text=No+Image+Available' }];
 
@@ -138,7 +145,7 @@ const SeeAllHouses = ({ navigation }) => {
         </Card.Actions>
       </Card>
     );
-  };
+  });
 
   const navigateDetails = (house) => {
     navigation.navigate('ViewDetailsHouse', { house });
@@ -175,6 +182,7 @@ const SeeAllHouses = ({ navigation }) => {
         <FlatList
           data={houses}
           keyExtractor={(item) => `${item.id}`}
+          extraData={Array.from(favorites)} // Helps in ensuring updates
           renderItem={({ item }) => <HouseCard house={item} />}
           contentContainerStyle={styles.listContainer}
           ListFooterComponent={renderFooter}

@@ -42,6 +42,12 @@ module.exports.getAllEstateByBuyer = async (req, res) => {
         
         include: [{
           model: db.Land,
+          through: {
+            model: db.RequestLand,
+            as: 'RequestLand'
+            // attributes: ['status', 'date'] // Attributes you want from the join table
+          }
+          
           // through: { attributes: [] }  // Specify through table attributes if needed
       }]
 
@@ -52,6 +58,11 @@ module.exports.getAllEstateByBuyer = async (req, res) => {
         
         include: [{
           model: db.House,
+          through: {
+            model: db.RequestHouse,
+            as: 'RequestHouse'
+            // attributes: ['status', 'date'] // Attributes you want from the join table
+          }
           // through: { attributes: [] }  // Specify through table attributes if needed
       }]
 

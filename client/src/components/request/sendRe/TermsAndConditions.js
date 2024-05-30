@@ -7,6 +7,9 @@ import socketserv from '../socketserv';
 const TermsAndConditionsScreen = ({ route,navigation }) => {
     const [accepted, setAccepted] = useState(false);
     const {user,land,house } = route.params;
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',user);
+    console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',land);
+    console.log('cccccccccccccccccccccccccccccccccccccccccc',house);
     
     
     const handleAcceptanceToggle = () => setAccepted(!accepted);
@@ -15,7 +18,7 @@ const TermsAndConditionsScreen = ({ route,navigation }) => {
         if (land) {
             socketserv.emit('send_land_request', { user, land });
 console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa',user)
-            const url = `http://192.168.104.29:4000/api/reqtest/${user.userId}/${land.id}`;
+            const url = `http://192.168.11.234:4000/api/reqtest/${user.userId}/${land.id}`;
             axios.post(url)
                 .then(() => {
                     console.log('Land request sent successfully');
@@ -29,7 +32,7 @@ console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa',user)
         } else {
             socketserv.emit('send_house_request', { user, house });
 
-            const url = `http://192.168.104.29:4000/api/reqtest/request/${user.userId}/${house.id}`;
+            const url = `http://192.168.11.234:4000/api/reqtest/request/${user.userId}/${house.id}`;
             axios.post(url)
                 .then(() => {
                     console.log('House request sent successfully');

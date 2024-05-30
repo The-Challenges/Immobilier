@@ -7,7 +7,9 @@ import axios from 'axios';
 import FeaturedScroller from '../components/featuredScroller'; 
 import socketserv from '../components/request/socketserv';
 
+
 const { width } = Dimensions.get('screen');
+
 
 const HomeScreen = ({ navigation }) => {
   const [houses, setHouses] = useState([]);
@@ -28,8 +30,9 @@ const HomeScreen = ({ navigation }) => {
   const getUserId = useCallback(async () => {
     try {
       const userData = await storage.load({ key: 'loginState' });
-      setUserId(userData.user.id);
-      fetchFavorites(userData.user.id);
+      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",userData);
+      setUserId(userData.user);
+      fetchFavorites(userData.user);
     } catch (error) {
       console.error('Failed to retrieve user data:', error);
     }
@@ -38,18 +41,8 @@ const HomeScreen = ({ navigation }) => {
   const fetchHouses = useCallback(async (page) => {
     setLoadingMore(true);
     try {
-      const response = await axios.get(`http://192.168.103.4:4000/api/house/allhouses?page=${page}&limit=15`);
-      const fetchedHouses = response.data;
-      if (fetchedHouses.length < 15) {
-        setHasMore(false);
-      }
-      setHouses((prevHouses) => {
-        if (page === 1) {
-          return fetchedHouses;
-        } else {
-          return [...prevHouses, ...fetchedHouses];
-        }
-      }); // Prepend new houses
+      const response = await axios.get(`http://192.168.11.234:4000/api/house/allhouses`);
+      setHouses(response.data);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch houses');
       console.error('Failed to fetch houses:', error);
@@ -60,16 +53,18 @@ const HomeScreen = ({ navigation }) => {
   }, []);
   
 
-  const fetchFavorites = useCallback(async (userId) => {
+  
+  const fetchFavorites = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://192.168.103.4:4000/api/favorites/${userId}/house`);
+      const response = await axios.get(`http://192.168.11.234:4000/api/favorites/${userId}/house`);
       const favoriteHouses = new Set(response.data.map(fav => fav.houseId));
       setFavorites(favoriteHouses);
     } catch (error) {
       console.error('Failed to fetch favorites:', error);
     }
-  }, []);
+  };
+  
 
   const toggleFavorite = useCallback(async (houseId) => {
     if (!userId) {
@@ -78,7 +73,7 @@ const HomeScreen = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      await axios.post(`http://192.168.103.4:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
+      await axios.post(`http://192.168.11.234:4000/api/favorite/toggle`, { userId, estateId: houseId, type: 'house' });
       setFavorites(prev => {
         const updated = new Set(prev);
         if (updated.has(houseId)) {
@@ -110,7 +105,10 @@ const HomeScreen = ({ navigation }) => {
       },
     ];
 
-    return (
+    
+
+
+return (
       <View style={styles.optionListContainer}>
         {optionsList.map((option, index) => (
           <TouchableOpacity
@@ -240,6 +238,8 @@ const HomeScreen = ({ navigation }) => {
           <TouchableOpacity style={styles.sortBtn} onPress={() => navigation.navigate('FilterScreen')}>
             <Icon name="tune" color={COLORS.white} size={28} />
           </TouchableOpacity>
+          
+          
           <TouchableOpacity style={styles.favoriteBtn} onPress={() => navigation.navigate('FavoritesScreen')}>
             <Icon name="favorite" color={COLORS.white} size={28} />
           </TouchableOpacity>
@@ -312,6 +312,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     borderRadius: 25,
   },
+  
   optionListContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -474,4 +475,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default HomeScreen

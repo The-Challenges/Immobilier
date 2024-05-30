@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Modal } from 'react-native';
+import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/SimpleLineIcons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import COLORS from './consts/colors';
-import { Button, Card } from 'react-native-elements';
+import { Button } from 'react-native-elements';
+import { API_AD } from '../config';
 
-// Define icons for different categories
 const featureIcons = {
   Garage: "car",
   Pool: "swimming-pool",
@@ -46,53 +46,33 @@ const energyIcons = {
   Unknown: "battery-slash"
 };
 
-const viewIcons = {
-  Mountain: "mountain",
-  WaterViews: "water",
-  CitySkyline: "city",
-  Unknown: "question-circle"
-};
-
-// Function to retrieve the correct icon element
-const getIcon = (name, category) => {
+const getIcon = (detail, category) => {
   const iconSets = {
     Features: featureIcons,
     Energy: energyIcons,
     Indoor: indoorIcons,
-    Outdoor: featureIcons,
-    View: viewIcons
+    Outdoor: featureIcons
   };
 
   const icons = iconSets[category] || {};
-  const iconName = icons[name] || icons.Unknown;
+  const iconName = icons[detail] || icons.Unknown;
   return <Icon name={iconName} size={20} color={COLORS.dark} />;
 };
 
-// Component for displaying details with icons in a horizontal scroll view
-const PropertyDetail = ({ category, details }) => (
-  <Card containerStyle={styles.cardContainer}>
+const HouseDetail = ({ category, details }) => (
+  <View style={styles.detailContainer}>
     <Text style={styles.categoryTitle}>{category}</Text>
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalScrollView}>
-      {details.map((detail, index) => (
+    <View style={styles.detailRow}>
+      {(details || []).map((detail, index) => (
         <View key={index} style={styles.detailBox}>
           {getIcon(detail, category)}
           <Text style={styles.detailText}>{detail}</Text>
         </View>
       ))}
-    </ScrollView>
-  </Card>
-);
-
-// Custom Skeleton Loader
-const CustomSkeleton = () => (
-  <View style={styles.skeletonContainer}>
-    <View style={styles.skeletonBox} />
-    <View style={styles.skeletonBox} />
-    <View style={styles.skeletonBox} />
+    </View>
   </View>
 );
 
-// Main component displaying the property details
 const ViewHouseDetails = ({ route, navigation }) => {
   const { house, user } = route.params;
   const [hasRequested, setHasRequested] = useState(false);
@@ -104,28 +84,18 @@ const ViewHouseDetails = ({ route, navigation }) => {
 
   const checkIfRequested = async () => {
     try {
-      const response = await axios.get(`http://192.168.103.4:4000/api/reqtest/check`, {
+      const response = await axios.get(`http://192.168.11.234:4000/api/reqtest/check`, {
         params: {
           userId: parseInt(user.userId),
           landId: parseInt(house.id)
         }
       });
       setHasRequested(response.data.hasRequested);
-      setLoading(false);
     } catch (error) {
       Alert.alert('Error', 'Failed to check if request has already been sent.');
       console.log('Error response data:', error.response ? error.response.data : 'No response data');
     }
   };
-
-  if (loading) {
-    return (
-      <View style={styles.loaderContainer}>
-        <CustomSkeleton />
-        <ActivityIndicator size="large" color={COLORS.primary} />
-      </View>
-    );
-  }
 
   return (
     <ScrollView style={styles.container}>
@@ -147,7 +117,18 @@ const ViewHouseDetails = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.contentContainer}>
+      <View style={styles.contactDetails}>
+        <Text style={styles.contactDetail}><Icon name="envelope" size={15} color="#FF9800" /> {house.User.email}</Text>
+        <Text style={styles.contactDetail}><Icon2 name="phone" size={15} color="#2196F3" /> {house.User.phoneNumber}</Text>
+        <Text style={styles.contactDetail}><Icon2 name="location-pin" size={15} color="#F44336" /> {house.User.location}</Text>
+      </View>
+
+      <View style={styles.detailContainer}>
+        <Text style={styles.price}>${house.price}</Text>
+        <Text style={styles.type}>{house.propertyType}</Text>
+      </View>
+
+      <View style={styles.section}>
         <Text style={styles.sectionTitle}>General Information</Text>
         <Text style={styles.text}><Icon1 name="bed" size={18} /> Bedrooms: {house.numberbedrooms}</Text>
         <Text style={styles.text}><Icon1 name="bathtub" size={18} /> Bathrooms: {house.numberbathrooms}</Text>
@@ -156,18 +137,6 @@ const ViewHouseDetails = ({ route, navigation }) => {
         <Text style={styles.text}><Icon name="money-check-alt" size={18} /> Purchase Option: {house.purchaseoption}</Text>
         <Text style={styles.text}><Icon name="building" size={18} /> Property Type: {house.propertyType}</Text>
         <Text style={styles.text}><Icon name="calendar-alt" size={18} /> House Age: {house.houseAge}</Text>
-
-        <PropertyDetail category="Indoor" details={house.Indoors.map(indoor => indoor.options)} />
-        <PropertyDetail category="Outdoor" details={house.Outdoors.map(outdoor => outdoor.options)} />
-        <PropertyDetail category="Climate features" details={house.Climates.map(climate => climate.options)} />
-        <PropertyDetail category="Views" details={house.Views.map(Views => Views.options)} />
-
-        <TouchableOpacity
-          style={styles.favoriteButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <Icon name="heart" size={25} color={COLORS.red} />
-        </TouchableOpacity>
       </View>
 
       <HouseDetail category="Indoor Features" details={house.Indoors.map(indoor => indoor.options)} />
@@ -188,45 +157,23 @@ const ViewHouseDetails = ({ route, navigation }) => {
   );
 };
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     backgroundColor: COLORS.white,
   },
-  headerContainer: {
-    backgroundColor: COLORS.primary,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    paddingBottom: 20,
-    paddingTop: 40,
-    alignItems: 'center',
-  },
-  loaderContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: COLORS.white,
-    textAlign: 'center',
-  },
-  location: {
-    fontSize: 16,
-    color: COLORS.light,
-    textAlign: 'center',
-  },
-  price: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.light,
+    color: COLORS.primary,
+    marginVertical: 10,
     textAlign: 'center',
   },
   imageContainer: {
-    width: '90%',
-    height: 200,
+    width: '100%',
+    height: 250,
+    marginBottom: 20,
     borderRadius: 15,
     overflow: 'hidden',
     borderWidth: 1,
@@ -240,7 +187,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.grey,
     textAlign: 'center',
-    lineHeight: 200,
+    lineHeight: 250,
   },
   iconContainer: {
     flexDirection: 'row',
@@ -258,7 +205,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
   },
   detailContainer: {
     flexDirection: 'column',
@@ -279,10 +225,11 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
     color: COLORS.primary,
     marginBottom: 10,
+    textAlign: 'center',
   },
   text: {
     fontSize: 18,
@@ -307,104 +254,31 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.primary,
   },
-  horizontalScrollView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   detailText: {
     marginLeft: 5,
     fontSize: 16,
     color: COLORS.dark,
   },
-  favoriteButton: {
-    position: 'absolute',
-    right: 20,
-    top: 20,
-    backgroundColor: COLORS.white,
-    borderRadius: 50,
-    padding: 10,
-    shadowColor: COLORS.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalView: {
-    width: '80%',
-    backgroundColor: COLORS.white,
+  contactButton: {
+    backgroundColor: COLORS.primary,
     borderRadius: 20,
-    padding: 20,
-    alignItems: 'center',
-    shadowColor: COLORS.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    marginVertical: 10,
+    marginHorizontal: 20,
   },
-  modalImage: {
-    width: '100%',
-    height: 150,
-    borderRadius: 10,
+  description: {
+    fontSize: 18,
+    color: COLORS.dark,
+    marginVertical: 10,
+    marginHorizontal: 20,
+    textAlign: 'justify',
   },
-  modalTitle: {
-    fontSize: 22,
+  categoryTitle: {
+    fontSize: 20,
     fontWeight: 'bold',
     color: COLORS.primary,
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  modalLocation: {
-    fontSize: 16,
-    color: COLORS.grey,
-    textAlign: 'center',
-    marginVertical: 5,
-  },
-  modalPrice: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: COLORS.dark,
-    textAlign: 'center',
-  },
-  modalText: {
-    fontSize: 16,
-    color: COLORS.dark,
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-  modalButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  cancelButton: {
-    backgroundColor: COLORS.grey,
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  removeButton: {
-    backgroundColor: COLORS.red,
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  skeletonContainer: {
-    width: '90%',
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  skeletonBox: {
-    width: '100%',
-    height: 150,
-    backgroundColor: COLORS.light,
     marginBottom: 10,
-    borderRadius: 10,
   },
 });
 

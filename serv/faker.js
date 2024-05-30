@@ -228,10 +228,10 @@ function generateRectangleCoordinates(centerLat, centerLong) {
 }
 
 module.exports = async (sequelize) => {
-  const userCount = 50;
-  const houseCount = 75;
-  const landCount = 75;
-  const optionCount = 200;
+  const userCount = 100;
+  const houseCount = 50;
+  const landCount = 50;
+  const optionCount = 50;
 
   const users = await Promise.all(
     Array.from({ length: userCount }).map(async () => {
@@ -390,9 +390,22 @@ module.exports = async (sequelize) => {
   );
 
   const statusOptions = ['pending', 'accepted', 'rejected'];
+  const requestLands = await Promise.all(
+    Array.from({ length: 1000 }).map(async () => {
+      const user = users[Math.floor(Math.random() * userCount)];
+      const land = lands[Math.floor(Math.random() * landCount)];
+      const status = getRandomElementFromArray(statusOptions); // Get status
+      console.log(`Inserting: Status - ${status}, Land ID - ${land.id}, User ID - ${user.id}`); // Log it
+      return await db.RequestLand.create({
+        status,
+        landId: land.id,
+        userId: user.id,
+      });
+    })
+  );
 
   const requestHouses = await Promise.all(
-    Array.from({ length: 25 }).map(async () => {
+    Array.from({ length: 1000 }).map(async () => {
       const user = users[Math.floor(Math.random() * userCount)];
       const house = houses[Math.floor(Math.random() * houseCount)];
       const status = getRandomElementFromArray(statusOptions); // Get status
@@ -405,16 +418,6 @@ module.exports = async (sequelize) => {
     })
   );
 
-  const requestLands = await Promise.all(
-    Array.from({ length: 25 }).map(async () => {
-      const user = users[Math.floor(Math.random() * userCount)];
-      const land = lands[Math.floor(Math.random() * landCount)];
-      return await db.RequestLand.create({
-        status: getRandomElementFromArray(['pending', 'accepted', 'rejected']),
-        landId: land.id,
-        userId: user.id,
-      });
-    })
-  );
+
 }
 };

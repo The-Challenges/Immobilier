@@ -41,14 +41,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM('Established', 'New', 'All types'),
             defaultValue: 'All types'
         },
-        userId: { // Add userId field
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'Users', // Name of the Users table
-                key: 'id'
-            }
-        }
+        // userId: { // Add userId field
+        //     type: DataTypes.INTEGER,
+        //     allowNull: false,
+        //     references: {
+        //         model: 'Users', // Name of the Users table
+        //         key: 'id'
+        //     }
+        // }
 
     });
 

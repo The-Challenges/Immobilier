@@ -1,33 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal, FlatList, Image, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MapView, { Marker } from 'react-native-maps';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import storage from '../../components/Authentification/storage'; // Import your storage module
+import UserProfile from '../../components/profile/profileDetails';
 
-function Screen6({ formData, handleChange, handleSubmit }) {
+function Screen6({ formData, handleChange, handleSubmit, houseId }) {
     const [modalVisible, setModalVisible] = useState(false);
     const navigation = useNavigation();
-    const [userId, setUserId] = useState(null);
-
-    useEffect(() => {
-        const fetchUserId = async () => {
-            try {
-                const userData = await storage.load({ key: 'loginState' });
-                setUserId(userData.user.userId);
-            } catch (error) {
-                console.error('Failed to retrieve user ID:', error);
-            }
-        };
-        fetchUserId();
-    }, []);
 
     const optionCategories = {
-        climateOptions: formData.climateOptions || [],
-        indoorOptions: formData.indoorOptions || [],
-        outdoorOptions: formData.outdoorOptions || [],
-        viewOptions: formData.viewOptions || [],
+        climateOptions: ['Air conditioning', 'Heating', 'Solar panels', 'High energy efficiency', 'Unknown'],
+        indoorOptions: ['Ensuite', 'Study', 'Alarm System', 'FloorBoards', 'Rumpus room', 'Dishwasher', 'Built in robe', 'Broadband', 'Gym', 'Workshop', 'Unknown'],
+        outdoorOptions: ['Swimming pool', 'Balcony', 'Undercover parking', 'Fully fenced', 'Tennis court', 'Garage', 'Outdoor area', 'Shed', 'Outdoor spa', 'Unknown'],
+        viewOptions: ['mountain', 'city skyline', 'water views']
     };
 
     const detailIcons = {
@@ -42,7 +29,7 @@ function Screen6({ formData, handleChange, handleSubmit }) {
     };
 
     const renderPropertyDetails = () => {
-        const detailsToShow = ['title', 'price', 'numberBedrooms', 'numberBathrooms', 'propertyType', 'houseAge', 'garage', 'parking'];
+        const detailsToShow = ['title', 'price', 'parking', 'houseAge', 'numberBedrooms', 'numberBathrooms', 'propertyType', 'garage'];
 
         return detailsToShow.map((key) => (
             <View style={styles.detailRow} key={key}>
@@ -63,7 +50,7 @@ function Screen6({ formData, handleChange, handleSubmit }) {
         <View style={styles.card}>
             <Icon name={iconName} size={30} color="#4CAF50" />
             <Text style={styles.header}>{title}</Text>
-            {options.map(option => (
+            {options.filter(option => formData[option]).map(option => (
                 <Text key={option} style={styles.optionText}>{option}</Text>
             ))}
         </View>
@@ -82,36 +69,20 @@ function Screen6({ formData, handleChange, handleSubmit }) {
         </View>
     );
 
-    const submitForm = async () => {
+    const updateHouse = async () => {
         try {
-            const latitude = formData.latitude || 37.78825;
-            const longitude = formData.longitude || -122.4324;
-
-            const payload = {
-                ...formData,
-                userId, // Include userId here
-                numberbathrooms: formData.numberBathrooms,
-                numberbedrooms: formData.numberBedrooms,
-                alt: latitude,
-                long: longitude,
-                climateOptions: formData.climateOptions,
-                indoorOptions: formData.indoorOptions,
-                outdoorOptions: formData.outdoorOptions,
-                viewOptions: formData.viewOptions
-            };
-
-            console.log('Payload being sent:', JSON.stringify(payload, null, 2));
-
-            const response = await axios.post('http://192.168.11.234:4000/api/house/postHouse', payload);
-
-            if (response.status === 200 || response.status === 201) {
+            const response = await axios.put(`http://192.168.11.234:4000/api/house/updateHouse/${houseId}`, formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.status === 200) {
                 setModalVisible(true);
             } else {
-                throw new Error(`Failed to submit data: Status Code ${response.status}`);
+                throw new Error(`Failed to update data: Status Code ${response.status}`);
             }
         } catch (error) {
-            console.error('Error submitting form:', error.response ? error.response.data : error.message);
-            Alert.alert('Error', `Submission failed: ${error.message}`);
+            Alert.alert('Error', `Update failed: ${error.message}`);
         }
     };
 
@@ -160,9 +131,9 @@ function Screen6({ formData, handleChange, handleSubmit }) {
                 style={styles.uploadedFiles}
             />
 
-            <TouchableOpacity style={styles.button} onPress={submitForm}>
+            <TouchableOpacity style={styles.button} onPress={updateHouse}>
                 <Icon name="check" size={24} color="#fff" />
-                <Text style={styles.buttonText}>Confirm and Submit</Text>
+                <Text style={styles.buttonText}>Confirm and Update</Text>
             </TouchableOpacity>
             <Modal
                 animationType="slide"
@@ -174,13 +145,13 @@ function Screen6({ formData, handleChange, handleSubmit }) {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Your house has been added successfully!</Text>
+                        <Text style={styles.modalText}>Your house has been updated successfully!</Text>
                         <Text style={styles.modalText}>Wait for confirmation from admin.</Text>
                         <TouchableOpacity
                             style={[styles.button, styles.buttonClose]}
                             onPress={() => {
                                 setModalVisible(!modalVisible);
-                                navigation.navigate('HomeTabs');
+                                navigation.navigate('UserProfile'); // Navigate back to the user profile
                             }}
                         >
                             <Text style={styles.textStyle}>OK</Text>
